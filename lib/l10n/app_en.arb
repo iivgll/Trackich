@@ -1,0 +1,548 @@
+{
+  "@@locale": "en",
+  
+  "appTitle": "Trackich",
+  "@appTitle": {
+    "description": "Application title"
+  },
+  
+  "dashboard": "Dashboard",
+  "@dashboard": {
+    "description": "Main dashboard tab"
+  },
+  
+  "calendar": "Calendar",
+  "@calendar": {
+    "description": "Calendar view tab"
+  },
+  
+  "projects": "Projects",
+  "@projects": {
+    "description": "Projects management tab"
+  },
+  
+  "analytics": "Analytics",
+  "@analytics": {
+    "description": "Analytics and reports tab"
+  },
+  
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings tab"
+  },
+  
+  "startTask": "Start Task",
+  "@startTask": {
+    "description": "Button to start a new task"
+  },
+  
+  "pauseTask": "Pause",
+  "@pauseTask": {
+    "description": "Button to pause current task"
+  },
+  
+  "resumeTask": "Resume",
+  "@resumeTask": {
+    "description": "Button to resume paused task"
+  },
+  
+  "stopTask": "Stop",
+  "@stopTask": {
+    "description": "Button to stop current task"
+  },
+  
+  "workingOn": "Working on: {taskName}",
+  "@workingOn": {
+    "description": "Currently active task display",
+    "placeholders": {
+      "taskName": {
+        "type": "String",
+        "example": "API Integration"
+      }
+    }
+  },
+  
+  "project": "Project",
+  "@project": {
+    "description": "Project label"
+  },
+  
+  "selectProject": "Select Project",
+  "@selectProject": {
+    "description": "Dropdown hint for project selection"
+  },
+  
+  "taskName": "Task name...",
+  "@taskName": {
+    "description": "Task name input placeholder"
+  },
+  
+  "addNote": "Add Note",
+  "@addNote": {
+    "description": "Button to add note to task"
+  },
+  
+  "todaysSummary": "Today's Summary",
+  "@todaysSummary": {
+    "description": "Today's work summary section title"
+  },
+  
+  "todayWorked": "Today: {duration} worked",
+  "@todayWorked": {
+    "description": "Total time worked today",
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "6h 23m"
+      }
+    }
+  },
+  
+  "tasksCompleted": "{count} tasks completed",
+  "@tasksCompleted": {
+    "description": "Number of tasks completed",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "4"
+      }
+    }
+  },
+  
+  "breaksTaken": "{count} breaks taken",
+  "@breaksTaken": {
+    "description": "Number of breaks taken",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  
+  "goal": "Goal: {goal} ({percentage}% complete)",
+  "@goal": {
+    "description": "Daily goal progress",
+    "placeholders": {
+      "goal": {
+        "type": "String",
+        "example": "8h"
+      },
+      "percentage": {
+        "type": "int",
+        "example": "78"
+      }
+    }
+  },
+  
+  "recentTasks": "Recent Tasks",
+  "@recentTasks": {
+    "description": "Recent tasks section title"
+  },
+  
+  "viewAllTasks": "View all tasks...",
+  "@viewAllTasks": {
+    "description": "Link to view all tasks"
+  },
+  
+  "newProject": "New Project",
+  "@newProject": {
+    "description": "Button to create new project"
+  },
+  
+  "activeProjects": "{count} active, {archived} archived",
+  "@activeProjects": {
+    "description": "Project count summary",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "12"
+      },
+      "archived": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  
+  "thisWeek": "This week: {duration}",
+  "@thisWeek": {
+    "description": "Time worked this week",
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "24h 30m"
+      }
+    }
+  },
+  
+  "lastActivity": "Last activity: {time}",
+  "@lastActivity": {
+    "description": "Last activity time",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "2 hours ago"
+      }
+    }
+  },
+  
+  "edit": "Edit",
+  "@edit": {
+    "description": "Edit button"
+  },
+  
+  "archive": "Archive",
+  "@archive": {
+    "description": "Archive button"
+  },
+  
+  "viewTasks": "View Tasks",
+  "@viewTasks": {
+    "description": "View tasks button"
+  },
+  
+  "general": "General",
+  "@general": {
+    "description": "General settings section"
+  },
+  
+  "language": "Language",
+  "@language": {
+    "description": "Language setting"
+  },
+  
+  "theme": "Theme",
+  "@theme": {
+    "description": "Theme setting"
+  },
+  
+  "timeFormat": "Time Format",
+  "@timeFormat": {
+    "description": "Time format setting"
+  },
+  
+  "weekStartsOn": "Week Starts On",
+  "@weekStartsOn": {
+    "description": "Week start day setting"
+  },
+  
+  "defaultProject": "Default Project",
+  "@defaultProject": {
+    "description": "Default project setting"
+  },
+  
+  "breakConfiguration": "Break Configuration",
+  "@breakConfiguration": {
+    "description": "Break settings section"
+  },
+  
+  "workSessionDuration": "Work Session Duration",
+  "@workSessionDuration": {
+    "description": "Work session duration setting"
+  },
+  
+  "shortBreakDuration": "Short Break Duration",
+  "@shortBreakDuration": {
+    "description": "Short break duration setting"
+  },
+  
+  "longBreakDuration": "Long Break Duration",
+  "@longBreakDuration": {
+    "description": "Long break duration setting"
+  },
+  
+  "longBreakInterval": "Long Break Interval",
+  "@longBreakInterval": {
+    "description": "Long break interval setting"
+  },
+  
+  "enableBreakNotifications": "Enable Break Notifications",
+  "@enableBreakNotifications": {
+    "description": "Break notifications toggle"
+  },
+  
+  "notificationSound": "Notification Sound",
+  "@notificationSound": {
+    "description": "Notification sound setting"
+  },
+  
+  "testSound": "Test Sound",
+  "@testSound": {
+    "description": "Test sound button"
+  },
+  
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Notifications section"
+  },
+  
+  "systemNotifications": "System Notifications",
+  "@systemNotifications": {
+    "description": "System notifications toggle"
+  },
+  
+  "breakReminders": "Break Reminders",
+  "@breakReminders": {
+    "description": "Break reminders toggle"
+  },
+  
+  "dailySummary": "Daily Summary",
+  "@dailySummary": {
+    "description": "Daily summary notifications toggle"
+  },
+  
+  "quietHours": "Quiet Hours",
+  "@quietHours": {
+    "description": "Quiet hours setting"
+  },
+  
+  "dataManagement": "Data Management",
+  "@dataManagement": {
+    "description": "Data management section"
+  },
+  
+  "exportData": "Export Data",
+  "@exportData": {
+    "description": "Export data button"
+  },
+  
+  "importData": "Import Data",
+  "@importData": {
+    "description": "Import data button"
+  },
+  
+  "clearAllData": "Clear All Data",
+  "@clearAllData": {
+    "description": "Clear all data button"
+  },
+  
+  "storageUsed": "Storage Used",
+  "@storageUsed": {
+    "description": "Storage usage display"
+  },
+  
+  "english": "English",
+  "@english": {
+    "description": "English language option"
+  },
+  
+  "russian": "Russian",
+  "@russian": {
+    "description": "Russian language option"
+  },
+  
+  "light": "Light",
+  "@light": {
+    "description": "Light theme option"
+  },
+  
+  "dark": "Dark",
+  "@dark": {
+    "description": "Dark theme option"
+  },
+  
+  "system": "System",
+  "@system": {
+    "description": "System theme option"
+  },
+  
+  "hour12": "12-hour",
+  "@hour12": {
+    "description": "12-hour time format"
+  },
+  
+  "hour24": "24-hour",
+  "@hour24": {
+    "description": "24-hour time format"
+  },
+  
+  "monday": "Monday",
+  "@monday": {
+    "description": "Monday"
+  },
+  
+  "sunday": "Sunday",
+  "@sunday": {
+    "description": "Sunday"
+  },
+  
+  "minutes": "minutes",
+  "@minutes": {
+    "description": "Minutes unit"
+  },
+  
+  "sessions": "sessions",
+  "@sessions": {
+    "description": "Sessions unit"
+  },
+  
+  "enabled": "Enabled",
+  "@enabled": {
+    "description": "Enabled status"
+  },
+  
+  "disabled": "Disabled",
+  "@disabled": {
+    "description": "Disabled status"
+  },
+  
+  "today": "Today",
+  "@today": {
+    "description": "Today navigation button"
+  },
+  
+  "week": "Week",
+  "@week": {
+    "description": "Week view"
+  },
+  
+  "month": "Month",
+  "@month": {
+    "description": "Month view"
+  },
+  
+  "total": "Total: {duration}",
+  "@total": {
+    "description": "Total time display",
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "6h 30m"
+      }
+    }
+  },
+  
+  "takeBreak": "Take Break",
+  "@takeBreak": {
+    "description": "Take break button"
+  },
+  
+  "shortBreak": "Short break ({duration})",
+  "@shortBreak": {
+    "description": "Short break option",
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "5m"
+      }
+    }
+  },
+  
+  "longBreak": "Long break ({duration})",
+  "@longBreak": {
+    "description": "Long break option",
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "15m"
+      }
+    }
+  },
+  
+  "customDuration": "Custom duration",
+  "@customDuration": {
+    "description": "Custom break duration option"
+  },
+  
+  "justPause": "Just pause",
+  "@justPause": {
+    "description": "Just pause option"
+  },
+  
+  "readyToResume": "Ready to resume?",
+  "@readyToResume": {
+    "description": "Break end notification message"
+  },
+  
+  "resume": "Resume {taskName}",
+  "@resume": {
+    "description": "Resume specific task",
+    "placeholders": {
+      "taskName": {
+        "type": "String",
+        "example": "API Development"
+      }
+    }
+  },
+  
+  "startNewTask": "Start new task",
+  "@startNewTask": {
+    "description": "Start new task option"
+  },
+  
+  "extendBreak": "Extend break",
+  "@extendBreak": {
+    "description": "Extend break option"
+  },
+
+  "quickStart": "Quick Start",
+  "@quickStart": {
+    "description": "Quick start section title"
+  },
+
+  "startTimer": "Start Timer",
+  "@startTimer": {
+    "description": "Start timer button"
+  },
+
+  "enterTaskName": "Enter task name...",
+  "@enterTaskName": {
+    "description": "Task name input hint"
+  },
+
+  "errorLoadingProjects": "Error loading projects",
+  "@errorLoadingProjects": {
+    "description": "Error message when projects fail to load"
+  },
+
+  "noRecentTasks": "No recent tasks available",
+  "@noRecentTasks": {
+    "description": "Message when no recent tasks exist"
+  },
+
+  "todaySummary": "Today's Summary",
+  "@todaySummary": {
+    "description": "Today's summary section title"
+  },
+
+  "timeWorked": "Time Worked",
+  "@timeWorked": {
+    "description": "Time worked label"
+  },
+
+  "dailyGoalProgress": "Daily Goal Progress",
+  "@dailyGoalProgress": {
+    "description": "Daily goal progress label"
+  },
+
+  "complete": "complete",
+  "@complete": {
+    "description": "Complete status"
+  },
+
+  "breakTime": "Break Time",
+  "@breakTime": {
+    "description": "Break time label"
+  },
+
+  "breaks": "Breaks",
+  "@breaks": {
+    "description": "Breaks label"
+  },
+
+  "currentTime": "Current Time",
+  "@currentTime": {
+    "description": "Current time label"
+  },
+
+  "noTasksToday": "No tasks worked on today",
+  "@noTasksToday": {
+    "description": "Message when no tasks worked today"
+  },
+
+  "projectBreakdown": "Project Breakdown",
+  "@projectBreakdown": {
+    "description": "Project breakdown section title"
+  }
+}
