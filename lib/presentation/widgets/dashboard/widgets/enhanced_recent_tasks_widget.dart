@@ -12,49 +12,49 @@ import '../../../../features/timer/providers/timer_provider.dart';
 
 part 'enhanced_recent_tasks_widget.g.dart';
 
-// Provider for filtered time entries with enhanced grouping
+// Provider for filtered time entries with task grouping and accumulated time
 @riverpod
-Future<Map<String, List<TimeEntryWithProject>>> filteredTimeEntries(
+Future<Map<String, List<TaskGroupWithProject>>> filteredTimeEntries(
     Ref ref, TaskFilterPeriod period) async {
   final storage = ref.read(storageServiceProvider);
   final projects = await ref.watch(projectsProvider.future);
-  final entries = await storage.getTimeEntries();
+  final taskGroupSummaries = await storage.getTaskGroupSummaries();
   
   final now = DateTime.now();
-  final filteredEntries = entries.where((entry) {
-    if (!entry.isCompleted || entry.isBreak) return false;
-    
+  
+  // Filter task groups based on last activity date
+  final filteredGroups = taskGroupSummaries.values.where((group) {
     switch (period) {
       case TaskFilterPeriod.today:
-        return entry.effectiveEndTime.day == now.day &&
-               entry.effectiveEndTime.month == now.month &&
-               entry.effectiveEndTime.year == now.year;
+        return group.lastActivity.day == now.day &&
+               group.lastActivity.month == now.month &&
+               group.lastActivity.year == now.year;
       case TaskFilterPeriod.week:
         final weekAgo = now.subtract(const Duration(days: 7));
-        return entry.effectiveEndTime.isAfter(weekAgo);
+        return group.lastActivity.isAfter(weekAgo);
       case TaskFilterPeriod.month:
         final monthAgo = now.subtract(const Duration(days: 30));
-        return entry.effectiveEndTime.isAfter(monthAgo);
+        return group.lastActivity.isAfter(monthAgo);
       case TaskFilterPeriod.all:
         return true;
     }
   }).toList();
   
-  // Sort by end time (newest first)
-  filteredEntries.sort((a, b) => b.effectiveEndTime.compareTo(a.effectiveEndTime));
+  // Sort by last activity (newest first)
+  filteredGroups.sort((a, b) => b.lastActivity.compareTo(a.lastActivity));
   
-  // Group by date
-  final grouped = <String, List<TimeEntryWithProject>>{};
+  // Group by date for display
+  final grouped = <String, List<TaskGroupWithProject>>{};
   
-  for (final entry in filteredEntries) {
+  for (final group in filteredGroups) {
     try {
-      final project = projects.firstWhere((p) => p.id == entry.projectId);
-      final entryWithProject = TimeEntryWithProject(entry, project);
+      final project = projects.firstWhere((p) => p.id == group.projectId);
+      final groupWithProject = TaskGroupWithProject(group, project);
       
-      final dateKey = _formatDateKey(entry.effectiveEndTime);
-      grouped.putIfAbsent(dateKey, () => []).add(entryWithProject);
+      final dateKey = _formatDateKey(group.lastActivity);
+      grouped.putIfAbsent(dateKey, () => []).add(groupWithProject);
     } catch (e) {
-      // Skip entries with deleted projects
+      // Skip groups with deleted projects
     }
   }
   
@@ -79,6 +79,13 @@ String _formatDateKey(DateTime date) {
 }
 
 enum TaskFilterPeriod { today, week, month, all }
+
+class TaskGroupWithProject {
+  final TaskGroupSummary taskGroup;
+  final dynamic project;
+  
+  TaskGroupWithProject(this.taskGroup, this.project);
+}
 
 class TimeEntryWithProject {
   final TimeEntry timeEntry;
@@ -232,7 +239,7 @@ class EnhancedRecentTasksWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildGroupedTasksList(BuildContext context, Map<String, List<TimeEntryWithProject>> groupedTasks) {
+  Widget _buildGroupedTasksList(BuildContext context, Map<String, List<TaskGroupWithProject>> groupedTasks) {
     return ListView.builder(
       padding: EdgeInsets.zero,
       itemCount: groupedTasks.length,
@@ -290,9 +297,9 @@ class EnhancedRecentTasksWidget extends ConsumerWidget {
             ),
             
             // Tasks for this date
-            ...tasks.map((entryWithProject) => _TaskItem(
-              entryWithProject: entryWithProject,
-              onTap: () => _onTaskTap(context, entryWithProject),
+            ...tasks.map((taskGroupWithProject) => _TaskGroupItem(
+              taskGroupWithProject: taskGroupWithProject,
+              onTap: () => _onTaskGroupTap(context, taskGroupWithProject),
             )),
           ],
         );
@@ -358,20 +365,20 @@ class EnhancedRecentTasksWidget extends ConsumerWidget {
     );
   }
 
-  void _onTaskTap(BuildContext context, TimeEntryWithProject entryWithProject) {
+  void _onTaskGroupTap(BuildContext context, TaskGroupWithProject taskGroupWithProject) {
     showDialog(
       context: context,
-      builder: (context) => _TaskDetailsDialog(entryWithProject: entryWithProject),
+      builder: (context) => _TaskGroupDetailsDialog(taskGroupWithProject: taskGroupWithProject),
     );
   }
 }
 
-class _TaskItem extends StatelessWidget {
-  final TimeEntryWithProject entryWithProject;
+class _TaskGroupItem extends StatelessWidget {
+  final TaskGroupWithProject taskGroupWithProject;
   final VoidCallback onTap;
 
-  const _TaskItem({
-    required this.entryWithProject,
+  const _TaskGroupItem({
+    required this.taskGroupWithProject,
     required this.onTap,
   });
 
@@ -401,7 +408,7 @@ class _TaskItem extends StatelessWidget {
               width: 12,
               height: 12,
               decoration: BoxDecoration(
-                color: entryWithProject.project.color,
+                color: taskGroupWithProject.project.color,
                 borderRadius: BorderRadius.circular(AppTheme.radiusSm),
               ),
             ),
@@ -412,21 +419,48 @@ class _TaskItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    entryWithProject.timeEntry.taskName,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          taskGroupWithProject.taskGroup.taskName,
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (taskGroupWithProject.taskGroup.sessionCount > 1) ...[
+                        Container(
+                          margin: const EdgeInsets.only(left: AppTheme.space2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppTheme.space2,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppTheme.focusPurple.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+                          ),
+                          child: Text(
+                            '${taskGroupWithProject.taskGroup.sessionCount}x',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: AppTheme.focusPurple,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                   const SizedBox(height: AppTheme.space1),
                   Row(
                     children: [
                       Text(
-                        entryWithProject.project.name,
+                        taskGroupWithProject.project.name,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: entryWithProject.project.color,
+                          color: taskGroupWithProject.project.color,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -439,7 +473,7 @@ class _TaskItem extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        TimeFormatter.formatTime(entryWithProject.timeEntry.effectiveEndTime),
+                        'Last: ${TimeFormatter.formatTime(taskGroupWithProject.taskGroup.lastActivity)}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).brightness == Brightness.light 
                               ? AppTheme.youtubeLightTextSecondary 
@@ -452,7 +486,7 @@ class _TaskItem extends StatelessWidget {
               ),
             ),
             
-            // Duration
+            // Total accumulated duration
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppTheme.space3,
@@ -465,7 +499,7 @@ class _TaskItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               ),
               child: Text(
-                TimeFormatter.formatDurationWords(entryWithProject.timeEntry.duration),
+                TimeFormatter.formatDurationWords(taskGroupWithProject.taskGroup.totalTime),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: Theme.of(context).brightness == Brightness.light 
@@ -481,10 +515,10 @@ class _TaskItem extends StatelessWidget {
   }
 }
 
-class _TaskDetailsDialog extends ConsumerWidget {
-  final TimeEntryWithProject entryWithProject;
+class _TaskGroupDetailsDialog extends ConsumerWidget {
+  final TaskGroupWithProject taskGroupWithProject;
 
-  const _TaskDetailsDialog({required this.entryWithProject});
+  const _TaskGroupDetailsDialog({required this.taskGroupWithProject});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -501,14 +535,14 @@ class _TaskDetailsDialog extends ConsumerWidget {
             width: 16,
             height: 16,
             decoration: BoxDecoration(
-              color: entryWithProject.project.color,
+              color: taskGroupWithProject.project.color,
               borderRadius: BorderRadius.circular(AppTheme.radiusSm),
             ),
           ),
           const SizedBox(width: AppTheme.space3),
           Expanded(
             child: Text(
-              entryWithProject.timeEntry.taskName,
+              taskGroupWithProject.taskGroup.taskName,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w500,
               ),
@@ -522,29 +556,38 @@ class _TaskDetailsDialog extends ConsumerWidget {
         children: [
           _DetailRow(
             label: 'Project',
-            value: entryWithProject.project.name,
+            value: taskGroupWithProject.project.name,
             icon: Symbols.folder,
           ),
           const SizedBox(height: AppTheme.space3),
           _DetailRow(
-            label: 'Duration',
-            value: TimeFormatter.formatDurationWords(entryWithProject.timeEntry.duration),
+            label: 'Total Time',
+            value: TimeFormatter.formatDurationWords(taskGroupWithProject.taskGroup.totalTime),
             icon: Symbols.timer,
           ),
           const SizedBox(height: AppTheme.space3),
           _DetailRow(
-            label: 'Completed',
-            value: TimeFormatter.formatDateTime(entryWithProject.timeEntry.effectiveEndTime),
+            label: 'Sessions',
+            value: '${taskGroupWithProject.taskGroup.sessionCount} work sessions',
+            icon: Symbols.repeat,
+          ),
+          const SizedBox(height: AppTheme.space3),
+          _DetailRow(
+            label: 'Last Activity',
+            value: TimeFormatter.formatDateTime(taskGroupWithProject.taskGroup.lastActivity),
             icon: Symbols.schedule,
           ),
-          if (entryWithProject.timeEntry.description.isNotEmpty) ...[
-            const SizedBox(height: AppTheme.space3),
-            _DetailRow(
-              label: 'Description',
-              value: entryWithProject.timeEntry.description,
-              icon: Symbols.description,
+          const SizedBox(height: AppTheme.space3),
+          _DetailRow(
+            label: 'Average per Session',
+            value: TimeFormatter.formatDurationWords(
+              Duration(
+                milliseconds: taskGroupWithProject.taskGroup.totalTime.inMilliseconds ~/
+                    taskGroupWithProject.taskGroup.sessionCount,
+              ),
             ),
-          ],
+            icon: Symbols.analytics,
+          ),
         ],
       ),
       actions: [
@@ -558,16 +601,16 @@ class _TaskDetailsDialog extends ConsumerWidget {
           ),
           onPressed: () async {
             Navigator.of(context).pop();
-            await _startSimilarTask(ref, entryWithProject);
+            await _continueTask(ref, taskGroupWithProject);
           },
-          child: const Text('Start Similar Task'),
+          child: const Text('Continue Task'),
         ),
       ],
     );
   }
 
-  /// Start a similar task with timer conflict handling
-  Future<void> _startSimilarTask(WidgetRef ref, TimeEntryWithProject entryWithProject) async {
+  /// Continue the task with accumulated time
+  Future<void> _continueTask(WidgetRef ref, TaskGroupWithProject taskGroupWithProject) async {
     final timer = ref.read(timerProvider.notifier);
     final currentTimer = ref.read(timerProvider);
     
@@ -578,15 +621,15 @@ class _TaskDetailsDialog extends ConsumerWidget {
         await timer.stop();
       }
       
-      // Start the new timer with the same project and task name
+      // Start the timer - it will automatically continue with accumulated time
       await timer.start(
-        projectId: entryWithProject.timeEntry.projectId,
-        taskName: entryWithProject.timeEntry.taskName,
+        projectId: taskGroupWithProject.taskGroup.projectId,
+        taskName: taskGroupWithProject.taskGroup.taskName,
       );
       
     } catch (e) {
       // Handle any errors that might occur
-      debugPrint('Error starting similar task: $e');
+      debugPrint('Error continuing task: $e');
     }
   }
 }

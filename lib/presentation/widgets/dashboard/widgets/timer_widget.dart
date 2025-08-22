@@ -135,16 +135,43 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                     width: 2,
                   ),
                 ),
-                child: AnimatedDefaultTextStyle(
-                  duration: AppTheme.animationMedium,
-                  style: AppTheme.timerLarge(context).copyWith(
-                    color: timer.isActive && timer.state == TimerState.running
-                        ? AppTheme.focusPurple
-                        : Theme.of(context).textTheme.displayLarge?.color,
-                  ),
-                  child: Text(
-                    TimeFormatter.formatDuration(timer.elapsed),
-                  ),
+                child: Column(
+                  children: [
+                    AnimatedDefaultTextStyle(
+                      duration: AppTheme.animationMedium,
+                      style: AppTheme.timerLarge(context).copyWith(
+                        color: timer.isActive && timer.state == TimerState.running
+                            ? AppTheme.focusPurple
+                            : Theme.of(context).textTheme.displayLarge?.color,
+                      ),
+                      child: Text(
+                        TimeFormatter.formatDuration(timer.displayDuration),
+                      ),
+                    ),
+                    if (timer.totalAccumulatedTime > Duration.zero) ...[
+                      const SizedBox(height: AppTheme.space2),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.space3,
+                          vertical: AppTheme.space1,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppTheme.focusPurple.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+                          border: Border.all(
+                            color: AppTheme.focusPurple.withOpacity(0.3),
+                          ),
+                        ),
+                        child: Text(
+                          'Previous: ${TimeFormatter.formatDuration(timer.totalAccumulatedTime)} + Session: ${TimeFormatter.formatDuration(timer.elapsed)}',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: AppTheme.focusPurple,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
             ),
@@ -158,6 +185,9 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
             
             // Task Input
             _buildTaskInput(l10n),
+            
+            // Task continuation indicator
+            _buildTaskContinuationIndicator(),
             
             const SizedBox(height: AppTheme.space6),
             
@@ -423,6 +453,69 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
 
   void _startBreak() {
     ref.read(timerProvider.notifier).startBreak();
+  }
+
+  Widget _buildTaskContinuationIndicator() {
+    if (_selectedProjectId == null || _taskController.text.trim().isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return FutureBuilder<bool>(
+      future: ref.read(timerProvider.notifier).taskExists(_selectedProjectId!, _taskController.text.trim()),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return const SizedBox.shrink();
+        
+        final taskExists = snapshot.data!;
+        
+        if (!taskExists) return const SizedBox.shrink();
+        
+        return Container(
+          margin: const EdgeInsets.only(top: AppTheme.space3),
+          padding: const EdgeInsets.all(AppTheme.space3),
+          decoration: BoxDecoration(
+            color: AppTheme.focusPurple.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+            border: Border.all(
+              color: AppTheme.focusPurple.withOpacity(0.3),
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Symbols.history,
+                size: 16,
+                color: AppTheme.focusPurple,
+              ),
+              const SizedBox(width: AppTheme.space2),
+              Expanded(
+                child: FutureBuilder<Duration>(
+                  future: ref.read(timerProvider.notifier).getTaskAccumulatedTime(_selectedProjectId!, _taskController.text.trim()),
+                  builder: (context, timeSnapshot) {
+                    if (!timeSnapshot.hasData) {
+                      return Text(
+                        'This task will be continued',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppTheme.focusPurple,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      );
+                    }
+                    
+                    return Text(
+                      'Continue task - Previous time: ${TimeFormatter.formatDurationWords(timeSnapshot.data!)}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppTheme.focusPurple,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildEmptyProjectsState(AppLocalizations l10n) {

@@ -27,6 +27,7 @@ class CurrentTimer {
   final String taskName;
   final DateTime? startTime;
   final Duration elapsed;
+  final Duration totalAccumulatedTime;
   final TimerState state;
   final bool isBreak;
   final BreakType? breakType;
@@ -36,6 +37,7 @@ class CurrentTimer {
     this.taskName = '',
     this.startTime,
     this.elapsed = Duration.zero,
+    this.totalAccumulatedTime = Duration.zero,
     this.state = TimerState.idle,
     this.isBreak = false,
     this.breakType,
@@ -46,6 +48,7 @@ class CurrentTimer {
     String? taskName,
     DateTime? startTime,
     Duration? elapsed,
+    Duration? totalAccumulatedTime,
     TimerState? state,
     bool? isBreak,
     BreakType? breakType,
@@ -55,6 +58,7 @@ class CurrentTimer {
       taskName: taskName ?? this.taskName,
       startTime: startTime ?? this.startTime,
       elapsed: elapsed ?? this.elapsed,
+      totalAccumulatedTime: totalAccumulatedTime ?? this.totalAccumulatedTime,
       state: state ?? this.state,
       isBreak: isBreak ?? this.isBreak,
       breakType: breakType ?? this.breakType,
@@ -66,6 +70,9 @@ class CurrentTimer {
   bool get canResume => state == TimerState.paused;
   bool get canStop => state == TimerState.running || state == TimerState.paused;
   bool get isActive => state == TimerState.running || state == TimerState.paused;
+  
+  /// Get the total display time (accumulated + current session)
+  Duration get displayDuration => totalAccumulatedTime + elapsed;
 }
 
 /// Provider for the current timer
@@ -102,6 +109,7 @@ class Timer extends _$Timer {
           taskName: savedTimer.taskName,
           startTime: savedTimer.startTime,
           elapsed: totalElapsed,
+          totalAccumulatedTime: savedTimer.totalAccumulatedTime,
           state: TimerState.running,
           isBreak: savedTimer.isBreak,
           breakType: savedTimer.breakType,
@@ -115,7 +123,7 @@ class Timer extends _$Timer {
     }
   }
 
-  /// Start the timer
+  /// Start the timer with task continuation logic
   Future<void> start({
     required String projectId,
     required String taskName,
@@ -125,11 +133,31 @@ class Timer extends _$Timer {
     if (state.isActive) return;
 
     final now = DateTime.now();
+    Duration totalAccumulatedTime = Duration.zero;
+
+    // For regular tasks (not breaks), check for existing tasks to continue
+    if (!isBreak) {
+      final storage = ref.read(storageServiceProvider);
+      final existingTask = await storage.findExistingTask(projectId, taskName);
+      
+      if (existingTask != null) {
+        // Task exists - calculate total accumulated time from all sessions
+        totalAccumulatedTime = await storage.getTotalAccumulatedTimeForTask(projectId, taskName);
+      }
+      
+      // Update project last active time
+      ref.read(projectsProvider.notifier).updateLastActive(projectId);
+      
+      // Add to recent tasks
+      await storage.addRecentTask(taskName);
+    }
+
     state = CurrentTimer(
       projectId: projectId,
       taskName: taskName,
       startTime: now,
       elapsed: Duration.zero,
+      totalAccumulatedTime: totalAccumulatedTime,
       state: TimerState.running,
       isBreak: isBreak,
       breakType: breakType,
@@ -137,15 +165,6 @@ class Timer extends _$Timer {
 
     // Reset notification tracking when starting a new timer
     _lastBreakNotificationMinutes = -1;
-
-    // Update project last active time
-    if (!isBreak) {
-      ref.read(projectsProvider.notifier).updateLastActive(projectId);
-      
-      // Add to recent tasks
-      final storage = ref.read(storageServiceProvider);
-      await storage.addRecentTask(taskName);
-    }
 
     _startTicker();
     await _saveCurrentTimer();
@@ -225,6 +244,9 @@ class Timer extends _$Timer {
     const uuid = Uuid();
     final storage = ref.read(storageServiceProvider);
     
+    // Calculate the new total accumulated time
+    final newTotalAccumulatedTime = state.totalAccumulatedTime + state.elapsed;
+    
     final entry = TimeEntry(
       id: uuid.v4(),
       projectId: state.projectId!,
@@ -232,6 +254,7 @@ class Timer extends _$Timer {
       startTime: state.startTime!,
       endTime: DateTime.now(),
       duration: state.elapsed,
+      totalAccumulatedTime: newTotalAccumulatedTime,
       isBreak: state.isBreak,
       breakType: state.breakType,
       isCompleted: true,
@@ -278,6 +301,7 @@ class Timer extends _$Timer {
         taskName: state.taskName,
         startTime: state.startTime!,
         duration: state.elapsed,
+        totalAccumulatedTime: state.totalAccumulatedTime,
         isBreak: state.isBreak,
         breakType: state.breakType,
       );
@@ -295,7 +319,8 @@ class Timer extends _$Timer {
     ref.read(settingsProvider).whenData((settings) async {
       if (!settings.enableBreakReminders || !settings.enableNotifications) return;
       
-      // Check for break reminder based on user-defined interval
+      // Check for break reminder based on user-defined interval  
+      // Use only the current session time for break reminders, not accumulated time
       final workMinutes = state.elapsed.inMinutes;
       final workSeconds = state.elapsed.inSeconds;
       final breakIntervalMinutes = settings.breakInterval.inMinutes;
@@ -344,6 +369,19 @@ class Timer extends _$Timer {
     if (state.isActive) return;
     state = state.copyWith(taskName: taskName);
   }
+
+  /// Find existing task and return its accumulated time
+  Future<Duration> getTaskAccumulatedTime(String projectId, String taskName) async {
+    final storage = ref.read(storageServiceProvider);
+    return await storage.getTotalAccumulatedTimeForTask(projectId, taskName);
+  }
+
+  /// Check if a task already exists
+  Future<bool> taskExists(String projectId, String taskName) async {
+    final storage = ref.read(storageServiceProvider);
+    final existingTask = await storage.findExistingTask(projectId, taskName);
+    return existingTask != null;
+  }
 }
 
 /// Provider for today's time summary
@@ -352,6 +390,8 @@ Future<Map<String, dynamic>> todayTimeSummary(TodayTimeSummaryRef ref) async {
   final storage = ref.read(storageServiceProvider);
   final entries = await storage.getTodaysTimeEntries();
   
+  // For today's summary, we need to use the actual duration from today's entries, not accumulated time
+  // because we want to show what was done today specifically
   final totalHours = entries.fold<double>(0.0, (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)));
   final workEntries = entries.where((e) => !e.isBreak);
   final breakEntries = entries.where((e) => e.isBreak);
@@ -361,7 +401,7 @@ Future<Map<String, dynamic>> todayTimeSummary(TodayTimeSummaryRef ref) async {
   
   final completedTasks = workEntries.where((e) => e.isCompleted).length;
   
-  // Hours by project
+  // Hours by project for today
   final projects = await ref.read(projectsProvider.future);
   final hoursByProject = <String, Map<String, dynamic>>{};
   

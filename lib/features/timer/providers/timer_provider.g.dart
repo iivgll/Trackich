@@ -47,7 +47,7 @@ final recentTaskNamesProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef RecentTaskNamesRef = AutoDisposeFutureProviderRef<List<String>>;
-String _$timerHash() => r'25c85d9765ea8c36caad192a176aa14d084935e2';
+String _$timerHash() => r'a51c460f870ec700008d10652e5b519a2ab639a1';
 
 /// Provider for the current timer
 ///

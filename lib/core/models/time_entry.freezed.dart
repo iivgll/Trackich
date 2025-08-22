@@ -29,6 +29,8 @@ mixin _$TimeEntry {
   DateTime? get endTime => throw _privateConstructorUsedError;
   @DurationConverter()
   Duration get duration => throw _privateConstructorUsedError;
+  @DurationConverter()
+  Duration get totalAccumulatedTime => throw _privateConstructorUsedError;
   List<String> get tags => throw _privateConstructorUsedError;
   bool get isBreak => throw _privateConstructorUsedError;
   BreakType? get breakType => throw _privateConstructorUsedError;
@@ -57,6 +59,7 @@ abstract class $TimeEntryCopyWith<$Res> {
     DateTime startTime,
     DateTime? endTime,
     @DurationConverter() Duration duration,
+    @DurationConverter() Duration totalAccumulatedTime,
     List<String> tags,
     bool isBreak,
     BreakType? breakType,
@@ -88,6 +91,7 @@ class _$TimeEntryCopyWithImpl<$Res, $Val extends TimeEntry>
     Object? startTime = null,
     Object? endTime = freezed,
     Object? duration = null,
+    Object? totalAccumulatedTime = null,
     Object? tags = null,
     Object? isBreak = null,
     Object? breakType = freezed,
@@ -122,6 +126,10 @@ class _$TimeEntryCopyWithImpl<$Res, $Val extends TimeEntry>
             duration: null == duration
                 ? _value.duration
                 : duration // ignore: cast_nullable_to_non_nullable
+                      as Duration,
+            totalAccumulatedTime: null == totalAccumulatedTime
+                ? _value.totalAccumulatedTime
+                : totalAccumulatedTime // ignore: cast_nullable_to_non_nullable
                       as Duration,
             tags: null == tags
                 ? _value.tags
@@ -176,6 +184,7 @@ abstract class _$$TimeEntryImplCopyWith<$Res>
     DateTime startTime,
     DateTime? endTime,
     @DurationConverter() Duration duration,
+    @DurationConverter() Duration totalAccumulatedTime,
     List<String> tags,
     bool isBreak,
     BreakType? breakType,
@@ -207,6 +216,7 @@ class __$$TimeEntryImplCopyWithImpl<$Res>
     Object? startTime = null,
     Object? endTime = freezed,
     Object? duration = null,
+    Object? totalAccumulatedTime = null,
     Object? tags = null,
     Object? isBreak = null,
     Object? breakType = freezed,
@@ -242,6 +252,10 @@ class __$$TimeEntryImplCopyWithImpl<$Res>
             ? _value.duration
             : duration // ignore: cast_nullable_to_non_nullable
                   as Duration,
+        totalAccumulatedTime: null == totalAccumulatedTime
+            ? _value.totalAccumulatedTime
+            : totalAccumulatedTime // ignore: cast_nullable_to_non_nullable
+                  as Duration,
         tags: null == tags
             ? _value._tags
             : tags // ignore: cast_nullable_to_non_nullable
@@ -274,6 +288,7 @@ class _$TimeEntryImpl implements _TimeEntry {
     required this.startTime,
     this.endTime,
     @DurationConverter() required this.duration,
+    @DurationConverter() this.totalAccumulatedTime = Duration.zero,
     final List<String> tags = const [],
     this.isBreak = false,
     this.breakType,
@@ -299,6 +314,10 @@ class _$TimeEntryImpl implements _TimeEntry {
   @override
   @DurationConverter()
   final Duration duration;
+  @override
+  @JsonKey()
+  @DurationConverter()
+  final Duration totalAccumulatedTime;
   final List<String> _tags;
   @override
   @JsonKey()
@@ -319,7 +338,7 @@ class _$TimeEntryImpl implements _TimeEntry {
 
   @override
   String toString() {
-    return 'TimeEntry(id: $id, projectId: $projectId, taskName: $taskName, description: $description, startTime: $startTime, endTime: $endTime, duration: $duration, tags: $tags, isBreak: $isBreak, breakType: $breakType, isCompleted: $isCompleted)';
+    return 'TimeEntry(id: $id, projectId: $projectId, taskName: $taskName, description: $description, startTime: $startTime, endTime: $endTime, duration: $duration, totalAccumulatedTime: $totalAccumulatedTime, tags: $tags, isBreak: $isBreak, breakType: $breakType, isCompleted: $isCompleted)';
   }
 
   @override
@@ -339,6 +358,8 @@ class _$TimeEntryImpl implements _TimeEntry {
             (identical(other.endTime, endTime) || other.endTime == endTime) &&
             (identical(other.duration, duration) ||
                 other.duration == duration) &&
+            (identical(other.totalAccumulatedTime, totalAccumulatedTime) ||
+                other.totalAccumulatedTime == totalAccumulatedTime) &&
             const DeepCollectionEquality().equals(other._tags, _tags) &&
             (identical(other.isBreak, isBreak) || other.isBreak == isBreak) &&
             (identical(other.breakType, breakType) ||
@@ -358,6 +379,7 @@ class _$TimeEntryImpl implements _TimeEntry {
     startTime,
     endTime,
     duration,
+    totalAccumulatedTime,
     const DeepCollectionEquality().hash(_tags),
     isBreak,
     breakType,
@@ -387,6 +409,7 @@ abstract class _TimeEntry implements TimeEntry {
     required final DateTime startTime,
     final DateTime? endTime,
     @DurationConverter() required final Duration duration,
+    @DurationConverter() final Duration totalAccumulatedTime,
     final List<String> tags,
     final bool isBreak,
     final BreakType? breakType,
@@ -411,6 +434,9 @@ abstract class _TimeEntry implements TimeEntry {
   @override
   @DurationConverter()
   Duration get duration;
+  @override
+  @DurationConverter()
+  Duration get totalAccumulatedTime;
   @override
   List<String> get tags;
   @override

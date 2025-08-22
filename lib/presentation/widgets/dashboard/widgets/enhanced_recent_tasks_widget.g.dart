@@ -7,7 +7,7 @@ part of 'enhanced_recent_tasks_widget.dart';
 // **************************************************************************
 
 String _$filteredTimeEntriesHash() =>
-    r'b38b629ab787545e076cfd25ecc1d5d7fea70873';
+    r'1d1e034e1ff8eb18d7df3d73ab11b915b497173d';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -36,7 +36,7 @@ const filteredTimeEntriesProvider = FilteredTimeEntriesFamily();
 
 /// See also [filteredTimeEntries].
 class FilteredTimeEntriesFamily
-    extends Family<AsyncValue<Map<String, List<TimeEntryWithProject>>>> {
+    extends Family<AsyncValue<Map<String, List<TaskGroupWithProject>>>> {
   /// See also [filteredTimeEntries].
   const FilteredTimeEntriesFamily();
 
@@ -69,7 +69,7 @@ class FilteredTimeEntriesFamily
 
 /// See also [filteredTimeEntries].
 class FilteredTimeEntriesProvider
-    extends AutoDisposeFutureProvider<Map<String, List<TimeEntryWithProject>>> {
+    extends AutoDisposeFutureProvider<Map<String, List<TaskGroupWithProject>>> {
   /// See also [filteredTimeEntries].
   FilteredTimeEntriesProvider(TaskFilterPeriod period)
     : this._internal(
@@ -99,7 +99,7 @@ class FilteredTimeEntriesProvider
 
   @override
   Override overrideWith(
-    FutureOr<Map<String, List<TimeEntryWithProject>>> Function(
+    FutureOr<Map<String, List<TaskGroupWithProject>>> Function(
       FilteredTimeEntriesRef provider,
     )
     create,
@@ -119,7 +119,7 @@ class FilteredTimeEntriesProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<Map<String, List<TimeEntryWithProject>>>
+  AutoDisposeFutureProviderElement<Map<String, List<TaskGroupWithProject>>>
   createElement() {
     return _FilteredTimeEntriesProviderElement(this);
   }
@@ -141,7 +141,7 @@ class FilteredTimeEntriesProvider
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 mixin FilteredTimeEntriesRef
-    on AutoDisposeFutureProviderRef<Map<String, List<TimeEntryWithProject>>> {
+    on AutoDisposeFutureProviderRef<Map<String, List<TaskGroupWithProject>>> {
   /// The parameter `period` of this provider.
   TaskFilterPeriod get period;
 }
@@ -149,7 +149,7 @@ mixin FilteredTimeEntriesRef
 class _FilteredTimeEntriesProviderElement
     extends
         AutoDisposeFutureProviderElement<
-          Map<String, List<TimeEntryWithProject>>
+          Map<String, List<TaskGroupWithProject>>
         >
     with FilteredTimeEntriesRef {
   _FilteredTimeEntriesProviderElement(super.provider);

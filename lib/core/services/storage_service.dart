@@ -277,8 +277,10 @@ class StorageService {
   // Statistics and Analytics Helpers
 
   Future<double> getTotalHoursForProject(String projectId) async {
-    final entries = await getTimeEntriesByProject(projectId);
-    return entries.fold<double>(0.0, (total, entry) => total + (entry.duration.inMilliseconds / (1000 * 60 * 60)));
+    final taskGroups = await getTaskGroupSummaries();
+    final projectGroups = taskGroups.values.where((group) => group.projectId == projectId);
+    
+    return projectGroups.fold<double>(0.0, (total, group) => total + group.totalHours);
   }
 
   Future<double> getTotalHoursForDateRange(
@@ -364,4 +366,134 @@ class StorageService {
     
     return prefs.setStringList('recent_tasks', recentTasks);
   }
+
+  // Task Continuation Management
+
+  /// Find an existing task with the same project and task name
+  Future<TimeEntry?> findExistingTask(String projectId, String taskName) async {
+    final entries = await getTimeEntries();
+    final normalizedTaskName = taskName.trim().toLowerCase();
+    
+    // Look for existing task with same project and task name
+    try {
+      return entries.firstWhere((entry) => 
+        entry.projectId == projectId &&
+        entry.taskName.trim().toLowerCase() == normalizedTaskName &&
+        !entry.isBreak
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Get all entries for a specific task group (same project + task name)
+  Future<List<TimeEntry>> getTaskGroupEntries(String projectId, String taskName) async {
+    final entries = await getTimeEntries();
+    final normalizedTaskName = taskName.trim().toLowerCase();
+    
+    return entries.where((entry) => 
+      entry.projectId == projectId &&
+      entry.taskName.trim().toLowerCase() == normalizedTaskName &&
+      !entry.isBreak
+    ).toList()..sort((a, b) => a.startTime.compareTo(b.startTime));
+  }
+
+  /// Calculate total accumulated time for a task group
+  Future<Duration> getTotalAccumulatedTimeForTask(String projectId, String taskName) async {
+    final taskEntries = await getTaskGroupEntries(projectId, taskName);
+    
+    return taskEntries.fold<Duration>(
+      Duration.zero,
+      (total, entry) => total + entry.duration,
+    );
+  }
+
+  /// Get grouped tasks with accumulated times
+  Future<Map<String, TaskGroupSummary>> getTaskGroupSummaries() async {
+    final entries = await getTimeEntries();
+    final projects = await getProjects();
+    final groups = <String, TaskGroupSummary>{};
+    
+    for (final entry in entries) {
+      if (entry.isBreak) continue;
+      
+      final key = entry.taskGroupKey;
+      if (!groups.containsKey(key)) {
+        final project = projects.cast<Project?>().firstWhere(
+          (p) => p?.id == entry.projectId,
+          orElse: () => null,
+        );
+        
+        if (project != null) {
+          groups[key] = TaskGroupSummary(
+            projectId: entry.projectId,
+            projectName: project.name,
+            taskName: entry.taskName,
+            totalTime: Duration.zero,
+            sessionCount: 0,
+            lastActivity: entry.startTime,
+            projectColor: project.color.value,
+          );
+        }
+      }
+      
+      if (groups.containsKey(key)) {
+        final summary = groups[key]!;
+        groups[key] = summary.copyWith(
+          totalTime: summary.totalTime + entry.duration,
+          sessionCount: summary.sessionCount + 1,
+          lastActivity: entry.startTime.isAfter(summary.lastActivity) 
+              ? entry.startTime 
+              : summary.lastActivity,
+        );
+      }
+    }
+    
+    return groups;
+  }
+}
+
+/// Summary of a task group (same project + task name)
+class TaskGroupSummary {
+  final String projectId;
+  final String projectName;
+  final String taskName;
+  final Duration totalTime;
+  final int sessionCount;
+  final DateTime lastActivity;
+  final int projectColor;
+
+  const TaskGroupSummary({
+    required this.projectId,
+    required this.projectName,
+    required this.taskName,
+    required this.totalTime,
+    required this.sessionCount,
+    required this.lastActivity,
+    required this.projectColor,
+  });
+
+  TaskGroupSummary copyWith({
+    String? projectId,
+    String? projectName,
+    String? taskName,
+    Duration? totalTime,
+    int? sessionCount,
+    DateTime? lastActivity,
+    int? projectColor,
+  }) {
+    return TaskGroupSummary(
+      projectId: projectId ?? this.projectId,
+      projectName: projectName ?? this.projectName,
+      taskName: taskName ?? this.taskName,
+      totalTime: totalTime ?? this.totalTime,
+      sessionCount: sessionCount ?? this.sessionCount,
+      lastActivity: lastActivity ?? this.lastActivity,
+      projectColor: projectColor ?? this.projectColor,
+    );
+  }
+
+  double get totalHours => totalTime.inMilliseconds / (1000 * 60 * 60);
+  
+  String get taskGroupKey => '${projectId}_${taskName.trim().toLowerCase()}';
 }

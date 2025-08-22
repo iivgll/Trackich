@@ -14,6 +14,7 @@ class TimeEntry with _$TimeEntry {
     required DateTime startTime,
     DateTime? endTime,
     @DurationConverter() required Duration duration,
+    @DurationConverter() @Default(Duration.zero) Duration totalAccumulatedTime,
     @Default([]) List<String> tags,
     @Default(false) bool isBreak,
     BreakType? breakType,
@@ -34,8 +35,15 @@ class BreakType with _$BreakType {
 
 extension TimeEntryExtension on TimeEntry {
   double get durationInHours => duration.inMilliseconds / (1000 * 60 * 60);
+  double get totalAccumulatedHours => totalAccumulatedTime.inMilliseconds / (1000 * 60 * 60);
   
   bool get isRunning => endTime == null && !isCompleted;
   
   DateTime get effectiveEndTime => endTime ?? DateTime.now();
+  
+  /// Get the display duration (accumulated + current session)
+  Duration get displayDuration => totalAccumulatedTime + duration;
+  
+  /// Get a unique key for grouping tasks (project + task name)
+  String get taskGroupKey => '${projectId}_${taskName.trim().toLowerCase()}';
 }

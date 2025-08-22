@@ -23,7 +23,16 @@ final calendarSelectedProjectProvider = StateProvider<String?>((ref) => null);
 final calendarDateRangeProvider = StateProvider<DateTimeRange?>((ref) => null);
 final calendarYearProvider = StateProvider<int>((ref) => DateTime.now().year);
 
-// Filtered time entries provider
+// Unfiltered time entries provider - shows ALL completed tasks regardless of filter settings
+final unfilteredTimeEntriesProvider = FutureProvider<List<TimeEntry>>((ref) async {
+  final storage = ref.read(storageServiceProvider);
+  final allEntries = await storage.getTimeEntries();
+  
+  // Only filter by completion status - no project or date filtering for main calendar
+  return allEntries.where((entry) => entry.isCompleted).toList();
+});
+
+// Filtered time entries provider - used only for filtered results screen
 final filteredTimeEntriesProvider = FutureProvider<List<TimeEntry>>((ref) async {
   final storage = ref.read(storageServiceProvider);
   final allEntries = await storage.getTimeEntries();
@@ -52,12 +61,12 @@ final filteredTimeEntriesProvider = FutureProvider<List<TimeEntry>>((ref) async 
   return filteredEntries;
 });
 
-// Grouped calendar data by date
+// Grouped calendar data by date - uses unfiltered data for main calendar view
 final calendarDataByDateProvider = FutureProvider<Map<DateTime, List<TimeEntry>>>((ref) async {
-  final filteredEntries = await ref.watch(filteredTimeEntriesProvider.future);
+  final unfilteredEntries = await ref.watch(unfilteredTimeEntriesProvider.future);
   
   final entriesByDate = <DateTime, List<TimeEntry>>{};
-  for (final entry in filteredEntries) {
+  for (final entry in unfilteredEntries) {
     final entryDate = DateTime(entry.startTime.year, entry.startTime.month, entry.startTime.day);
     if (entriesByDate[entryDate] == null) {
       entriesByDate[entryDate] = [];
@@ -1559,8 +1568,8 @@ class _CalendarFilteredListView extends ConsumerWidget {
           
           // Content
           Expanded(
-            child: FutureBuilder<Map<DateTime, List<TimeEntry>>>(
-              future: ref.read(calendarDataByDateProvider.future),
+            child: FutureBuilder<List<TimeEntry>>(
+              future: ref.read(filteredTimeEntriesProvider.future),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -1588,10 +1597,20 @@ class _CalendarFilteredListView extends ConsumerWidget {
                   );
                 }
                 
-                final entriesByDate = snapshot.data ?? {};
+                final filteredEntries = snapshot.data ?? [];
                 
-                if (entriesByDate.isEmpty) {
+                if (filteredEntries.isEmpty) {
                   return _buildEmptyFilteredState(context, ref, selectedProject, dateRange);
+                }
+                
+                // Group filtered entries by date
+                final entriesByDate = <DateTime, List<TimeEntry>>{};
+                for (final entry in filteredEntries) {
+                  final entryDate = DateTime(entry.startTime.year, entry.startTime.month, entry.startTime.day);
+                  if (entriesByDate[entryDate] == null) {
+                    entriesByDate[entryDate] = [];
+                  }
+                  entriesByDate[entryDate]!.add(entry);
                 }
                 
                 // Sort dates in descending order (most recent first)

@@ -145,7 +145,7 @@ class AppTheme {
     );
 
     return ThemeData(
-      useMaterial3: true,
+      useMaterial3: false,
       colorScheme: colorScheme,
       fontFamily: primaryFontFamily,
       
@@ -156,6 +156,7 @@ class AppTheme {
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         titleTextStyle: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 20,
           fontWeight: FontWeight.w500,
@@ -193,6 +194,7 @@ class AppTheme {
             vertical: 10,
           ),
           textStyle: const TextStyle(
+            inherit: true,
             fontFamily: primaryFontFamily,
             fontSize: 14,
             fontWeight: FontWeight.w500,
@@ -213,6 +215,7 @@ class AppTheme {
             vertical: buttonPaddingVertical,
           ),
           textStyle: const TextStyle(
+            inherit: true,
             fontFamily: primaryFontFamily,
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -232,6 +235,7 @@ class AppTheme {
             vertical: buttonPaddingVertical,
           ),
           textStyle: const TextStyle(
+            inherit: true,
             fontFamily: primaryFontFamily,
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -264,6 +268,7 @@ class AppTheme {
           vertical: inputPaddingVertical,
         ),
         hintStyle: const TextStyle(
+          inherit: true,
           color: gray400,
           fontFamily: primaryFontFamily,
         ),
@@ -272,6 +277,7 @@ class AppTheme {
       // Typography Theme
       textTheme: const TextTheme(
         displayLarge: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 32,
           fontWeight: FontWeight.w700,
@@ -279,6 +285,7 @@ class AppTheme {
           height: 1.25,
         ),
         displayMedium: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 28,
           fontWeight: FontWeight.w600,
@@ -286,6 +293,7 @@ class AppTheme {
           height: 1.29,
         ),
         headlineLarge: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 24,
           fontWeight: FontWeight.w600,
@@ -293,6 +301,7 @@ class AppTheme {
           height: 1.33,
         ),
         titleLarge: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 20,
           fontWeight: FontWeight.w600,
@@ -300,6 +309,7 @@ class AppTheme {
           height: 1.4,
         ),
         titleMedium: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 18,
           fontWeight: FontWeight.w500,
@@ -307,6 +317,7 @@ class AppTheme {
           height: 1.33,
         ),
         bodyLarge: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 16,
           fontWeight: FontWeight.w400,
@@ -314,6 +325,7 @@ class AppTheme {
           height: 1.5,
         ),
         bodyMedium: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 14,
           fontWeight: FontWeight.w400,
@@ -321,6 +333,7 @@ class AppTheme {
           height: 1.43,
         ),
         bodySmall: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 12,
           fontWeight: FontWeight.w500,
@@ -328,6 +341,7 @@ class AppTheme {
           height: 1.33,
         ),
         labelLarge: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 14,
           fontWeight: FontWeight.w600,
@@ -335,6 +349,7 @@ class AppTheme {
           height: 1.43,
         ),
         labelMedium: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 12,
           fontWeight: FontWeight.w600,
@@ -415,7 +430,7 @@ class AppTheme {
     );
 
     return ThemeData(
-      useMaterial3: true,
+      useMaterial3: false,
       colorScheme: colorScheme,
       fontFamily: primaryFontFamily,
       
@@ -426,6 +441,7 @@ class AppTheme {
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         titleTextStyle: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 20,
           fontWeight: FontWeight.w500,
@@ -463,6 +479,7 @@ class AppTheme {
             vertical: 10,
           ),
           textStyle: const TextStyle(
+            inherit: true,
             fontFamily: primaryFontFamily,
             fontSize: 14,
             fontWeight: FontWeight.w500,
@@ -495,6 +512,7 @@ class AppTheme {
           vertical: inputPaddingVertical,
         ),
         hintStyle: const TextStyle(
+          inherit: true,
           color: youtubeDarkTextTertiary,
           fontFamily: primaryFontFamily,
         ),
@@ -503,6 +521,7 @@ class AppTheme {
       // Typography Theme for Dark Mode (YouTube style)
       textTheme: const TextTheme(
         displayLarge: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 32,
           fontWeight: FontWeight.w400,
@@ -510,6 +529,7 @@ class AppTheme {
           height: 1.25,
         ),
         displayMedium: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 28,
           fontWeight: FontWeight.w400,
@@ -517,6 +537,7 @@ class AppTheme {
           height: 1.29,
         ),
         headlineLarge: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 24,
           fontWeight: FontWeight.w500,
@@ -524,6 +545,7 @@ class AppTheme {
           height: 1.33,
         ),
         titleLarge: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 20,
           fontWeight: FontWeight.w500,
@@ -531,6 +553,7 @@ class AppTheme {
           height: 1.4,
         ),
         titleMedium: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 16,
           fontWeight: FontWeight.w500,
@@ -538,6 +561,7 @@ class AppTheme {
           height: 1.33,
         ),
         bodyLarge: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 14,
           fontWeight: FontWeight.w400,
@@ -545,6 +569,7 @@ class AppTheme {
           height: 1.5,
         ),
         bodyMedium: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 14,
           fontWeight: FontWeight.w400,
@@ -552,6 +577,7 @@ class AppTheme {
           height: 1.43,
         ),
         bodySmall: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 12,
           fontWeight: FontWeight.w400,
@@ -559,6 +585,7 @@ class AppTheme {
           height: 1.33,
         ),
         labelLarge: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 14,
           fontWeight: FontWeight.w500,
@@ -566,6 +593,7 @@ class AppTheme {
           height: 1.43,
         ),
         labelMedium: TextStyle(
+          inherit: true,
           fontFamily: primaryFontFamily,
           fontSize: 12,
           fontWeight: FontWeight.w500,
@@ -614,6 +642,7 @@ class AppTheme {
   static TextStyle timerLarge(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return TextStyle(
+      inherit: true,
       fontFamily: monospaceFontFamily,
       fontSize: 48,
       fontWeight: FontWeight.w300,
@@ -625,6 +654,7 @@ class AppTheme {
   static TextStyle timerMedium(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return TextStyle(
+      inherit: true,
       fontFamily: monospaceFontFamily,
       fontSize: 32,
       fontWeight: FontWeight.w300,
@@ -636,6 +666,7 @@ class AppTheme {
   static TextStyle timerSmall(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return TextStyle(
+      inherit: true,
       fontFamily: monospaceFontFamily,
       fontSize: 24,
       fontWeight: FontWeight.w400,

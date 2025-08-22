@@ -19,6 +19,11 @@ _$TimeEntryImpl _$$TimeEntryImplFromJson(Map<String, dynamic> json) =>
       duration: const DurationConverter().fromJson(
         (json['duration'] as num).toInt(),
       ),
+      totalAccumulatedTime: json['totalAccumulatedTime'] == null
+          ? Duration.zero
+          : const DurationConverter().fromJson(
+              (json['totalAccumulatedTime'] as num).toInt(),
+            ),
       tags:
           (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
           const [],
@@ -38,6 +43,9 @@ Map<String, dynamic> _$$TimeEntryImplToJson(_$TimeEntryImpl instance) =>
       'startTime': instance.startTime.toIso8601String(),
       'endTime': instance.endTime?.toIso8601String(),
       'duration': const DurationConverter().toJson(instance.duration),
+      'totalAccumulatedTime': const DurationConverter().toJson(
+        instance.totalAccumulatedTime,
+      ),
       'tags': instance.tags,
       'isBreak': instance.isBreak,
       'breakType': instance.breakType,
