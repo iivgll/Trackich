@@ -1,133 +1,233 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../l10n/app_localizations.dart';
-import '../../../features/timer/providers/timer_provider.dart';
-import 'widgets/current_task_widget.dart';
-import 'widgets/quick_start_widget.dart';
-import 'widgets/today_summary_widget.dart';
-import 'widgets/recent_tasks_widget.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
-/// Dashboard screen showing current task, quick start, and summary
+import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/time_formatter.dart';
+import '../../../l10n/generated/app_localizations.dart';
+import 'widgets/timer_widget.dart';
+import 'widgets/today_summary_widget.dart';
+import 'widgets/quick_start_widget.dart';
+import 'widgets/enhanced_recent_tasks_widget.dart';
+
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
-    final timerState = ref.watch(timerNotifierProvider);
+    final l10n = AppLocalizations.of(context);
     
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.appTitle),
-        actions: [
-          // Theme toggle button
-          IconButton(
-            icon: const Icon(Icons.brightness_6),
-            onPressed: () {
-              // Toggle theme - we'll implement this later
-            },
-            tooltip: 'Toggle Theme',
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          // Responsive layout
-          final isWideScreen = constraints.maxWidth > 1024;
-          
-          if (isWideScreen) {
-            return _buildWideScreenLayout(context, timerState, l10n);
-          } else {
-            return _buildNarrowScreenLayout(context, timerState, l10n);
-          }
-        },
+      backgroundColor: Theme.of(context).brightness == Brightness.light 
+          ? AppTheme.youtubeLightBg 
+          : AppTheme.youtubeDarkBg,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppTheme.space8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header Section
+            _buildHeader(context, l10n),
+            const SizedBox(height: AppTheme.space8),
+            
+            // Main Content Grid
+            _buildMainContent(context),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildWideScreenLayout(BuildContext context, TimerState timerState, AppLocalizations l10n) {
-    return Padding(
-      padding: const EdgeInsets.all(32.0),
+  Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
+    final now = DateTime.now();
+    
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppTheme.space8),
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.light 
+            ? AppTheme.youtubeLightSurface 
+            : AppTheme.youtubeDarkSurface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        border: Border.all(
+          color: Theme.of(context).brightness == Brightness.light 
+              ? AppTheme.youtubeLightBorder 
+              : AppTheme.youtubeDarkBorder,
+        ),
+      ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Main content area (left side)
           Expanded(
-            flex: 2,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Current task widget (if active)
-                  if (timerState.isActive) ...[
-                    const CurrentTaskWidget(),
-                    const SizedBox(height: 24),
-                  ],
-                  
-                  // Quick start widget
-                  const QuickStartWidget(),
-                  const SizedBox(height: 32),
-                  
-                  // Today's summary
-                  const TodaySummaryWidget(),
-                ],
-              ),
-            ),
-          ),
-          
-          const SizedBox(width: 32),
-          
-          // Right sidebar
-          Expanded(
-            flex: 1,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  l10n.recentTasks,
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  'Good ${_getTimeOfDayGreeting()}, User!',
+                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                    color: Theme.of(context).brightness == Brightness.light 
+                        ? AppTheme.youtubeLightText 
+                        : AppTheme.youtubeDarkText,
+                  ),
                 ),
-                const SizedBox(height: 16),
-                const Flexible(child: RecentTasksWidget()),
+                const SizedBox(height: AppTheme.space2),
+                Text(
+                  TimeFormatter.formatDate(now),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).brightness == Brightness.light 
+                        ? AppTheme.youtubeLightTextSecondary 
+                        : AppTheme.youtubeDarkTextSecondary,
+                  ),
+                ),
               ],
             ),
           ),
+          _buildQuickActions(context),
         ],
       ),
     );
   }
 
-  Widget _buildNarrowScreenLayout(BuildContext context, TimerState timerState, AppLocalizations l10n) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Current task widget (if active)
-          if (timerState.isActive) ...[
-            const CurrentTaskWidget(),
-            const SizedBox(height: 24),
-          ],
-          
-          // Quick start widget
-          const QuickStartWidget(),
-          const SizedBox(height: 24),
-          
-          // Today's summary and recent tasks in a grid
-          const TodaySummaryWidget(),
-          const SizedBox(height: 24),
-          
-          Text(
-            l10n.recentTasks,
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-          const SizedBox(height: 16),
-          const RecentTasksWidget(),
-        ],
-      ),
+  Widget _buildQuickActions(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          onPressed: () {
+            // TODO: Navigate to create project
+          },
+          icon: const Icon(Symbols.add_circle),
+          iconSize: 32,
+          color: AppTheme.youtubeRed,
+          tooltip: 'Create Project',
+        ),
+        const SizedBox(width: AppTheme.space2),
+        IconButton(
+          onPressed: () {
+            // TODO: Navigate to settings
+          },
+          icon: const Icon(Symbols.settings),
+          iconSize: 32,
+          color: Theme.of(context).brightness == Brightness.light 
+              ? AppTheme.youtubeLightTextSecondary 
+              : AppTheme.youtubeDarkTextSecondary,
+          tooltip: 'Settings',
+        ),
+      ],
     );
+  }
+
+  Widget _buildMainContent(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isLargeScreen = constraints.maxWidth >= AppTheme.desktopBreakpoint;
+        final isTablet = constraints.maxWidth >= AppTheme.tabletBreakpoint && 
+                        constraints.maxWidth < AppTheme.desktopBreakpoint;
+        
+        if (isLargeScreen) {
+          return _buildDesktopLayout();
+        } else if (isTablet) {
+          return _buildTabletLayout();
+        } else {
+          return _buildMobileLayout();
+        }
+      },
+    );
+  }
+
+  Widget _buildDesktopLayout() {
+    return Column(
+      children: [
+        // Timer and Summary Row
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Timer Section (8 columns)
+              Expanded(
+                flex: 8,
+                child: const TimerWidget(),
+              ),
+              const SizedBox(width: AppTheme.space6),
+              // Summary Section (4 columns)
+              Expanded(
+                flex: 4,
+                child: const TodaySummaryWidget(),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppTheme.space8),
+        
+        // Quick Actions and Recent Tasks Row
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Quick Actions (6 columns)
+              Expanded(
+                flex: 6,
+                child: const QuickStartWidget(),
+              ),
+              const SizedBox(width: AppTheme.space6),
+              // Recent Tasks (6 columns)
+              Expanded(
+                flex: 6,
+                child: const EnhancedRecentTasksWidget(),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTabletLayout() {
+    return Column(
+      children: [
+        // Timer Section
+        const TimerWidget(),
+        const SizedBox(height: AppTheme.space6),
+        
+        // Summary and Quick Actions Row
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(child: const TodaySummaryWidget()),
+              const SizedBox(width: AppTheme.space6),
+              Expanded(child: const QuickStartWidget()),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppTheme.space6),
+        
+        // Recent Tasks Section
+        const EnhancedRecentTasksWidget(),
+      ],
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return Column(
+      children: [
+        const TimerWidget(),
+        const SizedBox(height: AppTheme.space6),
+        const TodaySummaryWidget(),
+        const SizedBox(height: AppTheme.space6),
+        const QuickStartWidget(),
+        const SizedBox(height: AppTheme.space6),
+        const EnhancedRecentTasksWidget(),
+      ],
+    );
+  }
+
+  String _getTimeOfDayGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'morning';
+    } else if (hour < 17) {
+      return 'afternoon';
+    } else {
+      return 'evening';
+    }
   }
 }

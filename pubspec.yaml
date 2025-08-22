@@ -1,67 +1,79 @@
 name: trackich
-description: "Personal Time Tracking Application - A desktop time tracker with project management and analytics"
-publish_to: 'none'
+description: "Personal Time Tracking Application - A Flutter desktop app for productivity management with health-conscious features."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
 environment:
   sdk: ^3.8.1
+  flutter: ">=3.8.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  
-  # State Management - Riverpod 2.x
+
+  # State Management
   flutter_riverpod: ^2.6.1
   riverpod_annotation: ^2.5.1
-  
+
   # Local Storage
   shared_preferences: ^2.3.2
-  
-  # Internationalization
-  intl: ^0.20.2
-  
-  # Time and Date utilities
-  timezone: ^0.9.4
-  
-  # Desktop specific
-  window_manager: ^0.4.2
-  
-  # Notifications
-  flutter_local_notifications: ^17.2.3
-  
-  # Icons and UI
-  cupertino_icons: ^1.0.8
-  google_fonts: ^6.2.1
-  
-  # Charts for analytics
-  fl_chart: ^0.69.0
-  
-  # Path utilities
   path_provider: ^2.1.4
-  
-  # JSON handling
+
+  # Charts and Analytics
+  fl_chart: ^0.70.0
+
+  # Notifications
+  flutter_local_notifications: ^18.0.1
+
+  # System Tray
+  tray_manager: ^0.2.4
+
+  # JSON Serialization
   json_annotation: ^4.9.0
+  freezed_annotation: ^2.4.4
+
+  # UI and Icons
+  cupertino_icons: ^1.0.8
+  material_symbols_icons: ^4.2.7
+
+  # Utilities
+  intl: ^0.20.2
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  # Linting
   flutter_lints: ^5.0.0
-  
+
   # Code Generation
   build_runner: ^2.4.13
-  riverpod_generator: ^2.5.1
   json_serializable: ^6.8.0
+  riverpod_generator: ^2.6.2
+  freezed: ^2.5.7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
+# The following section is specific to Flutter packages.
 flutter:
-  generate: true
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
   uses-material-design: true
+
+  # Fonts will be added later when font files are available
+
+  # Generate missing translations
+  generate: true
   
+  # Assets
   assets:
     - assets/images/
-    - assets/sounds/

@@ -1,57 +1,67 @@
 # Trackich - Personal Time Tracking Application
 ## Technical Specification Document
 
-### Document Overview
-- **Project Name**: Trackich
+### Document Information
+- **Version**: 1.0
+- **Date**: August 21, 2025
+- **Project**: Trackich Personal Time Tracker
 - **Platform**: Cross-platform Desktop (Windows, macOS, Linux)
-- **Framework**: Flutter
+- **Framework**: Flutter 3.8+
 - **State Management**: Riverpod
-- **Data Storage**: SharedPreferences
-- **Target Users**: Individual professionals managing multiple projects
-- **Design Philosophy**: Claude-style (clean, minimal, intuitive)
+- **Storage**: SharedPreferences (Local)
 
 ---
 
-## 1. Application Architecture
+## 1. Project Overview
 
-### 1.1 Technical Stack
-- **Frontend**: Flutter (Desktop targets)
-- **State Management**: Riverpod 2.x
+### 1.1 Application Purpose
+Trackich is a personal productivity tool designed for professionals managing multiple projects who value efficiency, health, and time optimization. The application focuses on accurate time tracking, health-conscious work habits, and providing actionable insights for personal productivity improvement.
+
+### 1.2 Core Principles
+- **Minimalist Design**: Claude-style clean, professional interface
+- **Efficiency First**: Streamlined workflows with minimal friction
+- **Health Conscious**: Built-in break reminders and wellness features
+- **Privacy Focused**: All data stored locally, no cloud dependencies
+- **Cross-Platform**: Consistent experience across all desktop platforms
+
+### 1.3 Technical Stack
+- **Frontend**: Flutter (Desktop)
+- **State Management**: Riverpod
 - **Local Storage**: SharedPreferences
-- **Notifications**: Local system notifications
-- **Localization**: Flutter Intl (English/Russian)
-- **Design System**: Custom Claude-inspired UI components
+- **Localization**: flutter_localizations (English/Russian)
+- **Notifications**: flutter_local_notifications
+- **Charts/Analytics**: fl_chart
 
-### 1.2 Project Structure
+---
+
+## 2. Application Architecture
+
+### 2.1 Project Structure
 ```
 lib/
-├── main.dart
-├── app/
-│   ├── app.dart
-│   └── theme/
 ├── core/
-│   ├── constants/
-│   ├── utils/
-│   └── extensions/
-├── data/
-│   ├── models/
-│   ├── repositories/
-│   └── services/
+│   ├── models/           # Data models
+│   ├── theme/           # App theme and styling
+│   ├── utils/           # Utility functions
+│   └── constants/       # App constants
+├── features/
+│   ├── dashboard/       # Main dashboard feature
+│   ├── projects/        # Project management
+│   ├── timer/          # Time tracking
+│   ├── calendar/       # Calendar views
+│   ├── analytics/      # Analytics and reports
+│   ├── settings/       # App settings
+│   └── notifications/  # Break/rest notifications
 ├── presentation/
-│   ├── screens/
-│   ├── widgets/
-│   └── providers/
-├── l10n/
-│   ├── app_en.arb
-│   └── app_ru.arb
-└── generated/
+│   ├── screens/        # Main screens
+│   ├── widgets/        # Reusable widgets
+│   └── providers/      # Riverpod providers
+└── l10n/              # Localization files
 ```
 
----
+### 2.2 Data Models
 
-## 2. Data Models
-
-### 2.1 Project Model
+#### 2.2.1 Project Model
 ```dart
 class Project {
   final String id;
@@ -59,670 +69,618 @@ class Project {
   final String description;
   final Color color;
   final DateTime createdAt;
-  final DateTime? archivedAt;
-  final bool isArchived;
-  final ProjectSettings settings;
+  final bool isActive;
+  final List<String> tags;
+  final double targetHoursPerWeek;
 }
 ```
 
-### 2.2 Task Model
+#### 2.2.2 TimeEntry Model
 ```dart
-class Task {
+class TimeEntry {
   final String id;
   final String projectId;
-  final String title;
-  final String? description;
+  final String taskName;
+  final String description;
   final DateTime startTime;
   final DateTime? endTime;
-  final Duration? duration;
-  final TaskStatus status;
+  final Duration duration;
   final List<String> tags;
-}
-
-enum TaskStatus { active, paused, completed, cancelled }
-```
-
-### 2.3 Break Configuration Model
-```dart
-class BreakConfiguration {
-  final Duration workDuration;
-  final Duration shortBreakDuration;
-  final Duration longBreakDuration;
-  final int longBreakInterval;
-  final bool enableNotifications;
-  final String notificationSound;
+  final bool isBreak;
+  final BreakType? breakType;
 }
 ```
 
-### 2.4 User Settings Model
+#### 2.2.3 Settings Model
 ```dart
-class UserSettings {
+class AppSettings {
   final String language;
   final ThemeMode themeMode;
-  final BreakConfiguration breakConfig;
-  final bool enableSystemNotifications;
+  final Duration shortBreakInterval;
+  final Duration longBreakInterval;
+  final Duration shortBreakDuration;
+  final Duration longBreakDuration;
+  final bool enableNotifications;
+  final bool enableSoundNotifications;
   final TimeFormat timeFormat;
   final WeekStartDay weekStartDay;
+  final List<WorkingHours> workingHours;
 }
 ```
 
+### 2.3 State Management Structure
+- **Global Providers**: Theme, Settings, Current Timer
+- **Feature Providers**: Projects, Time Entries, Analytics Data
+- **UI Providers**: Navigation, Form States, Calendar View States
+
 ---
 
-## 3. Screen Specifications
+## 3. Screen Definitions & User Flow
 
-### 3.1 Main Dashboard Screen
-**File**: `lib/presentation/screens/dashboard_screen.dart`
+### 3.1 Main Navigation Structure
+```
+┌─ Dashboard (Home)
+├─ Projects
+├─ Calendar
+├─ Analytics
+└─ Settings
+```
 
-#### Layout Structure
-- **Header**: App title, current project selector, time display
-- **Main Content**: 
-  - Current task widget (if active)
-  - Quick start new task button
-  - Today's time summary
-  - Recent tasks list (last 5)
-- **Bottom Navigation**: Dashboard, Calendar, Projects, Settings
+### 3.2 Screen Specifications
 
-#### Key Components
-- `CurrentTaskWidget`: Shows active task with pause/stop controls
-- `TimeDisplayWidget`: Real-time timer and total daily time
-- `QuickTaskStartWidget`: Project selector + task name input
-- `DailyStatsWidget`: Hours worked, tasks completed, breaks taken
-- `RecentTasksList`: Scrollable list of recent tasks with quick actions
+#### 3.2.1 Dashboard Screen
+**Purpose**: Central hub for current activity and quick actions
 
-#### User Interactions
-- Start new task: Select project → Enter task name → Start
-- Pause/Resume current task: Single button toggle
-- Stop task: Confirmation dialog → Task completion
-- View task details: Tap on recent task item
+**Layout Components**:
+- **Header Section**:
+  - Current date and time
+  - Active timer (if running) with project name
+  - Quick start/stop buttons
+  
+- **Current Activity Widget**:
+  - Large, prominent timer display
+  - Project selector dropdown
+  - Task name input field
+  - Start/Pause/Stop controls
+  
+- **Today's Summary Widget**:
+  - Total time tracked today
+  - Time by project (horizontal progress bars)
+  - Completed tasks count
+  
+- **Quick Actions Panel**:
+  - Recently used projects (quick start buttons)
+  - Create new project button
+  - Start break timer button
+  
+- **Health Notifications**:
+  - Break reminder status
+  - Time until next recommended break
+  - Hydration reminder (if enabled)
 
-#### State Management
-- `dashboardProvider`: Current task state, daily stats
-- `activeTaskProvider`: Real-time task timer
-- `recentTasksProvider`: Last 5 tasks across all projects
+**User Interactions**:
+- Click project to start timer
+- Type task name and press Enter to start
+- Click pause/resume timer
+- Click stop to end session
+- View time breakdown by hovering over summary bars
 
-### 3.2 Calendar View Screen
-**File**: `lib/presentation/screens/calendar_screen.dart`
+#### 3.2.2 Projects Screen
+**Purpose**: Manage all projects and their configurations
 
-#### Layout Structure
-- **Header**: Month/Year navigation, view toggle (Week/Month)
-- **Calendar Grid**: 
-  - Week view: 7 days with hourly breakdown
-  - Month view: Standard calendar with task indicators
-- **Task Details Panel**: Selected day's tasks and time breakdown
+**Layout Components**:
+- **Projects List**:
+  - Grid/list view toggle
+  - Search and filter bar
+  - Sort options (recent, alphabetical, time tracked)
+  
+- **Project Cards**:
+  - Project name and description
+  - Color indicator
+  - Total time tracked
+  - Recent activity indicator
+  - Quick actions (edit, archive, delete)
+  
+- **Project Creation/Edit Modal**:
+  - Name and description fields
+  - Color picker
+  - Tags management
+  - Target hours per week
+  - Active status toggle
 
-#### Key Components
-- `CalendarHeaderWidget`: Navigation and view controls
-- `WeekViewWidget`: 7-day horizontal scroll with time blocks
-- `MonthViewWidget`: Standard calendar grid
-- `DayTasksPanel`: Right panel showing selected day's details
-- `TaskTimeBlock`: Visual representation of task duration
+**User Interactions**:
+- Create new project with floating action button
+- Edit project by clicking settings icon
+- Archive/delete projects with confirmation
+- Search projects by name or tag
+- Filter by active/archived status
 
-#### Features
-- **Week View**: 
-  - Hourly time blocks (8 AM - 8 PM default range)
-  - Color-coded tasks by project
-  - Drag to adjust task times (future enhancement)
-  - Break indicators
+#### 3.2.3 Calendar Screen
+**Purpose**: Visual representation of time tracking history
+
+**Layout Components**:
+- **View Toggle**:
+  - 7-day week view (default)
+  - Full month calendar view
+  - Timeline day view
+  
+- **Week View**:
+  - 7-day horizontal layout
+  - Time blocks for each project (colored)
+  - Break periods marked differently
+  - Daily totals at bottom
+  
 - **Month View**:
-  - Day cells with total hours worked
-  - Color dots indicating projects worked on
-  - Completion status indicators
+  - Standard calendar grid
+  - Daily summary indicators (dots/bars)
+  - Hover tooltips with details
+  
+- **Day Timeline View**:
+  - Vertical timeline (8 AM - 8 PM default)
+  - Detailed time blocks with task names
+  - Break periods and durations
 
-#### User Interactions
-- Switch views: Week ↔ Month toggle button
-- Navigate time: Previous/Next arrows, date picker
-- Select day: Tap calendar cell → Update task details panel
-- View task: Tap task block → Task detail popup
+**User Interactions**:
+- Navigate between weeks/months
+- Click on time blocks to see details
+- Edit time entries in place
+- Add manual time entries
+- Export calendar data
 
-### 3.3 Projects Management Screen
-**File**: `lib/presentation/screens/projects_screen.dart`
+#### 3.2.4 Analytics Screen
+**Purpose**: Insights and productivity analysis
 
-#### Layout Structure
-- **Header**: "Projects" title, Add project button
-- **Project List**: Scrollable list of project cards
-- **Project Detail Panel**: Right panel for selected project
+**Layout Components**:
+- **Time Period Selector**:
+  - This week, last week, this month, custom range
+  
+- **Key Metrics Cards**:
+  - Total hours tracked
+  - Most productive day
+  - Average daily hours
+  - Longest work session
+  
+- **Charts Section**:
+  - Time by project (pie chart)
+  - Daily productivity trends (line chart)
+  - Weekly comparison (bar chart)
+  - Break patterns analysis
+  
+- **Productivity Insights**:
+  - Work pattern analysis
+  - Break frequency recommendations
+  - Most productive hours of day
+  - Project time distribution
 
-#### Project Card Components
-- Project name and description
-- Color indicator
-- Total time this week/month
-- Task count (active/completed)
-- Last activity timestamp
-- Quick actions (Edit, Archive, View Tasks)
+**User Interactions**:
+- Change time period filters
+- Drill down into chart data
+- Export reports
+- Set productivity goals
 
-#### Project Detail Panel
-- Project overview stats
-- Recent tasks list
-- Time tracking charts (week/month view)
-- Project settings access
+#### 3.2.5 Settings Screen
+**Purpose**: Application configuration and preferences
 
-#### User Interactions
-- Create project: Floating action button → Project creation dialog
-- Edit project: Tap project card → Edit dialog
-- Archive project: Long press → Archive confirmation
-- View project tasks: Tap "View Tasks" → Filtered task list
+**Layout Components**:
+- **General Settings**:
+  - Language selection
+  - Theme mode (light/dark/system)
+  - Time format (12h/24h)
+  - Week start day
+  
+- **Break & Health Settings**:
+  - Short break interval (default: 25 min)
+  - Long break interval (default: 2 hours)
+  - Break duration settings
+  - Notification preferences
+  - Sound alerts toggle
+  
+- **Data Management**:
+  - Export all data
+  - Import data
+  - Clear all data (with confirmation)
+  - Backup settings
+  
+- **About Section**:
+  - App version
+  - Privacy policy
+  - Support information
 
-### 3.4 Settings Screen
-**File**: `lib/presentation/screens/settings_screen.dart`
+### 3.3 User Flow Pipeline
 
-#### Layout Structure
-- **Header**: "Settings" title
-- **Settings Sections**: Grouped configuration options
+#### 3.3.1 First-Time User Flow
+1. **Welcome Screen** → Brief app introduction
+2. **Create First Project** → Guided project setup
+3. **Settings Configuration** → Break intervals and notifications
+4. **Dashboard** → Start first tracking session
 
-#### Settings Sections
+#### 3.3.2 Daily Usage Flow
+1. **Dashboard** → View today's progress
+2. **Start Timer** → Select project, enter task name
+3. **Work Session** → Timer runs, break notifications appear
+4. **Break Time** → Prompted break with timer
+5. **End Session** → Stop timer, view session summary
 
-##### General Settings
-- Language selection (English/Russian)
-- Theme mode (System/Light/Dark)
-- Time format (12h/24h)
-- Week start day
-- Default project
-
-##### Break Configuration
-- Work session duration (default: 25 min)
-- Short break duration (default: 5 min)
-- Long break duration (default: 15 min)
-- Long break interval (default: every 4 sessions)
-- Enable break notifications
-- Notification sound selection
-
-##### Notification Settings
-- System notifications enable/disable
-- Break reminder notifications
-- Daily summary notifications
-- Notification quiet hours
-
-##### Data Management
-- Export data (JSON/CSV)
-- Import data
-- Clear all data (with confirmation)
-- Backup to cloud (future enhancement)
-
-#### User Interactions
-- Modify settings: Tap setting → Show appropriate input widget
-- Test notifications: "Test" button for notification settings
-- Reset to defaults: Reset button with confirmation
-
-### 3.5 Task Management Screen
-**File**: `lib/presentation/screens/task_management_screen.dart`
-
-#### Layout Structure
-- **Header**: Filter controls, search bar
-- **Task List**: Scrollable list with grouping options
-- **Bulk Actions**: Multi-select operations
-
-#### Filter Controls
-- Project filter dropdown
-- Date range picker
-- Status filter (All, Active, Completed, Cancelled)
-- Sort options (Date, Duration, Project, Alphabetical)
-
-#### Task List Item
-- Task title and description
-- Project name and color indicator
-- Start/end time
-- Duration
-- Status badge
-- Quick actions (Edit, Delete, Duplicate)
-
-#### Bulk Actions
-- Select multiple tasks
-- Bulk delete with confirmation
-- Bulk project reassignment
-- Bulk export
+#### 3.3.3 Project Management Flow
+1. **Projects Screen** → View all projects
+2. **Create/Edit Project** → Configure project details
+3. **Assign to Timer** → Select project for tracking
+4. **View Analytics** → Review project time distribution
 
 ---
 
-## 4. User Workflow Specifications
+## 4. Feature Specifications
 
-### 4.1 Daily Workflow
-1. **Morning Setup**
-   - User opens app
-   - Selects primary project for the day
-   - Reviews daily goals (optional notes)
-   - Starts first task
+### 4.1 Core Timer Features
 
-2. **Work Session Cycle**
-   - Start task with project selection and task name
-   - Work period with live timer
-   - Break notification triggers
-   - Take break (tracked separately)
-   - Resume or start new task
+#### 4.1.1 Time Tracking Engine
+- **Precise Timing**: Microsecond accuracy with pause/resume capability
+- **Background Tracking**: Continue tracking when app is minimized
+- **Auto-Save**: Automatic saving every 30 seconds
+- **Session Recovery**: Restore active timers after app restart
+- **Manual Adjustments**: Allow time entry editing with audit trail
 
-3. **Task Transitions**
-   - Complete current task → Log completion time
-   - Switch tasks → Auto-pause current, start new
-   - Long break → Automatic break session tracking
+#### 4.1.2 Project Association
+- **Quick Selection**: Recent projects in dropdown
+- **Smart Suggestions**: ML-based project recommendations
+- **Task Naming**: Free-form task description with autocomplete
+- **Tag System**: Flexible tagging for categorization
 
-4. **End of Day**
-   - Review daily summary
-   - Complete any incomplete tasks
-   - View productivity metrics
+### 4.2 Break & Health Management
 
-### 4.2 Weekly Workflow
-1. **Weekly Planning**
-   - Review last week's time allocation
-   - Set project priorities for coming week
-   - Adjust break schedules if needed
+#### 4.2.1 Pomodoro-Style Breaks
+- **25-Minute Work Sessions**: Default work interval
+- **5-Minute Short Breaks**: Regular rest periods
+- **15-30 Minute Long Breaks**: Extended breaks every 2-4 cycles
+- **Customizable Intervals**: User-defined work/break durations
 
-2. **Weekly Review**
-   - Calendar view analysis
-   - Project time distribution
-   - Productivity pattern identification
+#### 4.2.2 Health Notifications
+- **Eye Strain Alerts**: 20-20-20 rule reminders
+- **Posture Reminders**: Stand up and stretch notifications
+- **Hydration Tracking**: Water intake reminders
+- **End-of-Day Alerts**: Work time limit notifications
 
-### 4.3 Project Management Workflow
-1. **Project Creation**
-   - Name and description entry
-   - Color selection for visual identification
-   - Initial settings configuration
+#### 4.2.3 Smart Break Suggestions
+- **Activity Detection**: Detect user inactivity
+- **Break Quality Scoring**: Rate break effectiveness
+- **Personalized Timing**: Adapt to user's natural rhythms
 
-2. **Project Lifecycle**
-   - Active project task tracking
-   - Project-specific analytics
-   - Archive when complete
+### 4.3 Calendar & Time Visualization
 
----
+#### 4.3.1 Multiple Calendar Views
+- **Week View**: Primary view showing 7-day spread
+- **Month Overview**: High-level monthly patterns
+- **Day Timeline**: Detailed hourly breakdown
+- **Year Heatmap**: Long-term productivity patterns
 
-## 5. Feature Specifications
+#### 4.3.2 Time Block Visualization
+- **Color-Coded Projects**: Distinct colors per project
+- **Break Indicators**: Different styling for break periods
+- **Intensity Mapping**: Visual indication of productivity levels
+- **Overlap Detection**: Handle multiple simultaneous entries
 
-### 5.1 Time Tracking Engine
+### 4.4 Analytics & Reporting
 
-#### Core Functionality
-- **Precision**: Second-level accuracy
-- **Persistence**: Auto-save every 30 seconds
-- **Recovery**: Resume incomplete sessions on app restart
-- **Validation**: Prevent overlapping time entries
-
-#### Timer States
-- **Idle**: No active task
-- **Running**: Task in progress with live timer
-- **Paused**: Task paused, timer stopped
-- **Break**: Break period active
-
-#### Implementation Details
-```dart
-class TimeTrackingService {
-  Stream<Duration> get currentTaskDuration;
-  Future<void> startTask(Task task);
-  Future<void> pauseTask();
-  Future<void> resumeTask();
-  Future<void> stopTask();
-  Future<void> startBreak(BreakType type);
-}
-```
-
-### 5.2 Break Management System
-
-#### Break Types
-- **Short Break**: 5-15 minutes
-- **Long Break**: 15-30 minutes
-- **Lunch Break**: 30-60 minutes
-- **Custom Break**: User-defined duration
-
-#### Notification System
-- **Break Reminders**: Configurable intervals
-- **Break End Alerts**: Return to work notifications
-- **Smart Scheduling**: Respect user's current activity
-
-#### Health Features
-- Eye strain reminder (20-20-20 rule)
-- Posture change reminders
-- Hydration reminders
-- Movement encouragement
-
-### 5.3 Project Analytics
-
-#### Time Distribution Charts
-- Daily time allocation pie chart
-- Weekly trend line graph
-- Monthly project comparison bars
-- Quarterly productivity overview
-
-#### Productivity Metrics
-- **Focus Time**: Uninterrupted work periods
-- **Task Completion Rate**: Completed vs. started tasks
+#### 4.4.1 Productivity Metrics
+- **Focus Score**: Calculate based on session lengths
+- **Consistency Rating**: Regular work pattern analysis
 - **Project Balance**: Time distribution across projects
-- **Break Adherence**: Following break schedule
+- **Goal Tracking**: Progress toward weekly/monthly targets
 
-#### Reports Generation
-- Daily summary report
-- Weekly productivity report
-- Monthly project analysis
-- Custom date range reports
+#### 4.4.2 Trend Analysis
+- **Productivity Curves**: Identify peak performance hours
+- **Seasonal Patterns**: Long-term productivity changes
+- **Break Effectiveness**: Correlation between breaks and productivity
+- **Burnout Prevention**: Early warning indicators
 
-### 5.4 Data Persistence
+#### 4.4.3 Export Capabilities
+- **CSV Export**: Raw data for external analysis
+- **PDF Reports**: Professional time reports
+- **Calendar Integration**: iCal/Google Calendar export
+- **API Endpoints**: Future integration possibilities
 
-#### SharedPreferences Structure
-```dart
-// Core data keys
-static const String PROJECTS_KEY = 'projects';
-static const String TASKS_KEY = 'tasks';
-static const String SETTINGS_KEY = 'user_settings';
-static const String ACTIVE_TASK_KEY = 'active_task';
-static const String BREAK_CONFIG_KEY = 'break_config';
+---
 
-// Analytics data
-static const String DAILY_STATS_KEY = 'daily_stats';
-static const String WEEKLY_STATS_KEY = 'weekly_stats';
+## 5. Additional Productivity Features
+
+### 5.1 Advanced Time Management
+
+#### 5.1.1 Time Blocking
+- **Planned vs. Actual**: Schedule blocks and compare with actual time
+- **Template Sessions**: Recurring work session templates
+- **Time Estimates**: Project time estimation with accuracy tracking
+- **Buffer Time**: Automatic padding between sessions
+
+#### 5.1.2 Focus Mode
+- **Distraction Blocking**: Hide non-essential UI elements
+- **Ambient Sounds**: Built-in focus sounds (white noise, nature)
+- **Deep Work Sessions**: Extended focus periods with minimal interruptions
+- **Flow State Detection**: Identify and optimize peak focus periods
+
+### 5.2 Health & Wellness Integration
+
+#### 5.2.1 Ergonomics Coaching
+- **Posture Tracking**: Webcam-based posture monitoring (optional)
+- **Desk Setup Tips**: Ergonomic workspace recommendations
+- **Exercise Reminders**: Desk exercises and stretches
+- **Eye Care**: Blue light awareness and break timing
+
+#### 5.2.2 Work-Life Balance
+- **Daily Work Limits**: Configurable maximum work hours
+- **Weekend Protection**: Optional weekend work restrictions
+- **Overtime Alerts**: Warnings for excessive work sessions
+- **Recovery Time**: Minimum time between work sessions
+
+### 5.3 Productivity Intelligence
+
+#### 5.3.1 Smart Insights
+- **Pattern Recognition**: Identify optimal work patterns
+- **Energy Level Tracking**: Correlate productivity with energy
+- **Weather Impact**: Track weather effects on productivity
+- **Performance Predictions**: Forecast productive periods
+
+#### 5.3.2 Goal Management
+- **SMART Goals**: Specific, measurable productivity targets
+- **Progress Visualization**: Visual goal progress indicators
+- **Milestone Celebrations**: Achievement recognition system
+- **Adaptive Targets**: Goals that adjust based on performance
+
+### 5.4 Collaboration & Accountability
+
+#### 5.4.1 Team Features (Future)
+- **Time Sharing**: Share project time with team members
+- **Accountability Partners**: Productivity buddy system
+- **Team Dashboards**: Collective productivity visualization
+- **Meeting Integration**: Track meeting time separate from project work
+
+#### 5.4.2 Client Reporting
+- **Client Time Reports**: Professional time tracking reports
+- **Invoice Generation**: Time-based invoice creation
+- **Rate Calculations**: Hourly rate and project profitability
+- **Time Approval**: Client approval workflow for billed time
+
+---
+
+## 6. Technical Implementation Details
+
+### 6.1 Data Storage Strategy
+
+#### 6.1.1 Local Storage Structure
+```
+SharedPreferences Keys:
+- settings_* : Application settings
+- projects_* : Project definitions
+- entries_*  : Time entry records
+- analytics_*: Cached analytics data
 ```
 
-#### Data Backup Strategy
-- JSON export functionality
-- Automatic daily backup (local)
-- Data validation on import
-- Migration strategy for version updates
+#### 6.1.2 Data Persistence
+- **Incremental Saves**: Save changes immediately
+- **Batch Operations**: Bulk updates for performance
+- **Data Validation**: Input sanitization and validation
+- **Migration System**: Handle app updates gracefully
+
+### 6.2 Performance Considerations
+
+#### 6.2.1 Memory Management
+- **Lazy Loading**: Load data on demand
+- **Pagination**: Limit loaded time entries
+- **Caching Strategy**: Smart caching of frequently accessed data
+- **Garbage Collection**: Proper disposal of resources
+
+#### 6.2.2 UI Responsiveness
+- **Smooth Animations**: 60 FPS target for all transitions
+- **Progressive Loading**: Show data as it becomes available
+- **Background Processing**: Long operations in isolates
+- **Debounced Input**: Prevent excessive API calls
+
+### 6.3 Notification System
+
+#### 6.3.1 Local Notifications
+```dart
+Notification Types:
+- Break reminders (recurring)
+- Session completion alerts
+- Daily/weekly summaries
+- Health reminders
+- Goal achievements
+```
+
+#### 6.3.2 Cross-Platform Compatibility
+- **Windows**: Native Windows notifications
+- **macOS**: Native macOS notification center
+- **Linux**: Desktop notification standards
+
+### 6.4 Accessibility Features
+
+#### 6.4.1 Visual Accessibility
+- **High Contrast Mode**: Enhanced visibility options
+- **Font Scaling**: Adjustable text sizes
+- **Color Blind Support**: Alternative visual indicators
+- **Screen Reader**: Semantic markup for assistive technology
+
+#### 6.4.2 Motor Accessibility
+- **Keyboard Navigation**: Full keyboard control
+- **Voice Commands**: Voice-activated timer controls (future)
+- **Large Touch Targets**: Minimum 44px interactive elements
+- **Gesture Alternatives**: Multiple interaction methods
 
 ---
 
-## 6. UI/UX Design Guidelines
-
-### 6.1 Claude-Inspired Design Principles
-
-#### Visual Design
-- **Color Palette**: 
-  - Primary: Clean blues (#2563eb, #3b82f6)
-  - Secondary: Warm grays (#6b7280, #9ca3af)
-  - Accent: Subtle greens (#10b981, #34d399)
-  - Background: Pure whites/soft grays
-  - Text: High contrast (#111827, #374151)
-
-#### Typography
-- **Primary Font**: System default (SF Pro, Segoe UI, Roboto)
-- **Font Sizes**: 
-  - Headers: 24px, 20px, 18px
-  - Body: 16px, 14px
-  - Caption: 12px, 10px
-- **Font Weights**: Regular (400), Medium (500), Semibold (600)
-
-#### Spacing System
-- **Base Unit**: 8px
-- **Common Spacings**: 8px, 16px, 24px, 32px, 48px
-- **Container Padding**: 24px
-- **Element Margin**: 16px
-- **Component Gap**: 12px
-
-### 6.2 Component Design Standards
-
-#### Buttons
-- **Primary**: Filled, rounded corners (8px), hover states
-- **Secondary**: Outlined, same dimensions as primary
-- **Text Buttons**: No background, underline on hover
-- **Icon Buttons**: 44px minimum touch target
-
-#### Input Fields
-- **Text Inputs**: Clean borders, focus indicators, floating labels
-- **Dropdowns**: Native platform styling with custom icons
-- **Time Pickers**: Custom time wheel or platform native
-
-#### Cards and Containers
-- **Project Cards**: Subtle shadows, rounded corners, hover lift
-- **Task Items**: Clean list styling, clear hierarchy
-- **Modal Dialogs**: Centered, backdrop blur, smooth animations
-
-### 6.3 Interaction Patterns
-
-#### Navigation
-- **Bottom Navigation**: Fixed, icon + label, active state indicators
-- **Sidebar**: Collapsible on larger screens
-- **Breadcrumbs**: For deep navigation contexts
-
-#### Feedback
-- **Loading States**: Skeleton screens, progress indicators
-- **Success Actions**: Subtle animations, color changes
-- **Error States**: Non-intrusive alerts, inline validation
-- **Empty States**: Helpful illustrations, clear actions
-
----
-
-## 7. Localization Requirements
+## 7. Localization Strategy
 
 ### 7.1 Supported Languages
-- **Primary**: English (US)
-- **Secondary**: Russian
+- **Primary**: English (en-US)
+- **Secondary**: Russian (ru-RU)
+- **Future**: Spanish, French, German, Chinese
 
 ### 7.2 Localization Scope
+- **UI Text**: All interface strings
+- **Date/Time Formats**: Locale-appropriate formatting
+- **Number Formats**: Decimal separators and grouping
+- **Cultural Adaptations**: Work week definitions, holidays
 
-#### Text Content
-- All UI labels and buttons
-- Error messages and notifications
-- Help text and tooltips
-- Date and time formats
-- Number formats (hours, minutes)
-
-#### Cultural Considerations
-- **Date Formats**: US (MM/DD/YYYY) vs. Russian (DD.MM.YYYY)
-- **Time Formats**: 12-hour vs. 24-hour preferences
-- **Week Start**: Sunday vs. Monday
-- **Number Separators**: Decimal point vs. comma
-
-#### Implementation Structure
-```dart
-// ARB files structure
-// app_en.arb
-{
-  "appTitle": "Trackich",
-  "startTask": "Start Task",
-  "pauseTask": "Pause",
-  "stopTask": "Stop",
-  "projects": "Projects",
-  "calendar": "Calendar",
-  "settings": "Settings"
-}
-
-// app_ru.arb
-{
-  "appTitle": "Trackich",
-  "startTask": "Начать задачу",
-  "pauseTask": "Пауза",
-  "stopTask": "Остановить",
-  "projects": "Проекты",
-  "calendar": "Календарь",
-  "settings": "Настройки"
-}
+### 7.3 Implementation Approach
+```
+l10n/
+├── app_en.arb    # English strings
+├── app_ru.arb    # Russian strings
+└── app_*.arb     # Future languages
 ```
 
 ---
 
-## 8. Technical Implementation Details
+## 8. Design System Specifications
 
-### 8.1 State Management with Riverpod
+### 8.1 Claude-Style Design Language
 
-#### Provider Structure
+#### 8.1.1 Color Palette
 ```dart
-// Core providers
-final projectsProvider = StateNotifierProvider<ProjectsNotifier, List<Project>>;
-final activeTaskProvider = StateNotifierProvider<ActiveTaskNotifier, Task?>;
-final settingsProvider = StateNotifierProvider<SettingsNotifier, UserSettings>;
-final breakConfigProvider = StateNotifierProvider<BreakConfigNotifier, BreakConfiguration>;
-
-// Computed providers
-final todayStatsProvider = Provider<DailyStats>;
-final currentWeekTasksProvider = Provider<List<Task>>;
-final projectTimeStatsProvider = FamilyProvider<ProjectStats, String>;
+Primary Colors:
+- Primary Blue: #0066CC
+- Secondary Gray: #6B7280
+- Background: #FFFFFF (light) / #1F2937 (dark)
+- Text: #111827 (light) / #F9FAFB (dark)
+- Accent: #EF4444 (alerts), #10B981 (success)
 ```
 
-#### State Persistence
+#### 8.1.2 Typography Scale
 ```dart
-abstract class PersistentStateNotifier<T> extends StateNotifier<T> {
-  final String storageKey;
-  final SharedPreferences prefs;
-  
-  PersistentStateNotifier(this.storageKey, this.prefs, T initialState) : super(initialState) {
-    _loadState();
-  }
-  
-  Future<void> _loadState();
-  Future<void> _saveState();
-}
+Font Family: Inter (system fallback)
+- Headline 1: 32px, Bold
+- Headline 2: 24px, Semibold
+- Body 1: 16px, Regular
+- Body 2: 14px, Regular
+- Caption: 12px, Medium
+- Button: 14px, Semibold
 ```
 
-### 8.2 Data Services
-
-#### Storage Service
+#### 8.1.3 Spacing System
 ```dart
-class StorageService {
-  static late SharedPreferences _prefs;
-  
-  static Future<void> init() async {
-    _prefs = await SharedPreferences.getInstance();
-  }
-  
-  static Future<void> saveProjects(List<Project> projects);
-  static Future<List<Project>> loadProjects();
-  static Future<void> saveSettings(UserSettings settings);
-  static Future<UserSettings> loadSettings();
-}
+Base Unit: 8px
+- xs: 4px
+- sm: 8px
+- md: 16px
+- lg: 24px
+- xl: 32px
+- 2xl: 48px
 ```
 
-#### Notification Service
-```dart
-class NotificationService {
-  Future<void> init();
-  Future<void> showBreakReminder(BreakType type);
-  Future<void> showDailyStats(DailyStats stats);
-  Future<void> scheduleBreakNotification(Duration delay);
-  Future<void> cancelAllNotifications();
-}
-```
+#### 8.1.4 Component Specifications
 
-### 8.3 Cross-Platform Considerations
+**Buttons**:
+- Primary: Blue background, white text, 8px border radius
+- Secondary: Gray outline, blue text, 8px border radius
+- Text: No background, blue text, hover underline
 
-#### Desktop-Specific Features
-- **Window Management**: Minimum size, remember position/size
-- **System Tray**: Background operation, quick controls
-- **Keyboard Shortcuts**: Global hotkeys for start/stop/pause
-- **Menu Bar**: Native menu integration
+**Cards**:
+- Background: White (light) / Dark gray (dark)
+- Border radius: 12px
+- Elevation: 2dp shadow
+- Padding: 16px-24px
 
-#### Platform-Specific Implementations
-```dart
-// Windows specific
-class WindowsNotificationService implements NotificationService {
-  // Windows toast notifications
-}
+**Input Fields**:
+- Border: 1px solid gray
+- Border radius: 8px
+- Focus: Blue border, no outline
+- Padding: 12px 16px
 
-// macOS specific  
-class MacOSNotificationService implements NotificationService {
-  // macOS notification center
-}
-
-// Linux specific
-class LinuxNotificationService implements NotificationService {
-  // libnotify integration
-}
-```
+### 8.2 Responsive Design
+- **Minimum Window Size**: 800x600px
+- **Optimal Size**: 1200x800px
+- **Maximum Width**: No limit (scales appropriately)
+- **Mobile Considerations**: Future responsive breakpoints
 
 ---
 
-## 9. Performance Considerations
+## 9. Quality Assurance Strategy
 
-### 9.1 Optimization Strategies
+### 9.1 Testing Approach
 
-#### Data Management
-- Lazy loading of historical data
-- Pagination for large task lists
-- Efficient JSON serialization
-- Memory-conscious state management
+#### 9.1.1 Unit Testing
+- **Model Testing**: Data validation and transformations
+- **Provider Testing**: State management logic
+- **Utility Testing**: Helper functions and calculations
 
-#### UI Performance
-- Widget rebuilding optimization
-- Image caching for project icons
-- Smooth animations (60 FPS target)
-- Responsive layout for different screen sizes
+#### 9.1.2 Widget Testing
+- **Screen Testing**: Complete screen rendering
+- **Component Testing**: Individual widget behavior
+- **Interaction Testing**: User input and navigation
 
-#### Background Processing
-- Timer accuracy maintenance
-- Efficient break scheduling
-- Background task persistence
-- Resource cleanup on app close
+#### 9.1.3 Integration Testing
+- **Data Flow**: End-to-end data operations
+- **Navigation**: Screen transitions and routing
+- **Persistence**: Storage and retrieval operations
 
-### 9.2 Memory Management
-- Dispose controllers and streams properly
-- Limit in-memory task history
-- Periodic cleanup of old notifications
-- Efficient SharedPreferences usage
+### 9.2 Performance Benchmarks
+- **App Startup**: < 3 seconds cold start
+- **Timer Accuracy**: ± 100ms precision
+- **UI Responsiveness**: < 100ms interaction response
+- **Memory Usage**: < 100MB typical usage
 
 ---
 
-## 10. Testing Strategy
+## 10. Deployment Strategy
 
-### 10.1 Unit Testing
-- Data model serialization/deserialization
-- Business logic validation
-- State management providers
-- Utility functions
+### 10.1 Build Configuration
+- **Debug**: Development builds with debugging enabled
+- **Release**: Optimized production builds
+- **Profile**: Performance profiling builds
 
-### 10.2 Integration Testing
-- Screen navigation flows
-- Data persistence workflows
-- Notification triggering
-- Timer accuracy tests
+### 10.2 Platform-Specific Packaging
+- **Windows**: MSI installer with auto-updater
+- **macOS**: DMG distribution with notarization
+- **Linux**: AppImage for universal compatibility
 
-### 10.3 Platform Testing
-- Cross-platform UI consistency
-- Platform-specific features
-- Performance on different hardware
-- Accessibility compliance
+### 10.3 Update Mechanism
+- **Auto-Update**: Background update checks
+- **User Control**: Optional update installation
+- **Rollback**: Ability to revert problematic updates
 
 ---
 
-## 11. Development Phases
+## 11. Future Roadmap
 
-### 11.1 Phase 1: Core Foundation (Week 1-2)
-- Project structure setup
-- Basic navigation
-- Data models implementation
-- SharedPreferences integration
-- Basic time tracking functionality
+### 11.1 Phase 2 Features
+- **Cloud Sync**: Optional cloud data synchronization
+- **Mobile Companion**: iOS/Android companion apps
+- **API Integration**: Third-party service connections
+- **Advanced Analytics**: Machine learning insights
 
-### 11.2 Phase 2: Main Features (Week 3-4)
-- Dashboard screen completion
-- Calendar view implementation
-- Project management
-- Settings screen
-- Break notification system
+### 11.2 Phase 3 Features
+- **Team Collaboration**: Multi-user project sharing
+- **AI Assistant**: Intelligent productivity suggestions
+- **Wearable Integration**: Smartwatch time tracking
+- **Voice Control**: Speech recognition for commands
 
-### 11.3 Phase 3: Polish & Enhancement (Week 5-6)
-- UI/UX refinements
-- Localization implementation
-- Performance optimization
-- Platform-specific features
-- Testing and bug fixes
-
-### 11.4 Phase 4: Advanced Features (Week 7-8)
-- Analytics and reporting
-- Data export/import
-- Advanced break configurations
-- Productivity insights
-- Final testing and deployment
+### 11.3 Platform Extensions
+- **Web Version**: Browser-based time tracking
+- **Browser Extension**: Website time tracking
+- **IDE Plugins**: Development time tracking
+- **Calendar Integration**: Two-way calendar sync
 
 ---
 
 ## 12. Success Metrics
 
-### 12.1 User Experience Metrics
-- **Task Start Time**: < 3 seconds from dashboard
-- **Navigation Speed**: Screen transitions < 200ms
-- **Data Accuracy**: 99.9% timer precision
-- **Crash Rate**: < 0.1% sessions
+### 12.1 User Engagement
+- **Daily Active Usage**: > 5 days per week
+- **Session Duration**: 15+ minutes average
+- **Feature Adoption**: 80%+ core feature usage
+- **User Retention**: 90% monthly retention
 
-### 12.2 Feature Adoption
-- **Daily Active Usage**: Track consistent daily use
-- **Break Compliance**: Users following break schedules
-- **Project Organization**: Multi-project usage
-- **Settings Customization**: Feature utilization rates
+### 12.2 Performance Metrics
+- **App Reliability**: 99.9% uptime
+- **Timer Accuracy**: 99.5% precision
+- **User Satisfaction**: 4.5+ star rating
+- **Support Tickets**: < 1% of user base
 
-### 12.3 Performance Benchmarks
-- **App Launch Time**: < 2 seconds cold start
-- **Memory Usage**: < 50MB average
-- **Battery Impact**: Minimal background consumption
-- **Storage Efficiency**: < 10MB for 6 months of data
+### 12.3 Business Impact
+- **Productivity Increase**: 15-20% measurable improvement
+- **Time Awareness**: Better work-life balance metrics
+- **Health Benefits**: Reduced eye strain and repetitive stress
+- **Project Efficiency**: Improved project time estimation
 
 ---
 
-## Conclusion
-
-This technical specification provides a comprehensive blueprint for developing Trackich, a personal time tracking application focused on productivity, health, and efficiency. The design emphasizes simplicity while providing powerful features for managing multiple projects and maintaining healthy work habits.
-
-The specification balances technical requirements with user experience considerations, ensuring the final product will be both functional and delightful to use. The phased development approach allows for iterative improvements and user feedback integration throughout the development process.
-
-Key success factors include maintaining the Claude-inspired clean design, ensuring cross-platform consistency, and providing meaningful productivity insights that help users optimize their work patterns and maintain work-life balance.
+This technical specification provides a comprehensive foundation for developing Trackich as a professional-grade personal time tracking application. The specification balances user experience simplicity with powerful functionality, ensuring the application serves both immediate time tracking needs and long-term productivity optimization goals.

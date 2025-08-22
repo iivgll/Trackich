@@ -6,41 +6,63 @@ part of 'timer_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$timerNotifierHash() => r'fa3575a41c41084509ffdcfd75408154c7d7943b';
+String _$todayTimeSummaryHash() => r'9bb1d808f8a79707064f5572bc46dedaef6962a5';
 
-/// Current timer state
+/// Provider for today's time summary
 ///
-/// Copied from [TimerNotifier].
-@ProviderFor(TimerNotifier)
-final timerNotifierProvider =
-    AutoDisposeNotifierProvider<TimerNotifier, TimerState>.internal(
-      TimerNotifier.new,
-      name: r'timerNotifierProvider',
+/// Copied from [todayTimeSummary].
+@ProviderFor(todayTimeSummary)
+final todayTimeSummaryProvider =
+    AutoDisposeFutureProvider<Map<String, dynamic>>.internal(
+      todayTimeSummary,
+      name: r'todayTimeSummaryProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$timerNotifierHash,
+          : _$todayTimeSummaryHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$TimerNotifier = AutoDisposeNotifier<TimerState>;
-String _$timeEntriesHash() => r'fb4b156f09967697da5b5b0e1af9b6909bed9d16';
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef TodayTimeSummaryRef =
+    AutoDisposeFutureProviderRef<Map<String, dynamic>>;
+String _$recentTaskNamesHash() => r'85448ce6bfc082d0aa0c033bda276d7fb977cc82';
 
-/// Provider for managing time entries
+/// Provider for recent task names
 ///
-/// Copied from [TimeEntries].
-@ProviderFor(TimeEntries)
-final timeEntriesProvider =
-    AutoDisposeNotifierProvider<TimeEntries, List<TimeEntry>>.internal(
-      TimeEntries.new,
-      name: r'timeEntriesProvider',
+/// Copied from [recentTaskNames].
+@ProviderFor(recentTaskNames)
+final recentTaskNamesProvider =
+    AutoDisposeFutureProvider<List<String>>.internal(
+      recentTaskNames,
+      name: r'recentTaskNamesProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$timeEntriesHash,
+          : _$recentTaskNamesHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$TimeEntries = AutoDisposeNotifier<List<TimeEntry>>;
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef RecentTaskNamesRef = AutoDisposeFutureProviderRef<List<String>>;
+String _$timerHash() => r'4168690ac2fc0bd353c875f4a7157f86e7837484';
+
+/// Provider for the current timer
+///
+/// Copied from [Timer].
+@ProviderFor(Timer)
+final timerProvider = AutoDisposeNotifierProvider<Timer, CurrentTimer>.internal(
+  Timer.new,
+  name: r'timerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$timerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$Timer = AutoDisposeNotifier<CurrentTimer>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

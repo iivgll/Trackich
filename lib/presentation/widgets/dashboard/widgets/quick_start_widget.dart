@@ -1,274 +1,261 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../../../features/timer/providers/timer_provider.dart';
-import '../../../../features/projects/providers/projects_provider.dart';
-import '../../../../core/models/project.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
-/// Widget for quickly starting a timer with recent tasks or projects
-class QuickStartWidget extends ConsumerStatefulWidget {
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/time_formatter.dart';
+import '../../../../features/projects/providers/projects_provider.dart';
+import '../../../../features/timer/providers/timer_provider.dart';
+import '../../../../l10n/generated/app_localizations.dart';
+import '../../projects/create_project_dialog.dart';
+
+class QuickStartWidget extends ConsumerWidget {
   const QuickStartWidget({super.key});
 
   @override
-  ConsumerState<QuickStartWidget> createState() => _QuickStartWidgetState();
-}
-
-class _QuickStartWidgetState extends ConsumerState<QuickStartWidget> {
-  final _taskController = TextEditingController();
-  String? _selectedProjectId;
-
-  @override
-  void dispose() {
-    _taskController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final timerState = ref.watch(timerNotifierProvider);
-    final projects = ref.watch(activeProjectsProvider);
-    final theme = Theme.of(context);
-
-    // Don't show if timer is already active
-    if (timerState.isActive) {
-      return const SizedBox.shrink();
-    }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final recentProjectsAsync = ref.watch(recentProjectsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Card(
+      elevation: 2,
+      shadowColor: AppTheme.shadowMd.color,
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppTheme.space6),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header
             Row(
               children: [
-                Icon(
-                  Icons.play_circle_outlined,
-                  color: theme.colorScheme.primary,
-                  size: 28,
+                const Icon(
+                  Symbols.bolt,
+                  size: 20,
+                  color: AppTheme.primaryBlue,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppTheme.space2),
                 Text(
-                  l10n.quickStart,
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
+                  'Quick Start',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const Spacer(),
+                TextButton.icon(
+                  onPressed: () => _showCreateProjectDialog(context),
+                  icon: const Icon(Symbols.add, size: 16),
+                  label: Text(l10n.createProject),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.space3,
+                      vertical: AppTheme.space2,
+                    ),
                   ),
                 ),
               ],
             ),
-            
-            const SizedBox(height: 20),
-            
-            // Quick start form
-            Row(
-              children: [
-                // Project selector
-                Expanded(
-                  flex: 2,
-                  child: DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
-                      labelText: l10n.project,
-                      border: const OutlineInputBorder(),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                    ),
-                    value: _selectedProjectId,
-                    items: projects.map((project) {
-                      return DropdownMenuItem(
-                        value: project.id,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
+            const SizedBox(height: AppTheme.space4),
+
+            // Recent Projects Grid
+            recentProjectsAsync.when(
+              data: (projects) => LayoutBuilder(
+                builder: (context, constraints) {
+                  if (projects.isEmpty) {
+                    return SizedBox(
+                      height: 120,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Container(
-                              width: 12,
-                              height: 12,
-                              decoration: BoxDecoration(
-                                color: project.color,
-                                borderRadius: BorderRadius.circular(2),
+                            const Icon(
+                              Symbols.folder_off,
+                              size: 32,
+                              color: AppTheme.gray400,
+                            ),
+                            const SizedBox(height: AppTheme.space2),
+                            Text(
+                              'No recent projects',
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: AppTheme.gray500,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Flexible(
-                              child: Text(
-                                project.name,
-                                overflow: TextOverflow.ellipsis,
+                            const SizedBox(height: AppTheme.space3),
+                            ElevatedButton.icon(
+                              onPressed: () => _showCreateProjectDialog(context),
+                              icon: const Icon(Symbols.add, size: 16),
+                              label: Text(l10n.createProject),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppTheme.primaryBlue,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppTheme.space3,
+                                  vertical: AppTheme.space2,
+                                ),
                               ),
                             ),
                           ],
                         ),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedProjectId = value;
-                      });
-                    },
-                  ),
-                ),
-                
-                const SizedBox(width: 16),
-                
-                // Task name input
-                Expanded(
-                  flex: 3,
-                  child: TextField(
-                    controller: _taskController,
-                    decoration: InputDecoration(
-                      labelText: l10n.taskName,
-                      hintText: l10n.enterTaskName,
-                      border: const OutlineInputBorder(),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
                       ),
+                    );
+                  }
+                  
+                  // Calculate optimal grid layout based on available width
+                  final cardWidth = 120.0;
+                  final spacing = AppTheme.space3;
+                  final columns = ((constraints.maxWidth + spacing) / (cardWidth + spacing)).floor().clamp(2, 4);
+                  final rows = (projects.length / columns).ceil().clamp(1, 2); // Max 2 rows
+                  final gridHeight = rows * (cardWidth / 0.9) + (rows - 1) * spacing; // Calculate height based on aspect ratio
+                  
+                  return SizedBox(
+                    height: gridHeight,
+                    child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(), // Disable scrolling
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: columns,
+                        crossAxisSpacing: spacing,
+                        mainAxisSpacing: spacing,
+                        childAspectRatio: 0.9, // Slightly taller than wide
+                      ),
+                      itemCount: projects.length.clamp(0, columns * 2), // Max 2 rows
+                      itemBuilder: (context, index) {
+                        final project = projects[index];
+                        return _ProjectCard(
+                          project: project,
+                          onTap: () => _startTimerWithProject(context, ref, project),
+                        );
+                      },
                     ),
-                    onSubmitted: (_) => _startTimer(),
+                  );
+                },
+              ),
+              loading: () => const SizedBox(
+                height: 120,
+                child: Center(child: CircularProgressIndicator()),
+              ),
+              error: (error, _) => SizedBox(
+                height: 120,
+                child: Center(
+                  child: Text(
+                    'Error loading projects',
+                    style: TextStyle(color: Theme.of(context).colorScheme.error),
                   ),
                 ),
-                
-                const SizedBox(width: 16),
-                
-                // Start button
-                ElevatedButton.icon(
-                  onPressed: _canStartTimer() ? _startTimer : null,
-                  icon: const Icon(Icons.play_arrow),
-                  label: Text(l10n.startTimer),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 16,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-            
-            const SizedBox(height: 20),
-            
-            // Recent tasks quick actions
-            _buildRecentTasks(context, l10n, theme),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildRecentTasks(BuildContext context, AppLocalizations l10n, ThemeData theme) {
-    final timeEntries = ref.watch(timeEntriesProvider);
-    
-    // Get unique recent tasks (last 5)
-    final recentTasks = timeEntries
-        .where((entry) => !entry.isBreak)
-        .toList()
-        ..sort((a, b) => b.startTime.compareTo(a.startTime));
-    
-    final uniqueTasks = <String, MapEntry<String, String>>{};
-    for (final entry in recentTasks) {
-      final key = '${entry.projectId}_${entry.taskName}';
-      if (!uniqueTasks.containsKey(key)) {
-        uniqueTasks[key] = MapEntry(entry.projectId, entry.taskName);
-      }
-      if (uniqueTasks.length >= 5) break;
-    }
-
-    if (uniqueTasks.isEmpty) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Divider(color: theme.dividerColor),
-          const SizedBox(height: 12),
-          Text(
-            l10n.noRecentTasks,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      );
-    }
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Divider(color: theme.dividerColor),
-        const SizedBox(height: 12),
-        Text(
-          l10n.recentTasks,
-          style: theme.textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: uniqueTasks.values.map((task) {
-            return _buildQuickTaskChip(task.key, task.value, l10n);
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildQuickTaskChip(String projectId, String taskName, AppLocalizations l10n) {
-    final projects = ref.watch(activeProjectsProvider);
-    
-    final project = projects.firstWhere(
-      (p) => p.id == projectId,
-      orElse: () => Project(
-        id: projectId,
-        name: 'Unknown Project',
-        description: '',
-        color: Colors.grey,
-        createdAt: DateTime.now(),
+  void _startTimerWithProject(BuildContext context, WidgetRef ref, project) {
+    // Navigate to main timer and pre-select the project
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Selected ${project.name}. Enter a task to start the timer.'),
+        duration: const Duration(seconds: 2),
       ),
     );
     
-    return ActionChip(
-      avatar: Container(
-        width: 16,
-        height: 16,
+    // Update the timer with the selected project
+    ref.read(timerProvider.notifier).updateProject(project.id);
+  }
+
+  Future<void> _showCreateProjectDialog(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (context) => const CreateProjectDialog(),
+    );
+  }
+}
+
+class _ProjectCard extends StatelessWidget {
+  final project;
+  final VoidCallback onTap;
+
+  const _ProjectCard({
+    required this.project,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+      child: Container(
         decoration: BoxDecoration(
-          color: project.color,
-          borderRadius: BorderRadius.circular(2),
+          border: Border.all(
+            color: Theme.of(context).brightness == Brightness.light 
+                ? AppTheme.gray200 
+                : AppTheme.gray600,
+          ),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        ),
+        child: Column(
+          children: [
+            // Color header
+            Container(
+              height: 4,
+              decoration: BoxDecoration(
+                color: project.color,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(AppTheme.radiusMd),
+                  topRight: Radius.circular(AppTheme.radiusMd),
+                ),
+              ),
+            ),
+            
+            // Content
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(AppTheme.space3),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Project color dot
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: project.color.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Symbols.folder,
+                        size: 16,
+                        color: project.color,
+                      ),
+                    ),
+                    const SizedBox(height: AppTheme.space2),
+                    
+                    // Project name
+                    Text(
+                      project.name,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: AppTheme.space1),
+                    
+                    // Last used
+                    Text(
+                      project.lastActiveAt != null 
+                          ? TimeFormatter.formatTimeAgo(project.lastActiveAt!)
+                          : 'Never used',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppTheme.gray500,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
-      label: Text(taskName),
-      onPressed: () {
-        setState(() {
-          _selectedProjectId = projectId;
-          _taskController.text = taskName;
-        });
-        _startTimer();
-      },
-      tooltip: '${project.name}: $taskName',
     );
-  }
-
-  bool _canStartTimer() {
-    return _selectedProjectId != null && 
-           _selectedProjectId!.isNotEmpty && 
-           _taskController.text.trim().isNotEmpty;
-  }
-
-  void _startTimer() {
-    if (!_canStartTimer()) return;
-    
-    ref.read(timerNotifierProvider.notifier).startTimer(
-      projectId: _selectedProjectId!,
-      taskName: _taskController.text.trim(),
-    );
-    
-    // Clear the form
-    setState(() {
-      _taskController.clear();
-      _selectedProjectId = null;
-    });
   }
 }

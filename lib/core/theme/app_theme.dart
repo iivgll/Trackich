@@ -1,596 +1,678 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-/// Application theme system based on the UI/UX design specification
 class AppTheme {
-  // Private constructor to prevent instantiation
-  AppTheme._();
+  // YouTube-inspired Color Palette
+  static const Color youtubeRed = Color(0xFFFF0000);
+  static const Color youtubeRedDark = Color(0xFFCC0000);
+  static const Color youtubeBlue = Color(0xFF065FD4);
+  static const Color youtubeBlueDark = Color(0xFF0D47A1);
+  
+  // YouTube Dark Theme Colors (Primary)
+  static const Color youtubeDarkBg = Color(0xFF0F0F0F);
+  static const Color youtubeDarkSurface = Color(0xFF1F1F1F);
+  static const Color youtubeDarkSurfaceVariant = Color(0xFF272727);
+  static const Color youtubeDarkBorder = Color(0xFF303030);
+  static const Color youtubeDarkText = Color(0xFFFFFFFF);
+  static const Color youtubeDarkTextSecondary = Color(0xFFAAAAAA);
+  static const Color youtubeDarkTextTertiary = Color(0xFF717171);
+  
+  // YouTube Light Theme Colors
+  static const Color youtubeLightBg = Color(0xFFFFFFFF);
+  static const Color youtubeLightSurface = Color(0xFFF9F9F9);
+  static const Color youtubeLightSurfaceVariant = Color(0xFFF2F2F2);
+  static const Color youtubeLightBorder = Color(0xFFE5E5E5);
+  static const Color youtubeLightText = Color(0xFF0F0F0F);
+  static const Color youtubeLightTextSecondary = Color(0xFF606060);
+  static const Color youtubeLightTextTertiary = Color(0xFF909090);
 
-  // Color palette from UI/UX specification
-  static const _primaryBlue50 = Color(0xFFEFF6FF);
-  static const _primaryBlue100 = Color(0xFFDBEAFE);
-  static const _primaryBlue500 = Color(0xFF3B82F6);
-  static const _primaryBlue600 = Color(0xFF2563EB);
-  static const _primaryBlue700 = Color(0xFF1D4ED8);
-  static const _primaryBlue900 = Color(0xFF1E3A8A);
+  // Neutral Grays (YouTube style)
+  static const Color gray50 = Color(0xFFFAFAFA);
+  static const Color gray100 = Color(0xFFF5F5F5);
+  static const Color gray200 = Color(0xFFE5E5E5);
+  static const Color gray300 = Color(0xFFD4D4D4);
+  static const Color gray400 = Color(0xFFA3A3A3);
+  static const Color gray500 = Color(0xFF737373);
+  static const Color gray600 = Color(0xFF525252);
+  static const Color gray700 = Color(0xFF404040);
+  static const Color gray800 = Color(0xFF262626);
+  static const Color gray900 = Color(0xFF171717);
 
-  // Gray palette
-  static const _gray50 = Color(0xFFF9FAFB);
-  static const _gray100 = Color(0xFFF3F4F6);
-  static const _gray200 = Color(0xFFE5E7EB);
-  static const _gray400 = Color(0xFF9CA3AF);
-  static const _gray600 = Color(0xFF4B5563);
-  static const _gray700 = Color(0xFF374151);
-  static const _gray900 = Color(0xFF111827);
+  // Semantic Colors (YouTube style)
+  static const Color successGreen = Color(0xFF00FF00);
+  static const Color warningAmber = Color(0xFFFFD600);
+  static const Color warningOrange = Color(0xFFFF8C00);
+  static const Color errorRed = youtubeRed;
+  static const Color focusPurple = Color(0xFF9C27B0);
+  static const Color accentBlue = youtubeBlue;
+  
+  // Legacy color aliases for backward compatibility
+  static const Color primaryBlue = youtubeBlue;
+  static const Color breakBlue = Color(0xFF00FFFF);
 
-  // Accent colors
-  static const _green500 = Color(0xFF10B981);
-  static const _green100 = Color(0xFFD1FAE5);
-  static const _amber500 = Color(0xFFF59E0B);
-  static const _amber100 = Color(0xFFFEF3C7);
-  static const _red500 = Color(0xFFEF4444);
-  static const _red100 = Color(0xFFFEE2E2);
-
-  // Project colors
+  // Project Colors (YouTube-inspired vibrant palette)
   static const List<Color> projectColors = [
-    _primaryBlue500,
-    _green500,
-    Color(0xFF8B5CF6), // purple
-    Color(0xFFEC4899), // pink
-    Color(0xFFF97316), // orange
-    Color(0xFF14B8A6), // teal
-    Color(0xFF6366F1), // indigo
-    Color(0xFFEAB308), // yellow
+    youtubeRed,          // YouTube Red
+    Color(0xFFFF8C00),   // Orange
+    Color(0xFFFFD600),   // Yellow
+    Color(0xFF00FF00),   // Green
+    Color(0xFF00FFFF),   // Cyan
+    youtubeBlue,         // YouTube Blue
+    Color(0xFF9C27B0),   // Purple
+    Color(0xFFE91E63),   // Pink
   ];
 
-  // Dark theme colors
-  static const _darkBgPrimary = Color(0xFF0F172A);
-  static const _darkBgSecondary = Color(0xFF1E293B);
-  static const _darkBgTertiary = Color(0xFF334155);
-  static const _darkTextPrimary = Color(0xFFF1F5F9);
-  static const _darkTextSecondary = Color(0xFF94A3B8);
-  static const _darkBorder = Color(0xFF475569);
+  // Typography - YouTube uses Roboto
+  static const String primaryFontFamily = 'Roboto';
+  static const String monospaceFontFamily = 'Roboto Mono';
 
-  /// Light theme
+  // Spacing System (YouTube uses 8px base unit)
+  static const double space0 = 0;
+  static const double space1 = 4;
+  static const double space2 = 8;
+  static const double space3 = 12;
+  static const double space4 = 16;
+  static const double space5 = 20;
+  static const double space6 = 24;
+  static const double space8 = 32;
+  static const double space10 = 40;
+  static const double space12 = 48;
+  static const double space16 = 64;
+  static const double space20 = 80;
+  static const double space24 = 96;
+
+  // Border Radius (YouTube style - minimal radius)
+  static const double radiusNone = 0;
+  static const double radiusSm = 2;
+  static const double radiusMd = 4;
+  static const double radiusLg = 8;
+  static const double radiusXl = 12;
+  static const double radiusFull = 9999;
+
+  // Component Spacing
+  static const double buttonPaddingVertical = 12;
+  static const double buttonPaddingHorizontal = 24;
+  static const double inputPaddingVertical = 12;
+  static const double inputPaddingHorizontal = 16;
+  static const double cardPadding = 24;
+  static const double modalPadding = 32;
+  static const double sectionMargin = 48;
+  static const double navigationHeight = 64;
+  static const double sidebarWidth = 280;
+
+  // Shadows (YouTube style - subtle elevation)
+  static const BoxShadow shadowSm = BoxShadow(
+    offset: Offset(0, 1),
+    blurRadius: 3,
+    color: Color(0x0A000000),
+  );
+
+  static const BoxShadow shadowMd = BoxShadow(
+    offset: Offset(0, 2),
+    blurRadius: 8,
+    color: Color(0x10000000),
+  );
+
+  static const BoxShadow shadowLg = BoxShadow(
+    offset: Offset(0, 4),
+    blurRadius: 12,
+    color: Color(0x15000000),
+  );
+
+  static const BoxShadow shadowXl = BoxShadow(
+    offset: Offset(0, 8),
+    blurRadius: 24,
+    color: Color(0x15000000),
+  );
+
+  // Animation Durations
+  static const Duration animationFast = Duration(milliseconds: 150);
+  static const Duration animationMedium = Duration(milliseconds: 250);
+  static const Duration animationSlow = Duration(milliseconds: 400);
+
+  // Light Theme (YouTube style)
   static ThemeData get lightTheme {
-    final colorScheme = ColorScheme.light(
-      primary: _primaryBlue600,
-      primaryContainer: _primaryBlue100,
-      secondary: _green500,
-      secondaryContainer: _green100,
-      surface: Colors.white,
-      surfaceContainerHighest: _gray50,
-      surfaceContainerHigh: _gray100,
-      surfaceContainer: _gray100,
+    const colorScheme = ColorScheme.light(
+      primary: youtubeRed,
       onPrimary: Colors.white,
+      secondary: youtubeBlue,
       onSecondary: Colors.white,
-      onSurface: _gray900,
-      onSurfaceVariant: _gray700,
-      outline: _gray200,
-      outlineVariant: _gray100,
-      error: _red500,
-      errorContainer: _red100,
+      surface: youtubeLightSurface,
+      onSurface: youtubeLightText,
+      error: errorRed,
+      onError: Colors.white,
+      outline: youtubeLightBorder,
+      outlineVariant: gray200,
     );
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      textTheme: _buildTextTheme(colorScheme),
-      appBarTheme: _buildAppBarTheme(colorScheme),
-      cardTheme: _buildCardTheme(colorScheme),
-      elevatedButtonTheme: _buildElevatedButtonTheme(colorScheme),
-      outlinedButtonTheme: _buildOutlinedButtonTheme(colorScheme),
-      textButtonTheme: _buildTextButtonTheme(colorScheme),
-      inputDecorationTheme: _buildInputDecorationTheme(colorScheme),
-      dividerTheme: _buildDividerTheme(colorScheme),
-      chipTheme: _buildChipTheme(colorScheme),
-      switchTheme: _buildSwitchTheme(colorScheme),
-      checkboxTheme: _buildCheckboxTheme(colorScheme),
-      radioTheme: _buildRadioTheme(colorScheme),
-      navigationBarTheme: _buildNavigationBarTheme(colorScheme),
-      bottomSheetTheme: _buildBottomSheetTheme(colorScheme),
-      dialogTheme: _buildDialogTheme(colorScheme),
-      floatingActionButtonTheme: _buildFloatingActionButtonTheme(colorScheme),
-      extensions: [
-        _AppColorsExtension.light(),
-      ],
-    );
-  }
-
-  /// Dark theme
-  static ThemeData get darkTheme {
-    final colorScheme = ColorScheme.dark(
-      primary: _primaryBlue500,
-      primaryContainer: _primaryBlue900,
-      secondary: Color(0xFF22C55E),
-      secondaryContainer: Color(0xFF166534),
-      surface: _darkBgSecondary,
-      surfaceContainerHighest: _darkBgTertiary,
-      surfaceContainerHigh: _darkBgSecondary,
-      surfaceContainer: _darkBgPrimary,
-      onPrimary: Colors.white,
-      onSecondary: Colors.white,
-      onSurface: _darkTextPrimary,
-      onSurfaceVariant: _darkTextSecondary,
-      outline: _darkBorder,
-      outlineVariant: Color(0xFF334155),
-      error: _red500,
-      errorContainer: Color(0xFF7F1D1D),
-    );
-
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: colorScheme,
-      textTheme: _buildTextTheme(colorScheme),
-      appBarTheme: _buildAppBarTheme(colorScheme),
-      cardTheme: _buildCardTheme(colorScheme),
-      elevatedButtonTheme: _buildElevatedButtonTheme(colorScheme),
-      outlinedButtonTheme: _buildOutlinedButtonTheme(colorScheme),
-      textButtonTheme: _buildTextButtonTheme(colorScheme),
-      inputDecorationTheme: _buildInputDecorationTheme(colorScheme),
-      dividerTheme: _buildDividerTheme(colorScheme),
-      chipTheme: _buildChipTheme(colorScheme),
-      switchTheme: _buildSwitchTheme(colorScheme),
-      checkboxTheme: _buildCheckboxTheme(colorScheme),
-      radioTheme: _buildRadioTheme(colorScheme),
-      navigationBarTheme: _buildNavigationBarTheme(colorScheme),
-      bottomSheetTheme: _buildBottomSheetTheme(colorScheme),
-      dialogTheme: _buildDialogTheme(colorScheme),
-      floatingActionButtonTheme: _buildFloatingActionButtonTheme(colorScheme),
-      extensions: [
-        _AppColorsExtension.dark(),
-      ],
-    );
-  }
-
-  // Typography system based on UI/UX specification
-  static TextTheme _buildTextTheme(ColorScheme colorScheme) {
-    final baseTextTheme = GoogleFonts.interTextTheme();
-    
-    return baseTextTheme.copyWith(
-      // Page titles
-      displayLarge: GoogleFonts.inter(
-        fontSize: 36,
-        fontWeight: FontWeight.w600,
-        color: colorScheme.onSurface,
-        height: 1.2,
-      ),
-      // Section headers
-      displayMedium: GoogleFonts.inter(
-        fontSize: 30,
-        fontWeight: FontWeight.w600,
-        color: colorScheme.onSurface,
-        height: 1.3,
-      ),
-      // Card titles
-      displaySmall: GoogleFonts.inter(
-        fontSize: 24,
-        fontWeight: FontWeight.w600,
-        color: colorScheme.onSurface,
-        height: 1.3,
-      ),
-      // Subheadings
-      headlineLarge: GoogleFonts.inter(
-        fontSize: 20,
-        fontWeight: FontWeight.w500,
-        color: colorScheme.onSurface,
-        height: 1.4,
-      ),
-      // Large body text
-      headlineMedium: GoogleFonts.inter(
-        fontSize: 18,
-        fontWeight: FontWeight.w500,
-        color: colorScheme.onSurface,
-        height: 1.4,
-      ),
-      // Primary body text
-      bodyLarge: GoogleFonts.inter(
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-        color: colorScheme.onSurface,
-        height: 1.5,
-      ),
-      // Secondary text, labels
-      bodyMedium: GoogleFonts.inter(
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        color: colorScheme.onSurfaceVariant,
-        height: 1.4,
-      ),
-      // Captions, metadata
-      bodySmall: GoogleFonts.inter(
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-        color: colorScheme.onSurfaceVariant,
-        height: 1.3,
-      ),
-      // Button text
-      labelLarge: GoogleFonts.inter(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        color: colorScheme.onSurface,
-        height: 1.2,
-      ),
-      labelMedium: GoogleFonts.inter(
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        color: colorScheme.onSurface,
-        height: 1.2,
-      ),
-      labelSmall: GoogleFonts.inter(
-        fontSize: 11,
-        fontWeight: FontWeight.w500,
-        color: colorScheme.onSurfaceVariant,
-        height: 1.2,
-      ),
-    );
-  }
-
-  static AppBarTheme _buildAppBarTheme(ColorScheme colorScheme) {
-    return AppBarTheme(
-      elevation: 0,
-      centerTitle: false,
-      backgroundColor: colorScheme.surface,
-      surfaceTintColor: colorScheme.surface,
-      foregroundColor: colorScheme.onSurface,
-      titleTextStyle: GoogleFonts.inter(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        color: colorScheme.onSurface,
-      ),
-    );
-  }
-
-  static CardThemeData _buildCardTheme(ColorScheme colorScheme) {
-    return CardThemeData(
-      elevation: 1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: BorderSide(
-          color: colorScheme.outline,
-          width: 1,
+      fontFamily: primaryFontFamily,
+      
+      // App Bar Theme (YouTube style)
+      appBarTheme: const AppBarTheme(
+        backgroundColor: youtubeLightBg,
+        foregroundColor: youtubeLightText,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        titleTextStyle: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 20,
+          fontWeight: FontWeight.w500,
+          color: youtubeLightText,
         ),
+        toolbarHeight: 56,
       ),
-      color: colorScheme.surface,
-      surfaceTintColor: colorScheme.surface,
-    );
-  }
 
-  static ElevatedButtonThemeData _buildElevatedButtonTheme(ColorScheme colorScheme) {
-    return ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: colorScheme.primary,
-        foregroundColor: colorScheme.onPrimary,
+      // Card Theme (YouTube style)
+      cardTheme: CardThemeData(
+        color: youtubeLightBg,
         elevation: 0,
         shadowColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(radiusLg),
+          side: BorderSide.none,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        textStyle: GoogleFonts.inter(
-          fontSize: 14,
+        margin: const EdgeInsets.all(0),
+      ),
+
+      // Elevated Button Theme (YouTube style)
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: youtubeRed,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: gray300,
+          disabledForegroundColor: gray500,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusLg),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: buttonPaddingHorizontal,
+            vertical: 10,
+          ),
+          textStyle: const TextStyle(
+            fontFamily: primaryFontFamily,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+
+      // Outlined Button Theme
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: youtubeBlue,
+          side: const BorderSide(color: gray300),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusMd),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: buttonPaddingHorizontal,
+            vertical: buttonPaddingVertical,
+          ),
+          textStyle: const TextStyle(
+            fontFamily: primaryFontFamily,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+
+      // Text Button Theme
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: youtubeBlue,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusMd),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: buttonPaddingHorizontal,
+            vertical: buttonPaddingVertical,
+          ),
+          textStyle: const TextStyle(
+            fontFamily: primaryFontFamily,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+
+      // Input Decoration Theme
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: gray300),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: gray300),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: youtubeBlue, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: errorRed),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: inputPaddingHorizontal,
+          vertical: inputPaddingVertical,
+        ),
+        hintStyle: const TextStyle(
+          color: gray400,
+          fontFamily: primaryFontFamily,
+        ),
+      ),
+
+      // Typography Theme
+      textTheme: const TextTheme(
+        displayLarge: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 32,
+          fontWeight: FontWeight.w700,
+          color: gray900,
+          height: 1.25,
+        ),
+        displayMedium: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 28,
+          fontWeight: FontWeight.w600,
+          color: gray900,
+          height: 1.29,
+        ),
+        headlineLarge: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: gray900,
+          height: 1.33,
+        ),
+        titleLarge: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: gray900,
+          height: 1.4,
+        ),
+        titleMedium: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 18,
           fontWeight: FontWeight.w500,
+          color: gray900,
+          height: 1.33,
         ),
-      ),
-    );
-  }
-
-  static OutlinedButtonThemeData _buildOutlinedButtonTheme(ColorScheme colorScheme) {
-    return OutlinedButtonThemeData(
-      style: OutlinedButton.styleFrom(
-        foregroundColor: colorScheme.primary,
-        side: BorderSide(color: colorScheme.primary),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(6),
+        bodyLarge: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          color: gray900,
+          height: 1.5,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        textStyle: GoogleFonts.inter(
+        bodyMedium: TextStyle(
+          fontFamily: primaryFontFamily,
           fontSize: 14,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w400,
+          color: gray600,
+          height: 1.43,
         ),
-      ),
-    );
-  }
-
-  static TextButtonThemeData _buildTextButtonTheme(ColorScheme colorScheme) {
-    return TextButtonThemeData(
-      style: TextButton.styleFrom(
-        foregroundColor: colorScheme.primary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(6),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        textStyle: GoogleFonts.inter(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
-
-  static InputDecorationTheme _buildInputDecorationTheme(ColorScheme colorScheme) {
-    return InputDecorationTheme(
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(6),
-        borderSide: BorderSide(color: colorScheme.outline),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(6),
-        borderSide: BorderSide(color: colorScheme.outline),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(6),
-        borderSide: BorderSide(color: colorScheme.primary, width: 2),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(6),
-        borderSide: BorderSide(color: colorScheme.error),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(6),
-        borderSide: BorderSide(color: colorScheme.error, width: 2),
-      ),
-      filled: true,
-      fillColor: colorScheme.surface,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      hintStyle: GoogleFonts.inter(
-        fontSize: 16,
-        color: colorScheme.onSurfaceVariant.withOpacity(0.6),
-      ),
-    );
-  }
-
-  static DividerThemeData _buildDividerTheme(ColorScheme colorScheme) {
-    return DividerThemeData(
-      color: colorScheme.outline,
-      thickness: 1,
-      space: 1,
-    );
-  }
-
-  static ChipThemeData _buildChipTheme(ColorScheme colorScheme) {
-    return ChipThemeData(
-      backgroundColor: colorScheme.surfaceContainerHigh,
-      selectedColor: colorScheme.primaryContainer,
-      side: BorderSide(color: colorScheme.outline),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      labelStyle: GoogleFonts.inter(
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        color: colorScheme.onSurface,
-      ),
-    );
-  }
-
-  static SwitchThemeData _buildSwitchTheme(ColorScheme colorScheme) {
-    return SwitchThemeData(
-      thumbColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.selected)) {
-          return colorScheme.onPrimary;
-        }
-        return colorScheme.outline;
-      }),
-      trackColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.selected)) {
-          return colorScheme.primary;
-        }
-        return colorScheme.surfaceContainerHigh;
-      }),
-    );
-  }
-
-  static CheckboxThemeData _buildCheckboxTheme(ColorScheme colorScheme) {
-    return CheckboxThemeData(
-      fillColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.selected)) {
-          return colorScheme.primary;
-        }
-        return colorScheme.surface;
-      }),
-      checkColor: WidgetStateProperty.all(colorScheme.onPrimary),
-      side: BorderSide(color: colorScheme.outline),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4),
-      ),
-    );
-  }
-
-  static RadioThemeData _buildRadioTheme(ColorScheme colorScheme) {
-    return RadioThemeData(
-      fillColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.selected)) {
-          return colorScheme.primary;
-        }
-        return colorScheme.outline;
-      }),
-    );
-  }
-
-  static NavigationBarThemeData _buildNavigationBarTheme(ColorScheme colorScheme) {
-    return NavigationBarThemeData(
-      backgroundColor: colorScheme.surface,
-      surfaceTintColor: colorScheme.surface,
-      elevation: 1,
-      height: 56,
-      labelTextStyle: WidgetStateProperty.all(
-        GoogleFonts.inter(
+        bodySmall: TextStyle(
+          fontFamily: primaryFontFamily,
           fontSize: 12,
           fontWeight: FontWeight.w500,
+          color: gray500,
+          height: 1.33,
+        ),
+        labelLarge: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: gray900,
+          height: 1.43,
+        ),
+        labelMedium: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: gray700,
+          height: 1.33,
         ),
       ),
-      iconTheme: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.selected)) {
-          return IconThemeData(color: colorScheme.primary);
-        }
-        return IconThemeData(color: colorScheme.onSurfaceVariant);
-      }),
-      labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-    );
-  }
 
-  static BottomSheetThemeData _buildBottomSheetTheme(ColorScheme colorScheme) {
-    return BottomSheetThemeData(
-      backgroundColor: colorScheme.surface,
-      surfaceTintColor: colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      // Navigation Drawer Theme
+      drawerTheme: const DrawerThemeData(
+        backgroundColor: gray50,
+        width: sidebarWidth,
       ),
-      elevation: 8,
-    );
-  }
 
-  static DialogThemeData _buildDialogTheme(ColorScheme colorScheme) {
-    return DialogThemeData(
-      backgroundColor: colorScheme.surface,
-      surfaceTintColor: colorScheme.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+      // List Tile Theme
+      listTileTheme: const ListTileThemeData(
+        contentPadding: EdgeInsets.symmetric(horizontal: space6),
+        minVerticalPadding: space3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(radiusMd)),
+        ),
       ),
-      elevation: 8,
-      titleTextStyle: GoogleFonts.inter(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        color: colorScheme.onSurface,
+
+      // Switch Theme
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.selected)) {
+            return Colors.white;
+          }
+          return Colors.white;
+        }),
+        trackColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.selected)) {
+            return primaryBlue;
+          }
+          return gray300;
+        }),
       ),
-      contentTextStyle: GoogleFonts.inter(
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-        color: colorScheme.onSurfaceVariant,
+
+      // Slider Theme
+      sliderTheme: const SliderThemeData(
+        activeTrackColor: youtubeBlue,
+        inactiveTrackColor: gray300,
+        thumbColor: youtubeBlue,
+        overlayColor: Color(0x1A065FD4),
+      ),
+
+      // Floating Action Button Theme
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: youtubeRed,
+        foregroundColor: Colors.white,
+        elevation: 4,
+        shape: CircleBorder(),
+      ),
+
+      // Divider Theme
+      dividerTheme: const DividerThemeData(
+        color: gray200,
+        thickness: 1,
+        space: 1,
       ),
     );
   }
 
-  static FloatingActionButtonThemeData _buildFloatingActionButtonTheme(ColorScheme colorScheme) {
-    return FloatingActionButtonThemeData(
-      backgroundColor: colorScheme.primary,
-      foregroundColor: colorScheme.onPrimary,
-      elevation: 2,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
+  // Dark Theme (YouTube style)
+  static ThemeData get darkTheme {
+    const colorScheme = ColorScheme.dark(
+      primary: youtubeRed,
+      onPrimary: Colors.white,
+      secondary: youtubeBlue,
+      onSecondary: Colors.white,
+      surface: youtubeDarkSurface,
+      onSurface: youtubeDarkText,
+      error: errorRed,
+      onError: Colors.white,
+      outline: youtubeDarkBorder,
+      outlineVariant: youtubeDarkBorder,
+    );
+
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: colorScheme,
+      fontFamily: primaryFontFamily,
+      
+      // App Bar Theme (YouTube Dark)
+      appBarTheme: const AppBarTheme(
+        backgroundColor: youtubeDarkBg,
+        foregroundColor: youtubeDarkText,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        titleTextStyle: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 20,
+          fontWeight: FontWeight.w500,
+          color: youtubeDarkText,
+        ),
+        toolbarHeight: 56,
+      ),
+
+      // Card Theme (YouTube Dark)
+      cardTheme: CardThemeData(
+        color: youtubeDarkSurface,
+        elevation: 0,
+        shadowColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusLg),
+          side: BorderSide.none,
+        ),
+        margin: const EdgeInsets.all(0),
+      ),
+
+      // Elevated Button Theme (YouTube Dark)
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: youtubeRed,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: gray600,
+          disabledForegroundColor: gray400,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusLg),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: buttonPaddingHorizontal,
+            vertical: 10,
+          ),
+          textStyle: const TextStyle(
+            fontFamily: primaryFontFamily,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+
+      // Input Decoration Theme (YouTube Dark)
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: youtubeDarkSurfaceVariant,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusLg),
+          borderSide: const BorderSide(color: youtubeDarkBorder),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusLg),
+          borderSide: const BorderSide(color: youtubeDarkBorder),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusLg),
+          borderSide: const BorderSide(color: youtubeBlue, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusLg),
+          borderSide: const BorderSide(color: errorRed),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: inputPaddingHorizontal,
+          vertical: inputPaddingVertical,
+        ),
+        hintStyle: const TextStyle(
+          color: youtubeDarkTextTertiary,
+          fontFamily: primaryFontFamily,
+        ),
+      ),
+
+      // Typography Theme for Dark Mode (YouTube style)
+      textTheme: const TextTheme(
+        displayLarge: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 32,
+          fontWeight: FontWeight.w400,
+          color: youtubeDarkText,
+          height: 1.25,
+        ),
+        displayMedium: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 28,
+          fontWeight: FontWeight.w400,
+          color: youtubeDarkText,
+          height: 1.29,
+        ),
+        headlineLarge: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 24,
+          fontWeight: FontWeight.w500,
+          color: youtubeDarkText,
+          height: 1.33,
+        ),
+        titleLarge: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 20,
+          fontWeight: FontWeight.w500,
+          color: youtubeDarkText,
+          height: 1.4,
+        ),
+        titleMedium: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: youtubeDarkText,
+          height: 1.33,
+        ),
+        bodyLarge: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: youtubeDarkText,
+          height: 1.5,
+        ),
+        bodyMedium: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: youtubeDarkTextSecondary,
+          height: 1.43,
+        ),
+        bodySmall: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 12,
+          fontWeight: FontWeight.w400,
+          color: youtubeDarkTextTertiary,
+          height: 1.33,
+        ),
+        labelLarge: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: youtubeDarkText,
+          height: 1.43,
+        ),
+        labelMedium: TextStyle(
+          fontFamily: primaryFontFamily,
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: youtubeDarkTextSecondary,
+          height: 1.33,
+        ),
+      ),
+
+      // Navigation Drawer Theme (YouTube Dark)
+      drawerTheme: const DrawerThemeData(
+        backgroundColor: youtubeDarkBg,
+        width: sidebarWidth,
+      ),
+
+      // Switch Theme (YouTube style)
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
+          return Colors.white;
+        }),
+        trackColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.selected)) {
+            return youtubeBlue;
+          }
+          return youtubeDarkBorder;
+        }),
+      ),
+
+      // Floating Action Button Theme (YouTube style)
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: youtubeRed,
+        foregroundColor: Colors.white,
+        elevation: 2,
+        shape: CircleBorder(),
+      ),
+
+      // Divider Theme (YouTube Dark)
+      dividerTheme: const DividerThemeData(
+        color: youtubeDarkBorder,
+        thickness: 1,
+        space: 1,
       ),
     );
   }
-}
 
-/// Extension for custom colors not covered by Material Design
-@immutable
-class _AppColorsExtension extends ThemeExtension<_AppColorsExtension> {
-  const _AppColorsExtension({
-    required this.success,
-    required this.successContainer,
-    required this.onSuccess,
-    required this.onSuccessContainer,
-    required this.warning,
-    required this.warningContainer,
-    required this.onWarning,
-    required this.onWarningContainer,
-    required this.timerActive,
-    required this.timerPaused,
-    required this.projectColors,
-  });
-
-  final Color success;
-  final Color successContainer;
-  final Color onSuccess;
-  final Color onSuccessContainer;
-  final Color warning;
-  final Color warningContainer;
-  final Color onWarning;
-  final Color onWarningContainer;
-  final Color timerActive;
-  final Color timerPaused;
-  final List<Color> projectColors;
-
-  factory _AppColorsExtension.light() {
-    return const _AppColorsExtension(
-      success: Color(0xFF10B981), // _green500
-      successContainer: Color(0xFFD1FAE5), // _green100
-      onSuccess: Colors.white,
-      onSuccessContainer: Color(0xFF064E3B),
-      warning: Color(0xFFF59E0B), // _amber500
-      warningContainer: Color(0xFFFEF3C7), // _amber100
-      onWarning: Colors.white,
-      onWarningContainer: Color(0xFF92400E),
-      timerActive: Color(0xFF10B981), // _green500
-      timerPaused: Color(0xFFF59E0B), // _amber500
-      projectColors: AppTheme.projectColors,
+  // Timer-specific text styles (YouTube style)
+  static TextStyle timerLarge(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return TextStyle(
+      fontFamily: monospaceFontFamily,
+      fontSize: 48,
+      fontWeight: FontWeight.w300,
+      color: isDark ? youtubeDarkText : youtubeLightText,
+      height: 1.17,
     );
   }
 
-  factory _AppColorsExtension.dark() {
-    return const _AppColorsExtension(
-      success: Color(0xFF22C55E),
-      successContainer: Color(0xFF166534),
-      onSuccess: Colors.white,
-      onSuccessContainer: Color(0xFFDCFCE7),
-      warning: Color(0xFFFBBF24),
-      warningContainer: Color(0xFF92400E),
-      onWarning: Colors.black,
-      onWarningContainer: Color(0xFFFEF3C7),
-      timerActive: Color(0xFF22C55E),
-      timerPaused: Color(0xFFFBBF24),
-      projectColors: AppTheme.projectColors,
+  static TextStyle timerMedium(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return TextStyle(
+      fontFamily: monospaceFontFamily,
+      fontSize: 32,
+      fontWeight: FontWeight.w300,
+      color: isDark ? youtubeDarkText : youtubeLightText,
+      height: 1.25,
     );
   }
 
-  @override
-  ThemeExtension<_AppColorsExtension> copyWith({
-    Color? success,
-    Color? successContainer,
-    Color? onSuccess,
-    Color? onSuccessContainer,
-    Color? warning,
-    Color? warningContainer,
-    Color? onWarning,
-    Color? onWarningContainer,
-    Color? timerActive,
-    Color? timerPaused,
-    List<Color>? projectColors,
-  }) {
-    return _AppColorsExtension(
-      success: success ?? this.success,
-      successContainer: successContainer ?? this.successContainer,
-      onSuccess: onSuccess ?? this.onSuccess,
-      onSuccessContainer: onSuccessContainer ?? this.onSuccessContainer,
-      warning: warning ?? this.warning,
-      warningContainer: warningContainer ?? this.warningContainer,
-      onWarning: onWarning ?? this.onWarning,
-      onWarningContainer: onWarningContainer ?? this.onWarningContainer,
-      timerActive: timerActive ?? this.timerActive,
-      timerPaused: timerPaused ?? this.timerPaused,
-      projectColors: projectColors ?? this.projectColors,
+  static TextStyle timerSmall(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return TextStyle(
+      fontFamily: monospaceFontFamily,
+      fontSize: 24,
+      fontWeight: FontWeight.w400,
+      color: isDark ? youtubeDarkText : youtubeLightText,
+      height: 1.33,
     );
   }
 
-  @override
-  ThemeExtension<_AppColorsExtension> lerp(
-    covariant ThemeExtension<_AppColorsExtension>? other,
-    double t,
-  ) {
-    if (other is! _AppColorsExtension) {
-      return this;
-    }
-
-    return _AppColorsExtension(
-      success: Color.lerp(success, other.success, t)!,
-      successContainer: Color.lerp(successContainer, other.successContainer, t)!,
-      onSuccess: Color.lerp(onSuccess, other.onSuccess, t)!,
-      onSuccessContainer: Color.lerp(onSuccessContainer, other.onSuccessContainer, t)!,
-      warning: Color.lerp(warning, other.warning, t)!,
-      warningContainer: Color.lerp(warningContainer, other.warningContainer, t)!,
-      onWarning: Color.lerp(onWarning, other.onWarning, t)!,
-      onWarningContainer: Color.lerp(onWarningContainer, other.onWarningContainer, t)!,
-      timerActive: Color.lerp(timerActive, other.timerActive, t)!,
-      timerPaused: Color.lerp(timerPaused, other.timerPaused, t)!,
-      projectColors: projectColors, // Can't lerp lists
-    );
+  // Active timer styles (with YouTube red)
+  static TextStyle timerActiveStyle(BuildContext context, TextStyle baseStyle) {
+    return baseStyle.copyWith(color: youtubeRed);
   }
-}
 
-/// Extension to access custom colors from BuildContext
-extension AppColorsExtension on BuildContext {
-  _AppColorsExtension get appColors =>
-      Theme.of(this).extension<_AppColorsExtension>()!;
+  // Responsive breakpoints
+  static const double mobileBreakpoint = 768;
+  static const double tabletBreakpoint = 1024;
+  static const double desktopBreakpoint = 1440;
+
+  // Helper methods for responsive design
+  static bool isMobile(BuildContext context) {
+    return MediaQuery.of(context).size.width < mobileBreakpoint;
+  }
+
+  static bool isTablet(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    return width >= mobileBreakpoint && width < tabletBreakpoint;
+  }
+
+  static bool isDesktop(BuildContext context) {
+    return MediaQuery.of(context).size.width >= tabletBreakpoint;
+  }
+
+  static int getGridColumns(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width >= desktopBreakpoint) return 4;
+    if (width >= tabletBreakpoint) return 3;
+    if (width >= mobileBreakpoint) return 2;
+    return 1;
+  }
 }

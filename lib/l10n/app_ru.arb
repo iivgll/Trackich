@@ -1,189 +1,47 @@
 {
   "@@locale": "ru",
   
-  "appTitle": "Trackich",
-  
+  "appTitle": "Трэкич",
   "dashboard": "Панель",
-  
-  "calendar": "Календарь",
-  
   "projects": "Проекты",
-  
+  "calendar": "Календарь",
   "analytics": "Аналитика",
-  
   "settings": "Настройки",
-  
-  "startTask": "Начать задачу",
-  
-  "pauseTask": "Пауза",
-  
-  "resumeTask": "Продолжить",
-  
-  "stopTask": "Стоп",
-  
-  "workingOn": "Работаю над: {taskName}",
-  
-  "project": "Проект",
-  
-  "selectProject": "Выберите проект",
-  
-  "taskName": "Название задачи...",
-  
-  "addNote": "Добавить заметку",
-  
-  "todaysSummary": "Сводка за сегодня",
-  
-  "todayWorked": "Сегодня: {duration} работы",
-  
-  "tasksCompleted": "{count} задач выполнено",
-  
-  "breaksTaken": "{count} перерывов сделано",
-  
-  "goal": "Цель: {goal} ({percentage}% выполнено)",
-  
-  "recentTasks": "Недавние задачи",
-  
-  "viewAllTasks": "Посмотреть все задачи...",
-  
-  "newProject": "Новый проект",
-  
-  "activeProjects": "{count} активных, {archived} архивных",
-  
-  "thisWeek": "На этой неделе: {duration}",
-  
-  "lastActivity": "Последняя активность: {time}",
-  
-  "edit": "Редактировать",
-  
-  "archive": "Архивировать",
-  
-  "viewTasks": "Посмотреть задачи",
-  
-  "general": "Основные",
-  
-  "language": "Язык",
-  
-  "theme": "Тема",
-  
-  "timeFormat": "Формат времени",
-  
-  "weekStartsOn": "Неделя начинается с",
-  
-  "defaultProject": "Проект по умолчанию",
-  
-  "breakConfiguration": "Настройка перерывов",
-  
-  "workSessionDuration": "Длительность рабочей сессии",
-  
-  "shortBreakDuration": "Длительность короткого перерыва",
-  
-  "longBreakDuration": "Длительность длинного перерыва",
-  
-  "longBreakInterval": "Интервал длинного перерыва",
-  
-  "enableBreakNotifications": "Включить уведомления о перерывах",
-  
-  "notificationSound": "Звук уведомления",
-  
-  "testSound": "Проверить звук",
-  
-  "notifications": "Уведомления",
-  
-  "systemNotifications": "Системные уведомления",
-  
-  "breakReminders": "Напоминания о перерывах",
-  
-  "dailySummary": "Дневная сводка",
-  
-  "quietHours": "Тихие часы",
-  
-  "dataManagement": "Управление данными",
-  
-  "exportData": "Экспорт данных",
-  
-  "importData": "Импорт данных",
-  
-  "clearAllData": "Очистить все данные",
-  
-  "storageUsed": "Использовано места",
-  
-  "english": "Английский",
-  
-  "russian": "Русский",
-  
-  "light": "Светлая",
-  
-  "dark": "Темная",
-  
-  "system": "Системная",
-  
-  "hour12": "12-часовой",
-  
-  "hour24": "24-часовой",
-  
-  "monday": "Понедельник",
-  
-  "sunday": "Воскресенье",
-  
-  "minutes": "минут",
-  
-  "sessions": "сессий",
-  
-  "enabled": "Включено",
-  
-  "disabled": "Выключено",
-  
-  "today": "Сегодня",
-  
-  "week": "Неделя",
-  
-  "month": "Месяц",
-  
-  "total": "Всего: {duration}",
-  
-  "takeBreak": "Сделать перерыв",
-  
-  "shortBreak": "Короткий перерыв ({duration})",
-  
-  "longBreak": "Длинный перерыв ({duration})",
-  
-  "customDuration": "Своя длительность",
-  
-  "justPause": "Просто пауза",
-  
-  "readyToResume": "Готовы продолжить?",
-  
-  "resume": "Продолжить {taskName}",
-  
-  "startNewTask": "Начать новую задачу",
-  
-  "extendBreak": "Продлить перерыв",
-
-  "quickStart": "Быстрый старт",
-
   "startTimer": "Запустить таймер",
-
-  "enterTaskName": "Введите название задачи...",
-
-  "errorLoadingProjects": "Ошибка загрузки проектов",
-
-  "noRecentTasks": "Нет недавних задач",
-
-  "todaySummary": "Сводка за сегодня",
-
-  "timeWorked": "Время работы",
-
-  "dailyGoalProgress": "Прогресс дневной цели",
-
-  "complete": "завершено",
-
-  "breakTime": "Время перерывов",
-
-  "breaks": "Перерывы",
-
-  "currentTime": "Текущее время",
-
-  "noTasksToday": "Сегодня не работали над задачами",
-
-  "projectBreakdown": "Разбивка по проектам"
+  "pauseTimer": "Приостановить таймер",
+  "stopTimer": "Остановить таймер",
+  "selectProject": "Выберите проект...",
+  "taskDescription": "Над чем вы работаете?",
+  "todayActivity": "Активность сегодня",
+  "createProject": "Создать проект",
+  "projectName": "Название проекта",
+  "projectDescription": "Описание",
+  "projectColor": "Цвет проекта",
+  "save": "Сохранить",
+  "cancel": "Отмена",
+  "totalHours": "Всего часов",
+  "focusScore": "Оценка фокуса",
+  "breakCompliance": "Соблюдение перерывов",
+  "productivity": "Продуктивность",
+  "timeBreakdown": "Распределение времени",
+  "productivityTrend": "Тренд продуктивности",
+  "weekView": "Неделя",
+  "monthView": "Месяц",
+  "dayView": "День",
+  "general": "Общие",
+  "timerAndBreaks": "Таймер и перерывы",
+  "notifications": "Уведомления",
+  "language": "Язык",
+  "theme": "Тема",
+  "lightTheme": "Светлая",
+  "darkTheme": "Тёмная",
+  "systemTheme": "Системная",
+  "enableNotifications": "Включить уведомления",
+  "workInterval": "Рабочий интервал",
+  "shortBreak": "Короткий перерыв",
+  "longBreak": "Длинный перерыв",
+  "minutes": "минут",
+  "takeBreak": "Сделайте перерыв",
+  "breakTime": "Время для {breakType} перерыва!",
+  "workCompleted": "Отличная работа! Вы выполнили {hours} часов сегодня."
 }

@@ -6,45 +6,87 @@ part of 'projects_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$activeProjectsHash() => r'687afe5c16311abe19fba26e8b18b0d610b89c88';
+String _$activeProjectsHash() => r'1635be8d98222dece65a0ff4d10a70c8637547ca';
 
-/// Provider that filters active projects
+/// Provider for active projects only
 ///
 /// Copied from [activeProjects].
 @ProviderFor(activeProjects)
-final activeProjectsProvider = AutoDisposeProvider<List<Project>>.internal(
-  activeProjects,
-  name: r'activeProjectsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$activeProjectsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final activeProjectsProvider =
+    AutoDisposeFutureProvider<List<Project>>.internal(
+      activeProjects,
+      name: r'activeProjectsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$activeProjectsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ActiveProjectsRef = AutoDisposeProviderRef<List<Project>>;
-String _$archivedProjectsHash() => r'6791fd2a945ec71cd5db607afe5c0d6646874d50';
+typedef ActiveProjectsRef = AutoDisposeFutureProviderRef<List<Project>>;
+String _$archivedProjectsHash() => r'fecf4879551ba05b4ebe9c742cb46606e26aeefa';
 
-/// Provider that filters archived projects
+/// Provider for archived projects only
 ///
 /// Copied from [archivedProjects].
 @ProviderFor(archivedProjects)
-final archivedProjectsProvider = AutoDisposeProvider<List<Project>>.internal(
-  archivedProjects,
-  name: r'archivedProjectsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$archivedProjectsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final archivedProjectsProvider =
+    AutoDisposeFutureProvider<List<Project>>.internal(
+      archivedProjects,
+      name: r'archivedProjectsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$archivedProjectsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ArchivedProjectsRef = AutoDisposeProviderRef<List<Project>>;
-String _$projectByIdHash() => r'9db365b9ea0e50f93fd9508da6eda2ce5303c717';
+typedef ArchivedProjectsRef = AutoDisposeFutureProviderRef<List<Project>>;
+String _$recentProjectsHash() => r'd22919a497ce02dc2a5aa1a833e0f23ece34cb74';
+
+/// Provider for recent projects
+///
+/// Copied from [recentProjects].
+@ProviderFor(recentProjects)
+final recentProjectsProvider =
+    AutoDisposeFutureProvider<List<Project>>.internal(
+      recentProjects,
+      name: r'recentProjectsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$recentProjectsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef RecentProjectsRef = AutoDisposeFutureProviderRef<List<Project>>;
+String _$projectsByUsageHash() => r'ca9871ea4f3ef0be1ce753417609e40e434fd2c6';
+
+/// Provider for projects sorted by most used
+///
+/// Copied from [projectsByUsage].
+@ProviderFor(projectsByUsage)
+final projectsByUsageProvider =
+    AutoDisposeFutureProvider<List<Project>>.internal(
+      projectsByUsage,
+      name: r'projectsByUsageProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$projectsByUsageHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ProjectsByUsageRef = AutoDisposeFutureProviderRef<List<Project>>;
+String _$projectHash() => r'8ef5b210cd603478ea7aa0c0276fc2931c215286';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -67,32 +109,30 @@ class _SystemHash {
   }
 }
 
-/// Provider for getting a specific project by ID
+/// Provider for a specific project by ID
 ///
-/// Copied from [projectById].
-@ProviderFor(projectById)
-const projectByIdProvider = ProjectByIdFamily();
+/// Copied from [project].
+@ProviderFor(project)
+const projectProvider = ProjectFamily();
 
-/// Provider for getting a specific project by ID
+/// Provider for a specific project by ID
 ///
-/// Copied from [projectById].
-class ProjectByIdFamily extends Family<Project?> {
-  /// Provider for getting a specific project by ID
+/// Copied from [project].
+class ProjectFamily extends Family<AsyncValue<Project?>> {
+  /// Provider for a specific project by ID
   ///
-  /// Copied from [projectById].
-  const ProjectByIdFamily();
+  /// Copied from [project].
+  const ProjectFamily();
 
-  /// Provider for getting a specific project by ID
+  /// Provider for a specific project by ID
   ///
-  /// Copied from [projectById].
-  ProjectByIdProvider call(String projectId) {
-    return ProjectByIdProvider(projectId);
+  /// Copied from [project].
+  ProjectProvider call(String projectId) {
+    return ProjectProvider(projectId);
   }
 
   @override
-  ProjectByIdProvider getProviderOverride(
-    covariant ProjectByIdProvider provider,
-  ) {
+  ProjectProvider getProviderOverride(covariant ProjectProvider provider) {
     return call(provider.projectId);
   }
 
@@ -108,159 +148,30 @@ class ProjectByIdFamily extends Family<Project?> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'projectByIdProvider';
+  String? get name => r'projectProvider';
 }
 
-/// Provider for getting a specific project by ID
+/// Provider for a specific project by ID
 ///
-/// Copied from [projectById].
-class ProjectByIdProvider extends AutoDisposeProvider<Project?> {
-  /// Provider for getting a specific project by ID
+/// Copied from [project].
+class ProjectProvider extends AutoDisposeFutureProvider<Project?> {
+  /// Provider for a specific project by ID
   ///
-  /// Copied from [projectById].
-  ProjectByIdProvider(String projectId)
+  /// Copied from [project].
+  ProjectProvider(String projectId)
     : this._internal(
-        (ref) => projectById(ref as ProjectByIdRef, projectId),
-        from: projectByIdProvider,
-        name: r'projectByIdProvider',
+        (ref) => project(ref as ProjectRef, projectId),
+        from: projectProvider,
+        name: r'projectProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
             ? null
-            : _$projectByIdHash,
-        dependencies: ProjectByIdFamily._dependencies,
-        allTransitiveDependencies: ProjectByIdFamily._allTransitiveDependencies,
+            : _$projectHash,
+        dependencies: ProjectFamily._dependencies,
+        allTransitiveDependencies: ProjectFamily._allTransitiveDependencies,
         projectId: projectId,
       );
 
-  ProjectByIdProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.projectId,
-  }) : super.internal();
-
-  final String projectId;
-
-  @override
-  Override overrideWith(Project? Function(ProjectByIdRef provider) create) {
-    return ProviderOverride(
-      origin: this,
-      override: ProjectByIdProvider._internal(
-        (ref) => create(ref as ProjectByIdRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        projectId: projectId,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeProviderElement<Project?> createElement() {
-    return _ProjectByIdProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is ProjectByIdProvider && other.projectId == projectId;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, projectId.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin ProjectByIdRef on AutoDisposeProviderRef<Project?> {
-  /// The parameter `projectId` of this provider.
-  String get projectId;
-}
-
-class _ProjectByIdProviderElement extends AutoDisposeProviderElement<Project?>
-    with ProjectByIdRef {
-  _ProjectByIdProviderElement(super.provider);
-
-  @override
-  String get projectId => (origin as ProjectByIdProvider).projectId;
-}
-
-String _$projectStatisticsHash() => r'90bcaa3b50446da74ca48270622d2d5dbdc11441';
-
-/// Provider for project statistics
-///
-/// Copied from [projectStatistics].
-@ProviderFor(projectStatistics)
-const projectStatisticsProvider = ProjectStatisticsFamily();
-
-/// Provider for project statistics
-///
-/// Copied from [projectStatistics].
-class ProjectStatisticsFamily extends Family<ProjectStatistics> {
-  /// Provider for project statistics
-  ///
-  /// Copied from [projectStatistics].
-  const ProjectStatisticsFamily();
-
-  /// Provider for project statistics
-  ///
-  /// Copied from [projectStatistics].
-  ProjectStatisticsProvider call(String projectId) {
-    return ProjectStatisticsProvider(projectId);
-  }
-
-  @override
-  ProjectStatisticsProvider getProviderOverride(
-    covariant ProjectStatisticsProvider provider,
-  ) {
-    return call(provider.projectId);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'projectStatisticsProvider';
-}
-
-/// Provider for project statistics
-///
-/// Copied from [projectStatistics].
-class ProjectStatisticsProvider extends AutoDisposeProvider<ProjectStatistics> {
-  /// Provider for project statistics
-  ///
-  /// Copied from [projectStatistics].
-  ProjectStatisticsProvider(String projectId)
-    : this._internal(
-        (ref) => projectStatistics(ref as ProjectStatisticsRef, projectId),
-        from: projectStatisticsProvider,
-        name: r'projectStatisticsProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$projectStatisticsHash,
-        dependencies: ProjectStatisticsFamily._dependencies,
-        allTransitiveDependencies:
-            ProjectStatisticsFamily._allTransitiveDependencies,
-        projectId: projectId,
-      );
-
-  ProjectStatisticsProvider._internal(
+  ProjectProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -274,12 +185,12 @@ class ProjectStatisticsProvider extends AutoDisposeProvider<ProjectStatistics> {
 
   @override
   Override overrideWith(
-    ProjectStatistics Function(ProjectStatisticsRef provider) create,
+    FutureOr<Project?> Function(ProjectRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: ProjectStatisticsProvider._internal(
-        (ref) => create(ref as ProjectStatisticsRef),
+      override: ProjectProvider._internal(
+        (ref) => create(ref as ProjectRef),
         from: from,
         name: null,
         dependencies: null,
@@ -291,13 +202,13 @@ class ProjectStatisticsProvider extends AutoDisposeProvider<ProjectStatistics> {
   }
 
   @override
-  AutoDisposeProviderElement<ProjectStatistics> createElement() {
-    return _ProjectStatisticsProviderElement(this);
+  AutoDisposeFutureProviderElement<Project?> createElement() {
+    return _ProjectProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ProjectStatisticsProvider && other.projectId == projectId;
+    return other is ProjectProvider && other.projectId == projectId;
   }
 
   @override
@@ -311,28 +222,159 @@ class ProjectStatisticsProvider extends AutoDisposeProvider<ProjectStatistics> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ProjectStatisticsRef on AutoDisposeProviderRef<ProjectStatistics> {
+mixin ProjectRef on AutoDisposeFutureProviderRef<Project?> {
   /// The parameter `projectId` of this provider.
   String get projectId;
 }
 
-class _ProjectStatisticsProviderElement
-    extends AutoDisposeProviderElement<ProjectStatistics>
-    with ProjectStatisticsRef {
-  _ProjectStatisticsProviderElement(super.provider);
+class _ProjectProviderElement extends AutoDisposeFutureProviderElement<Project?>
+    with ProjectRef {
+  _ProjectProviderElement(super.provider);
 
   @override
-  String get projectId => (origin as ProjectStatisticsProvider).projectId;
+  String get projectId => (origin as ProjectProvider).projectId;
 }
 
-String _$projectsHash() => r'b823a979b08ed0e8dbb09924e704f6d51e6d550a';
+String _$searchProjectsHash() => r'f31f433c5fe52d69767cca1724e73490fa953695';
+
+/// Provider for searching projects
+///
+/// Copied from [searchProjects].
+@ProviderFor(searchProjects)
+const searchProjectsProvider = SearchProjectsFamily();
+
+/// Provider for searching projects
+///
+/// Copied from [searchProjects].
+class SearchProjectsFamily extends Family<AsyncValue<List<Project>>> {
+  /// Provider for searching projects
+  ///
+  /// Copied from [searchProjects].
+  const SearchProjectsFamily();
+
+  /// Provider for searching projects
+  ///
+  /// Copied from [searchProjects].
+  SearchProjectsProvider call(String query) {
+    return SearchProjectsProvider(query);
+  }
+
+  @override
+  SearchProjectsProvider getProviderOverride(
+    covariant SearchProjectsProvider provider,
+  ) {
+    return call(provider.query);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'searchProjectsProvider';
+}
+
+/// Provider for searching projects
+///
+/// Copied from [searchProjects].
+class SearchProjectsProvider extends AutoDisposeFutureProvider<List<Project>> {
+  /// Provider for searching projects
+  ///
+  /// Copied from [searchProjects].
+  SearchProjectsProvider(String query)
+    : this._internal(
+        (ref) => searchProjects(ref as SearchProjectsRef, query),
+        from: searchProjectsProvider,
+        name: r'searchProjectsProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$searchProjectsHash,
+        dependencies: SearchProjectsFamily._dependencies,
+        allTransitiveDependencies:
+            SearchProjectsFamily._allTransitiveDependencies,
+        query: query,
+      );
+
+  SearchProjectsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.query,
+  }) : super.internal();
+
+  final String query;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<Project>> Function(SearchProjectsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: SearchProjectsProvider._internal(
+        (ref) => create(ref as SearchProjectsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        query: query,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<Project>> createElement() {
+    return _SearchProjectsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is SearchProjectsProvider && other.query == query;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, query.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin SearchProjectsRef on AutoDisposeFutureProviderRef<List<Project>> {
+  /// The parameter `query` of this provider.
+  String get query;
+}
+
+class _SearchProjectsProviderElement
+    extends AutoDisposeFutureProviderElement<List<Project>>
+    with SearchProjectsRef {
+  _SearchProjectsProviderElement(super.provider);
+
+  @override
+  String get query => (origin as SearchProjectsProvider).query;
+}
+
+String _$projectsHash() => r'0d9b73c7a3e729ba489262210a69890870aa5966';
 
 /// Provider for managing projects
 ///
 /// Copied from [Projects].
 @ProviderFor(Projects)
 final projectsProvider =
-    AutoDisposeNotifierProvider<Projects, List<Project>>.internal(
+    AutoDisposeAsyncNotifierProvider<Projects, List<Project>>.internal(
       Projects.new,
       name: r'projectsProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -342,6 +384,161 @@ final projectsProvider =
       allTransitiveDependencies: null,
     );
 
-typedef _$Projects = AutoDisposeNotifier<List<Project>>;
+typedef _$Projects = AutoDisposeAsyncNotifier<List<Project>>;
+String _$projectStatsHash() => r'07327508d09f607557f3d36c416f5843ee51fb88';
+
+abstract class _$ProjectStats
+    extends BuildlessAutoDisposeAsyncNotifier<Map<String, dynamic>> {
+  late final String projectId;
+
+  FutureOr<Map<String, dynamic>> build(String projectId);
+}
+
+/// Provider for project statistics
+///
+/// Copied from [ProjectStats].
+@ProviderFor(ProjectStats)
+const projectStatsProvider = ProjectStatsFamily();
+
+/// Provider for project statistics
+///
+/// Copied from [ProjectStats].
+class ProjectStatsFamily extends Family<AsyncValue<Map<String, dynamic>>> {
+  /// Provider for project statistics
+  ///
+  /// Copied from [ProjectStats].
+  const ProjectStatsFamily();
+
+  /// Provider for project statistics
+  ///
+  /// Copied from [ProjectStats].
+  ProjectStatsProvider call(String projectId) {
+    return ProjectStatsProvider(projectId);
+  }
+
+  @override
+  ProjectStatsProvider getProviderOverride(
+    covariant ProjectStatsProvider provider,
+  ) {
+    return call(provider.projectId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'projectStatsProvider';
+}
+
+/// Provider for project statistics
+///
+/// Copied from [ProjectStats].
+class ProjectStatsProvider
+    extends
+        AutoDisposeAsyncNotifierProviderImpl<
+          ProjectStats,
+          Map<String, dynamic>
+        > {
+  /// Provider for project statistics
+  ///
+  /// Copied from [ProjectStats].
+  ProjectStatsProvider(String projectId)
+    : this._internal(
+        () => ProjectStats()..projectId = projectId,
+        from: projectStatsProvider,
+        name: r'projectStatsProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$projectStatsHash,
+        dependencies: ProjectStatsFamily._dependencies,
+        allTransitiveDependencies:
+            ProjectStatsFamily._allTransitiveDependencies,
+        projectId: projectId,
+      );
+
+  ProjectStatsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.projectId,
+  }) : super.internal();
+
+  final String projectId;
+
+  @override
+  FutureOr<Map<String, dynamic>> runNotifierBuild(
+    covariant ProjectStats notifier,
+  ) {
+    return notifier.build(projectId);
+  }
+
+  @override
+  Override overrideWith(ProjectStats Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: ProjectStatsProvider._internal(
+        () => create()..projectId = projectId,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        projectId: projectId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeAsyncNotifierProviderElement<ProjectStats, Map<String, dynamic>>
+  createElement() {
+    return _ProjectStatsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ProjectStatsProvider && other.projectId == projectId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, projectId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin ProjectStatsRef
+    on AutoDisposeAsyncNotifierProviderRef<Map<String, dynamic>> {
+  /// The parameter `projectId` of this provider.
+  String get projectId;
+}
+
+class _ProjectStatsProviderElement
+    extends
+        AutoDisposeAsyncNotifierProviderElement<
+          ProjectStats,
+          Map<String, dynamic>
+        >
+    with ProjectStatsRef {
+  _ProjectStatsProviderElement(super.provider);
+
+  @override
+  String get projectId => (origin as ProjectStatsProvider).projectId;
+}
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

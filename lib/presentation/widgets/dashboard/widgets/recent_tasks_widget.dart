@@ -1,332 +1,384 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../../../features/timer/providers/timer_provider.dart';
-import '../../../../features/projects/providers/projects_provider.dart';
+import 'package:material_symbols_icons/symbols.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/time_formatter.dart';
 import '../../../../core/models/time_entry.dart';
+import '../../../../core/services/storage_service.dart';
+import '../../../../features/projects/providers/projects_provider.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 
-/// Widget showing recent completed tasks with ability to restart them
+part 'recent_tasks_widget.g.dart';
+
+// Provider for recent time entries with project information
+@riverpod
+Future<List<TimeEntryWithProject>> recentTimeEntries(RecentTimeEntriesRef ref) async {
+  final storage = ref.read(storageServiceProvider);
+  final projects = await ref.watch(projectsProvider.future);
+  final entries = await storage.getTimeEntries();
+  
+  // Get last 10 entries, excluding breaks
+  final workEntries = entries
+      .where((entry) => !entry.isBreak && entry.isCompleted)
+      .toList()
+    ..sort((a, b) => b.effectiveEndTime.compareTo(a.effectiveEndTime));
+  
+  final recentEntries = workEntries.take(10).toList();
+  
+  // Combine with project data
+  final result = <TimeEntryWithProject>[];
+  for (final entry in recentEntries) {
+    try {
+      final project = projects.firstWhere((p) => p.id == entry.projectId);
+      result.add(TimeEntryWithProject(entry, project));
+    } catch (e) {
+      // Skip entries with deleted projects
+    }
+  }
+  
+  return result;
+}
+
+class TimeEntryWithProject {
+  final TimeEntry timeEntry;
+  final project;
+  
+  TimeEntryWithProject(this.timeEntry, this.project);
+}
+
 class RecentTasksWidget extends ConsumerWidget {
   const RecentTasksWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final timeEntries = ref.watch(timeEntriesProvider);
-    
-    // Get recent completed tasks (last 10)
-    final recentTasks = timeEntries
-        .where((entry) => !entry.isBreak && entry.endTime != null)
-        .toList()
-        ..sort((a, b) => b.startTime.compareTo(a.startTime));
-    
-    final displayTasks = recentTasks.take(10).toList();
+    final recentTasksAsync = ref.watch(recentTimeEntriesProvider);
+    final l10n = AppLocalizations.of(context);
 
-    if (displayTasks.isEmpty) {
-      return _buildEmptyState(context, l10n, theme);
-    }
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.light 
+            ? AppTheme.youtubeLightBg 
+            : AppTheme.youtubeDarkSurface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        border: Theme.of(context).brightness == Brightness.light 
+            ? Border.all(color: AppTheme.youtubeLightBorder, width: 1)
+            : null,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppTheme.space6),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            Row(
+              children: [
+                const Icon(
+                  Symbols.history,
+                  size: 20,
+                  color: AppTheme.youtubeRed,
+                ),
+                const SizedBox(width: AppTheme.space2),
+                Text(
+                  'Recent Activity',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const Spacer(),
+                DropdownButton<String>(
+                  value: 'today',
+                  underline: const SizedBox(),
+                  items: const [
+                    DropdownMenuItem(value: 'today', child: Text('Today')),
+                    DropdownMenuItem(value: 'week', child: Text('This Week')),
+                    DropdownMenuItem(value: 'all', child: Text('All Time')),
+                  ],
+                  onChanged: (value) {
+                    // TODO: Filter tasks based on selected period
+                  },
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
+            ),
+            const SizedBox(height: AppTheme.space4),
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // List of recent tasks
-        Flexible(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: displayTasks.length,
-            itemBuilder: (context, index) {
-              final task = displayTasks[index];
-              return _buildTaskItem(context, ref, l10n, theme, task);
-            },
-          ),
+            // Tasks List
+            SizedBox(
+              height: 200, // Fixed height to prevent overflow issues
+              child: recentTasksAsync.when(
+                data: (recentTasks) => recentTasks.isEmpty 
+                    ? _buildEmptyState(context)
+                    : ListView.separated(
+                        itemCount: recentTasks.length,
+                        separatorBuilder: (context, index) => const Divider(height: 1),
+                        itemBuilder: (context, index) {
+                          final entryWithProject = recentTasks[index];
+                          return _TaskItem(
+                            entryWithProject: entryWithProject,
+                            onTap: () => _onTaskTap(context, entryWithProject),
+                          );
+                        },
+                      ),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, _) => Center(
+                  child: Text(
+                    'Error loading recent tasks',
+                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-        
-        // View all tasks button
-        const SizedBox(height: 16),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Symbols.task,
+            size: 48,
+            color: AppTheme.gray400,
+          ),
+          const SizedBox(height: AppTheme.space3),
+          Text(
+            'No recent tasks',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: AppTheme.gray500,
+            ),
+          ),
+          const SizedBox(height: AppTheme.space1),
+          Text(
+            'Start a timer to see your tasks here',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppTheme.gray400,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _onTaskTap(BuildContext context, TimeEntryWithProject entryWithProject) {
+    // TODO: Show task details or edit dialog
+    showDialog(
+      context: context,
+      builder: (context) => _TaskDetailsDialog(entryWithProject: entryWithProject),
+    );
+  }
+}
+
+class _TaskItem extends StatelessWidget {
+  final TimeEntryWithProject entryWithProject;
+  final VoidCallback onTap;
+
+  const _TaskItem({
+    required this.entryWithProject,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: AppTheme.space3,
+          horizontal: AppTheme.space2,
+        ),
+        child: Row(
+          children: [
+            // Project color indicator
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: entryWithProject.project.color,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: AppTheme.space3),
+            
+            // Task details
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    entryWithProject.timeEntry.taskName,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: AppTheme.space1),
+                  Row(
+                    children: [
+                      Text(
+                        entryWithProject.project.name,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: entryWithProject.project.color,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        ' • ',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppTheme.gray400,
+                        ),
+                      ),
+                      Text(
+                        TimeFormatter.formatTimeAgo(entryWithProject.timeEntry.effectiveEndTime),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppTheme.gray500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            
+            // Duration
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  TimeFormatter.formatDurationWords(entryWithProject.timeEntry.duration),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.gray700,
+                  ),
+                ),
+                Icon(
+                  Symbols.edit,
+                  size: 16,
+                  color: AppTheme.gray400,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TaskDetailsDialog extends StatelessWidget {
+  final TimeEntryWithProject entryWithProject;
+
+  const _TaskDetailsDialog({required this.entryWithProject});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Row(
+        children: [
+          Container(
+            width: 12,
+            height: 12,
+            decoration: BoxDecoration(
+              color: entryWithProject.project.color,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: AppTheme.space2),
+          Expanded(
+            child: Text(
+              entryWithProject.timeEntry.taskName,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+        ],
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _DetailRow(
+            label: 'Project',
+            value: entryWithProject.project.name,
+            icon: Symbols.folder,
+          ),
+          const SizedBox(height: AppTheme.space3),
+          _DetailRow(
+            label: 'Duration',
+            value: TimeFormatter.formatDurationWords(entryWithProject.timeEntry.duration),
+            icon: Symbols.timer,
+          ),
+          const SizedBox(height: AppTheme.space3),
+          _DetailRow(
+            label: 'Completed',
+            value: TimeFormatter.formatDateTime(entryWithProject.timeEntry.effectiveEndTime),
+            icon: Symbols.schedule,
+          ),
+          if (entryWithProject.timeEntry.description.isNotEmpty) ...[
+            const SizedBox(height: AppTheme.space3),
+            _DetailRow(
+              label: 'Description',
+              value: entryWithProject.timeEntry.description,
+              icon: Symbols.description,
+            ),
+          ],
+        ],
+      ),
+      actions: [
         TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Close'),
+        ),
+        FilledButton(
           onPressed: () {
-            // TODO: Navigate to full tasks list
+            Navigator.of(context).pop();
+            // TODO: Start timer with this task
           },
-          child: Text(l10n.viewAllTasks),
+          child: const Text('Start Similar Task'),
         ),
       ],
     );
   }
+}
 
-  Widget _buildEmptyState(BuildContext context, AppLocalizations l10n, ThemeData theme) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.history,
-            size: 64,
-            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            l10n.noRecentTasks,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Start working on tasks to see them here',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
+class _DetailRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
 
-  Widget _buildTaskItem(
-    BuildContext context,
-    WidgetRef ref,
-    AppLocalizations l10n,
-    ThemeData theme,
-    TimeEntry task,
-  ) {
-    final project = ref.watch(projectByIdProvider(task.projectId));
-    final duration = task.calculatedDuration;
-    final relativeTime = TimeFormatter.getRelativeTime(task.startTime);
-    
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      elevation: 1,
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        
-        // Project color indicator
-        leading: Container(
-          width: 4,
-          height: 48,
-          decoration: BoxDecoration(
-            color: project?.color ?? Colors.grey,
-            borderRadius: BorderRadius.circular(2),
-          ),
+  const _DetailRow({
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 16,
+          color: AppTheme.gray600,
         ),
-        
-        // Task info
-        title: Text(
-          task.taskName,
-          style: theme.textTheme.titleSmall?.copyWith(
+        const SizedBox(width: AppTheme.space2),
+        Text(
+          '$label: ',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w500,
+            color: AppTheme.gray600,
           ),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
         ),
-        
-        subtitle: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 4),
-            Text(
-              project?.name ?? 'Unknown Project',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 2),
-            Row(
-              children: [
-                Icon(
-                  Icons.schedule,
-                  size: 14,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  TimeFormatter.formatDuration(duration),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Icon(
-                  Icons.access_time,
-                  size: 14,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  relativeTime,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-            if (task.notes != null && task.notes!.isNotEmpty) ...[
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Icon(
-                    Icons.note,
-                    size: 14,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: 4),
-                  Expanded(
-                    child: Text(
-                      task.notes!,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                        fontStyle: FontStyle.italic,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ],
-        ),
-        
-        // Actions
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Quick restart button
-            IconButton(
-              onPressed: () {
-                _restartTask(ref, task);
-              },
-              icon: const Icon(Icons.replay),
-              tooltip: 'Restart this task',
-              iconSize: 20,
-            ),
-            
-            // More options
-            PopupMenuButton<String>(
-              onSelected: (value) {
-                switch (value) {
-                  case 'edit':
-                    _editTask(context, ref, task);
-                    break;
-                  case 'duplicate':
-                    _duplicateTask(ref, task);
-                    break;
-                  case 'delete':
-                    _deleteTask(context, ref, task);
-                    break;
-                }
-              },
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 'edit',
-                  child: Row(
-                    children: [
-                      Icon(Icons.edit, size: 16),
-                      SizedBox(width: 8),
-                      Text('Edit'),
-                    ],
-                  ),
-                ),
-                const PopupMenuItem(
-                  value: 'duplicate',
-                  child: Row(
-                    children: [
-                      Icon(Icons.content_copy, size: 16),
-                      SizedBox(width: 8),
-                      Text('Duplicate'),
-                    ],
-                  ),
-                ),
-                const PopupMenuItem(
-                  value: 'delete',
-                  child: Row(
-                    children: [
-                      Icon(Icons.delete, size: 16, color: Colors.red),
-                      SizedBox(width: 8),
-                      Text('Delete', style: TextStyle(color: Colors.red)),
-                    ],
-                  ),
-                ),
-              ],
-              child: Icon(
-                Icons.more_vert,
-                size: 20,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _restartTask(WidgetRef ref, TimeEntry task) {
-    final timerState = ref.read(timerNotifierProvider);
-    
-    // Don't start if timer is already active
-    if (timerState.isActive) {
-      return;
-    }
-    
-    ref.read(timerNotifierProvider.notifier).startTimer(
-      projectId: task.projectId,
-      taskName: task.taskName,
-      notes: task.notes,
-    );
-  }
-
-  void _editTask(BuildContext context, WidgetRef ref, TimeEntry task) {
-    // TODO: Implement edit task dialog
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Edit task functionality coming soon')),
-    );
-  }
-
-  void _duplicateTask(WidgetRef ref, TimeEntry task) {
-    final timerState = ref.read(timerNotifierProvider);
-    
-    // Don't start if timer is already active
-    if (timerState.isActive) {
-      return;
-    }
-    
-    ref.read(timerNotifierProvider.notifier).startTimer(
-      projectId: task.projectId,
-      taskName: '${task.taskName} (Copy)',
-      notes: task.notes,
-    );
-  }
-
-  void _deleteTask(BuildContext context, WidgetRef ref, TimeEntry task) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Task'),
-        content: Text('Are you sure you want to delete "${task.taskName}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+        Expanded(
+          child: Text(
+            value,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
-          TextButton(
-            onPressed: () {
-              ref.read(timeEntriesProvider.notifier).deleteEntry(task.id);
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Task deleted')),
-              );
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.error,
-            ),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

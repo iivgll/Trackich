@@ -6,66 +6,97 @@ part of 'settings_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$currentThemeModeHash() => r'e2ba1c5d3af668937a4301750e23541dcee22f77';
+String _$themeModeHash() => r'bdfec5cc1026ba75113da7ca02050e26c5369496';
 
-/// Provider for current theme mode
+/// Provider for watching specific setting values
 ///
-/// Copied from [currentThemeMode].
-@ProviderFor(currentThemeMode)
-final currentThemeModeProvider = AutoDisposeProvider<ThemeMode>.internal(
-  currentThemeMode,
-  name: r'currentThemeModeProvider',
+/// Copied from [themeMode].
+@ProviderFor(themeMode)
+final themeModeProvider = AutoDisposeProvider<ThemeMode>.internal(
+  themeMode,
+  name: r'themeModeProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$currentThemeModeHash,
+      : _$themeModeHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef CurrentThemeModeRef = AutoDisposeProviderRef<ThemeMode>;
-String _$currentLanguageHash() => r'c122f5e95838beea4e484d1a98afb1346b8b64ee';
+typedef ThemeModeRef = AutoDisposeProviderRef<ThemeMode>;
+String _$languageHash() => r'da086d243ad81583a22a20f0d9d0e6c49631ff7f';
 
-/// Provider for current language
-///
-/// Copied from [currentLanguage].
-@ProviderFor(currentLanguage)
-final currentLanguageProvider = AutoDisposeProvider<String>.internal(
-  currentLanguage,
-  name: r'currentLanguageProvider',
+/// See also [language].
+@ProviderFor(language)
+final languageProvider = AutoDisposeProvider<String>.internal(
+  language,
+  name: r'languageProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$currentLanguageHash,
+      : _$languageHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef CurrentLanguageRef = AutoDisposeProviderRef<String>;
-String _$breakSettingsHash() => r'a8bdf2377954d9bc4cfa4c69a4031ca990744e93';
+typedef LanguageRef = AutoDisposeProviderRef<String>;
+String _$notificationsEnabledHash() =>
+    r'cfaa76def22c46201979919c3ebac7ed7c6d8686';
 
-/// Provider for break settings
-///
-/// Copied from [breakSettings].
-@ProviderFor(breakSettings)
-final breakSettingsProvider = AutoDisposeProvider<BreakSettings>.internal(
-  breakSettings,
-  name: r'breakSettingsProvider',
+/// See also [notificationsEnabled].
+@ProviderFor(notificationsEnabled)
+final notificationsEnabledProvider = AutoDisposeProvider<bool>.internal(
+  notificationsEnabled,
+  name: r'notificationsEnabledProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$breakSettingsHash,
+      : _$notificationsEnabledHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef BreakSettingsRef = AutoDisposeProviderRef<BreakSettings>;
-String _$settingsHash() => r'1f0b6eac388d8d2d9afd83defa5ae49749f9b1a3';
+typedef NotificationsEnabledRef = AutoDisposeProviderRef<bool>;
+String _$timeFormatHash() => r'fb260b4f702fd5677180d034252d8b03975d769d';
 
-/// Provider for app settings with persistence
+/// See also [timeFormat].
+@ProviderFor(timeFormat)
+final timeFormatProvider = AutoDisposeProvider<TimeFormat>.internal(
+  timeFormat,
+  name: r'timeFormatProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$timeFormatHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef TimeFormatRef = AutoDisposeProviderRef<TimeFormat>;
+String _$weekStartDayHash() => r'f9774f61ffb703d86f682d2099aff66dfcca3a0d';
+
+/// See also [weekStartDay].
+@ProviderFor(weekStartDay)
+final weekStartDayProvider = AutoDisposeProvider<WeekStartDay>.internal(
+  weekStartDay,
+  name: r'weekStartDayProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$weekStartDayHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef WeekStartDayRef = AutoDisposeProviderRef<WeekStartDay>;
+String _$settingsHash() => r'a053b10d0e08c2d09563703852afc02d77a1bd49';
+
+/// Provider for app settings
 ///
 /// Copied from [Settings].
 @ProviderFor(Settings)

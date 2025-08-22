@@ -1,54 +1,82 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'core/theme/app_theme.dart';
+import 'core/constants/app_constants.dart';
 import 'features/settings/providers/settings_provider.dart';
 import 'presentation/screens/main_screen.dart';
-import 'l10n/app_localizations.dart';
+import 'l10n/generated/app_localizations.dart';
+import 'features/system_tray/system_tray_service.dart';
+import 'features/notifications/notification_service.dart';
+import 'features/notifications/providers/notification_permission_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize window manager for desktop
-  await windowManager.ensureInitialized();
+  // Initialize notifications
+  await NotificationService.initialize();
   
-  const windowOptions = WindowOptions(
-    size: Size(1200, 800),
-    minimumSize: Size(800, 600),
-    center: true,
-    backgroundColor: Colors.transparent,
-    skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.normal,
-    windowButtonVisibility: true,
+  // Initialize system tray for desktop platforms
+  if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
+    try {
+      SystemTrayService.initialize();
+      debugPrint('System tray service started for ${Platform.operatingSystem}');
+    } catch (e) {
+      debugPrint('System tray initialization failed: $e');
+      debugPrint('Platform: ${Platform.operatingSystem}');
+    }
+  }
+  
+  runApp(
+    const ProviderScope(
+      child: _EagerInitialization(
+        child: TrackichApp(),
+      ),
+    ),
   );
-  
-  await windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.show();
-    await windowManager.focus();
-  });
-  
-  runApp(const ProviderScope(child: TracktichApp()));
 }
 
-class TracktichApp extends ConsumerWidget {
-  const TracktichApp({super.key});
+/// Eager initialization widget to properly initialize providers that need early setup
+class _EagerInitialization extends ConsumerWidget {
+  const _EagerInitialization({required this.child});
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(currentThemeModeProvider);
-    final language = ref.watch(currentLanguageProvider);
+    // Initialize the notification permission provider by watching it
+    // This ensures it's created and ready to use throughout the app
+    ref.watch(notificationPermissionProvider);
+    
+    // Trigger initial permission check after the provider is initialized
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(notificationPermissionProvider.notifier).refreshPermissionStatus();
+    });
+    
+    return child;
+  }
+}
+
+class TrackichApp extends ConsumerWidget {
+  const TrackichApp({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+    final language = ref.watch(languageProvider);
     
     return MaterialApp(
-      title: 'Trackich',
-      debugShowCheckedModeBanner: false,
+      title: AppConstants.appName,
       
-      // Theme configuration
+      // Theme Configuration
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
       
-      // Localization configuration
+      // Localization Configuration
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -56,21 +84,23 @@ class TracktichApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [
-        Locale('en'),
-        Locale('ru'),
+        Locale('en'), // English
+        Locale('ru'), // Russian
       ],
       locale: Locale(language),
+      
+      // Remove debug banner
+      debugShowCheckedModeBanner: false,
       
       // Home screen
       home: const MainScreen(),
       
-      // Route configuration (optional - for future navigation)
+      // Route configuration for navigation
       onGenerateRoute: (settings) {
-        switch (settings.name) {
-          case '/':
-          default:
-            return MaterialPageRoute(builder: (_) => const MainScreen());
-        }
+        // TODO: Implement proper routing when needed
+        return MaterialPageRoute(
+          builder: (context) => const MainScreen(),
+        );
       },
     );
   }

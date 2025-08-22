@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' show Ref;
+import 'package:uuid/uuid.dart';
+
 import '../../../core/models/project.dart';
+import '../../../core/services/storage_service.dart';
 import '../../../core/theme/app_theme.dart';
 
 part 'projects_provider.g.dart';
@@ -10,183 +13,256 @@ part 'projects_provider.g.dart';
 @riverpod
 class Projects extends _$Projects {
   @override
-  List<Project> build() {
-    // Initialize with default projects
-    return _createDefaultProjects();
+  Future<List<Project>> build() async {
+    final storage = ref.read(storageServiceProvider);
+    final projects = await storage.getProjects();
+    
+    // Update total time tracked for each project
+    final updatedProjects = <Project>[];
+    for (final project in projects) {
+      final totalTime = await storage.getTotalHoursForProject(project.id);
+      updatedProjects.add(project.copyWith(totalTimeTracked: totalTime));
+    }
+    
+    return updatedProjects;
   }
 
-  /// Add a new project
-  void addProject(Project project) {
-    state = [...state, project];
+  /// Create a new project
+  Future<void> createProject({
+    required String name,
+    required String description,
+    required Color color,
+    List<String> tags = const [],
+    double targetHoursPerWeek = 0.0,
+  }) async {
+    state = const AsyncValue.loading();
+    try {
+      final storage = ref.read(storageServiceProvider);
+      const uuid = Uuid();
+      
+      final project = Project(
+        id: uuid.v4(),
+        name: name,
+        description: description,
+        color: color,
+        createdAt: DateTime.now(),
+        isActive: true,
+        tags: tags,
+        targetHoursPerWeek: targetHoursPerWeek,
+        totalTimeTracked: 0.0,
+        lastActiveAt: DateTime.now(),
+      );
+
+      await storage.saveProject(project);
+      await storage.addRecentProject(project.id);
+      
+      // Refresh the projects list
+      ref.invalidateSelf();
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
   }
 
   /// Update an existing project
-  void updateProject(Project project) {
-    state = state.map((p) => p.id == project.id ? project : p).toList();
-  }
-
-  /// Archive a project
-  void archiveProject(String projectId) {
-    final project = getProjectById(projectId);
-    if (project != null) {
-      final archivedProject = project.copyWith(
-        isArchived: true,
-        archivedAt: DateTime.now(),
-      );
-      updateProject(archivedProject);
-    }
-  }
-
-  /// Unarchive a project
-  void unarchiveProject(String projectId) {
-    final project = getProjectById(projectId);
-    if (project != null) {
-      final unarchivedProject = project.copyWith(
-        isArchived: false,
-        archivedAt: null,
-      );
-      updateProject(unarchivedProject);
-    }
-  }
-
-  /// Delete a project (permanently)
-  void deleteProject(String projectId) {
-    state = state.where((p) => p.id != projectId).toList();
-  }
-
-  /// Get a project by ID
-  Project? getProjectById(String projectId) {
+  Future<void> updateProject(Project updatedProject) async {
+    state = const AsyncValue.loading();
     try {
-      return state.firstWhere((p) => p.id == projectId);
-    } catch (e) {
-      return null;
+      final storage = ref.read(storageServiceProvider);
+      await storage.saveProject(updatedProject);
+      
+      // Refresh the projects list
+      ref.invalidateSelf();
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
     }
   }
 
-  /// Get active projects only
-  List<Project> getActiveProjects() {
-    return state.where((p) => !p.isArchived).toList();
+  /// Delete a project
+  Future<void> deleteProject(String projectId) async {
+    state = const AsyncValue.loading();
+    try {
+      final storage = ref.read(storageServiceProvider);
+      await storage.deleteProject(projectId);
+      
+      // Refresh the projects list
+      ref.invalidateSelf();
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
   }
 
-  /// Get archived projects only
-  List<Project> getArchivedProjects() {
-    return state.where((p) => p.isArchived).toList();
+  /// Archive/unarchive a project
+  Future<void> toggleProjectActive(String projectId) async {
+    final projects = await future;
+    final project = projects.firstWhere((p) => p.id == projectId);
+    await updateProject(project.copyWith(isActive: !project.isActive));
   }
 
-  /// Create a new project with auto-assigned color
-  Project createProject({
-    required String name,
-    required String description,
-    Color? color,
-  }) {
-    final projectColor = color ?? _getNextProjectColor();
+  /// Update project last active time
+  Future<void> updateLastActive(String projectId) async {
+    final storage = ref.read(storageServiceProvider);
+    final project = await storage.getProject(projectId);
+    if (project != null) {
+      await storage.saveProject(project.copyWith(lastActiveAt: DateTime.now()));
+      await storage.addRecentProject(projectId);
+      
+      // Refresh only if we have an active state
+      if (state.hasValue) {
+        ref.invalidateSelf();
+      }
+    }
+  }
+
+  /// Get next available project color
+  Color getNextAvailableColor() {
+    if (!state.hasValue) return AppTheme.projectColors.first;
     
-    return Project(
-      id: _generateId(),
-      name: name,
-      description: description,
-      color: projectColor,
-      createdAt: DateTime.now(),
-    );
-  }
-
-  Color _getNextProjectColor() {
-    final usedColors = state.map((p) => p.color).toSet();
+    final projects = state.value!;
+    final usedColors = projects.map((p) => p.color.value).toSet();
     
-    // Find the first unused color from the theme
     for (final color in AppTheme.projectColors) {
-      if (!usedColors.contains(color)) {
+      if (!usedColors.contains(color.value)) {
         return color;
       }
     }
     
-    // If all colors are used, cycle through them
-    return AppTheme.projectColors[state.length % AppTheme.projectColors.length];
-  }
-
-  String _generateId() {
-    return 'project_${DateTime.now().millisecondsSinceEpoch}';
-  }
-
-  List<Project> _createDefaultProjects() {
-    return [
-      Project(
-        id: 'project_1',
-        name: 'Web Application',
-        description: 'Frontend development project',
-        color: AppTheme.projectColors[0],
-        createdAt: DateTime.now().subtract(const Duration(days: 30)),
-      ),
-      Project(
-        id: 'project_2',
-        name: 'Mobile App',
-        description: 'iOS and Android development',
-        color: AppTheme.projectColors[1],
-        createdAt: DateTime.now().subtract(const Duration(days: 20)),
-      ),
-      Project(
-        id: 'project_3',
-        name: 'Research',
-        description: 'Market research and analysis',
-        color: AppTheme.projectColors[2],
-        createdAt: DateTime.now().subtract(const Duration(days: 10)),
-      ),
-    ];
+    // If all colors are used, return the first one
+    return AppTheme.projectColors.first;
   }
 }
 
-/// Provider that filters active projects
+/// Provider for active projects only
 @riverpod
-List<Project> activeProjects(Ref ref) {
-  final projects = ref.watch(projectsProvider);
-  return projects.where((p) => !p.isArchived).toList();
+Future<List<Project>> activeProjects(ActiveProjectsRef ref) async {
+  final projects = await ref.watch(projectsProvider.future);
+  return projects.where((project) => project.isActive).toList();
 }
 
-/// Provider that filters archived projects
+/// Provider for archived projects only
 @riverpod
-List<Project> archivedProjects(Ref ref) {
-  final projects = ref.watch(projectsProvider);
-  return projects.where((p) => p.isArchived).toList();
+Future<List<Project>> archivedProjects(ArchivedProjectsRef ref) async {
+  final projects = await ref.watch(projectsProvider.future);
+  return projects.where((project) => !project.isActive).toList();
 }
 
-/// Provider for getting a specific project by ID
+/// Provider for recent projects
 @riverpod
-Project? projectById(Ref ref, String projectId) {
-  final projects = ref.watch(projectsProvider);
-  try {
-    return projects.firstWhere((p) => p.id == projectId);
-  } catch (e) {
-    return null;
-  }
+Future<List<Project>> recentProjects(RecentProjectsRef ref) async {
+  final storage = ref.read(storageServiceProvider);
+  final recentProjectIds = await storage.getRecentProjectIds();
+  final allProjects = await ref.watch(projectsProvider.future);
+  
+  return recentProjectIds
+      .map((id) {
+        try {
+          return allProjects.firstWhere((p) => p.id == id);
+        } catch (e) {
+          return null;
+        }
+      })
+      .whereType<Project>()
+      .where((project) => project.isActive)
+      .take(6) // Limit to 6 most recent
+      .toList();
+}
+
+/// Provider for projects sorted by most used
+@riverpod
+Future<List<Project>> projectsByUsage(ProjectsByUsageRef ref) async {
+  final projects = await ref.watch(activeProjectsProvider.future);
+  
+  // Sort by total time tracked (descending) and then by last active time
+  projects.sort((a, b) {
+    final timeComparison = b.totalTimeTracked.compareTo(a.totalTimeTracked);
+    if (timeComparison != 0) return timeComparison;
+    
+    final aLastActive = a.lastActiveAt ?? a.createdAt;
+    final bLastActive = b.lastActiveAt ?? b.createdAt;
+    return bLastActive.compareTo(aLastActive);
+  });
+  
+  return projects;
+}
+
+/// Provider for a specific project by ID
+@riverpod
+Future<Project?> project(ProjectRef ref, String projectId) async {
+  final storage = ref.read(storageServiceProvider);
+  return await storage.getProject(projectId);
 }
 
 /// Provider for project statistics
 @riverpod
-ProjectStatistics projectStatistics(Ref ref, String projectId) {
-  // This would typically compute statistics from time entries
-  // For now, return mock data
-  return const ProjectStatistics(
-    totalTime: Duration(hours: 156, minutes: 45),
-    thisWeekTime: Duration(hours: 24, minutes: 30),
-    thisMonthTime: Duration(hours: 47, minutes: 20),
-    taskCount: 8,
-    lastActivity: 'Mock: 2 hours ago',
-  );
+class ProjectStats extends _$ProjectStats {
+  @override
+  Future<Map<String, dynamic>> build(String projectId) async {
+    final storage = ref.read(storageServiceProvider);
+    final now = DateTime.now();
+    
+    // Get time entries for this project
+    final entries = await storage.getTimeEntriesByProject(projectId);
+    
+    // Calculate statistics
+    final totalHours = entries.fold<double>(0.0, (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)));
+    
+    // This week's hours
+    final startOfWeek = DateTime(now.year, now.month, now.day - now.weekday + 1);
+    final endOfWeek = startOfWeek.add(const Duration(days: 7));
+    final thisWeekEntries = entries.where((entry) => 
+      entry.startTime.isAfter(startOfWeek) && entry.startTime.isBefore(endOfWeek)
+    );
+    final thisWeekHours = thisWeekEntries.fold<double>(0.0, (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)));
+    
+    // This month's hours
+    final startOfMonth = DateTime(now.year, now.month, 1);
+    final endOfMonth = DateTime(now.year, now.month + 1, 1);
+    final thisMonthEntries = entries.where((entry) => 
+      entry.startTime.isAfter(startOfMonth) && entry.startTime.isBefore(endOfMonth)
+    );
+    final thisMonthHours = thisMonthEntries.fold<double>(0.0, (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)));
+    
+    // Average session length
+    final avgSessionHours = entries.isEmpty ? 0.0 : totalHours / entries.length;
+    
+    // Longest session
+    final longestSession = entries.isEmpty ? 0.0 : 
+      entries.map((e) => e.duration.inMilliseconds / (1000 * 60 * 60)).reduce((a, b) => a > b ? a : b);
+    
+    // Total sessions
+    final totalSessions = entries.length;
+    
+    // Days worked
+    final uniqueDays = entries.map((entry) {
+      final date = entry.startTime;
+      return DateTime(date.year, date.month, date.day);
+    }).toSet();
+    final daysWorked = uniqueDays.length;
+    
+    return {
+      'totalHours': totalHours,
+      'thisWeekHours': thisWeekHours,
+      'thisMonthHours': thisMonthHours,
+      'averageSessionHours': avgSessionHours,
+      'longestSessionHours': longestSession,
+      'totalSessions': totalSessions,
+      'daysWorked': daysWorked,
+    };
+  }
 }
 
-/// Model for project statistics
-class ProjectStatistics {
-  const ProjectStatistics({
-    required this.totalTime,
-    required this.thisWeekTime,
-    required this.thisMonthTime,
-    required this.taskCount,
-    required this.lastActivity,
-  });
-
-  final Duration totalTime;
-  final Duration thisWeekTime;
-  final Duration thisMonthTime;
-  final int taskCount;
-  final String lastActivity;
+/// Provider for searching projects
+@riverpod
+Future<List<Project>> searchProjects(SearchProjectsRef ref, String query) async {
+  if (query.isEmpty) {
+    return ref.watch(activeProjectsProvider.future);
+  }
+  
+  final projects = await ref.watch(activeProjectsProvider.future);
+  final lowerQuery = query.toLowerCase();
+  
+  return projects.where((project) {
+    return project.name.toLowerCase().contains(lowerQuery) ||
+           project.description.toLowerCase().contains(lowerQuery) ||
+           project.tags.any((tag) => tag.toLowerCase().contains(lowerQuery));
+  }).toList();
 }

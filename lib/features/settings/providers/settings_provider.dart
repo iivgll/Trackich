@@ -1,256 +1,153 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' show Ref;
-import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../core/models/settings.dart';
+import '../../../core/services/storage_service.dart';
 
 part 'settings_provider.g.dart';
 
-/// Provider for app settings with persistence
+/// Provider for app settings
 @riverpod
 class Settings extends _$Settings {
-  static const String _settingsKey = 'app_settings';
-
   @override
-  FutureOr<AppSettings> build() async {
-    final prefs = await SharedPreferences.getInstance();
-    final settingsJson = prefs.getString(_settingsKey);
-    
-    if (settingsJson != null) {
-      try {
-        final settingsMap = Map<String, dynamic>.from(
-          // In a real app, you'd use json.decode here
-          // For now, return default settings
-          <String, dynamic>{},
-        );
-        return AppSettings.fromJson(settingsMap);
-      } catch (e) {
-        // If parsing fails, return defaults
-        return const AppSettings();
-      }
-    }
-    
-    return const AppSettings();
+  Future<AppSettings> build() async {
+    final storage = ref.read(storageServiceProvider);
+    return await storage.getSettings();
   }
 
-  /// Update settings and persist to storage
+  /// Update settings
   Future<void> updateSettings(AppSettings settings) async {
-    state = AsyncValue.data(settings);
-    await _saveSettings(settings);
+    state = const AsyncValue.loading();
+    try {
+      final storage = ref.read(storageServiceProvider);
+      await storage.saveSettings(settings);
+      state = AsyncValue.data(settings);
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
   }
 
-  /// Update language setting
+  /// Update language
   Future<void> updateLanguage(String language) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(language: language);
-    await updateSettings(newSettings);
+    final currentSettings = await future;
+    await updateSettings(currentSettings.copyWith(language: language));
   }
 
   /// Update theme mode
   Future<void> updateThemeMode(ThemeMode themeMode) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(themeMode: themeMode);
-    await updateSettings(newSettings);
+    final currentSettings = await future;
+    await updateSettings(currentSettings.copyWith(themeMode: themeMode));
+  }
+
+  /// Update timer intervals
+  Future<void> updateTimerIntervals({
+    Duration? shortBreakInterval,
+    Duration? longBreakInterval,
+    Duration? shortBreakDuration,
+    Duration? longBreakDuration,
+  }) async {
+    final currentSettings = await future;
+    await updateSettings(currentSettings.copyWith(
+      shortBreakInterval: shortBreakInterval ?? currentSettings.shortBreakInterval,
+      longBreakInterval: longBreakInterval ?? currentSettings.longBreakInterval,
+      shortBreakDuration: shortBreakDuration ?? currentSettings.shortBreakDuration,
+      longBreakDuration: longBreakDuration ?? currentSettings.longBreakDuration,
+    ));
+  }
+
+  /// Update notification settings
+  Future<void> updateNotificationSettings({
+    bool? enableNotifications,
+    bool? enableSoundNotifications,
+    bool? enableBreakReminders,
+    bool? enableHealthTips,
+    bool? enablePostureReminders,
+    Duration? postureReminderInterval,
+  }) async {
+    final currentSettings = await future;
+    await updateSettings(currentSettings.copyWith(
+      enableNotifications: enableNotifications ?? currentSettings.enableNotifications,
+      enableSoundNotifications: enableSoundNotifications ?? currentSettings.enableSoundNotifications,
+      enableBreakReminders: enableBreakReminders ?? currentSettings.enableBreakReminders,
+      enableHealthTips: enableHealthTips ?? currentSettings.enableHealthTips,
+      enablePostureReminders: enablePostureReminders ?? currentSettings.enablePostureReminders,
+      postureReminderInterval: postureReminderInterval ?? currentSettings.postureReminderInterval,
+    ));
   }
 
   /// Update time format
-  Future<void> updateTimeFormat(bool use24Hour) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(use24HourFormat: use24Hour);
-    await updateSettings(newSettings);
+  Future<void> updateTimeFormat(TimeFormat timeFormat) async {
+    final currentSettings = await future;
+    await updateSettings(currentSettings.copyWith(timeFormat: timeFormat));
   }
 
   /// Update week start day
-  Future<void> updateWeekStartDay(bool startsOnMonday) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(weekStartsOnMonday: startsOnMonday);
-    await updateSettings(newSettings);
+  Future<void> updateWeekStartDay(WeekStartDay weekStartDay) async {
+    final currentSettings = await future;
+    await updateSettings(currentSettings.copyWith(weekStartDay: weekStartDay));
   }
 
-  /// Update default project
-  Future<void> updateDefaultProject(String? projectId) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(defaultProjectId: projectId);
-    await updateSettings(newSettings);
+  /// Update working hours
+  Future<void> updateWorkingHours(List<WorkingHours> workingHours) async {
+    final currentSettings = await future;
+    await updateSettings(currentSettings.copyWith(workingHours: workingHours));
   }
 
-  /// Update work session duration
-  Future<void> updateWorkSessionDuration(int minutes) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(workSessionDuration: minutes);
-    await updateSettings(newSettings);
+  /// Update daily work limit
+  Future<void> updateDailyWorkLimit(Duration dailyWorkLimit) async {
+    final currentSettings = await future;
+    await updateSettings(currentSettings.copyWith(dailyWorkLimit: dailyWorkLimit));
   }
 
-  /// Update short break duration
-  Future<void> updateShortBreakDuration(int minutes) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(shortBreakDuration: minutes);
-    await updateSettings(newSettings);
-  }
-
-  /// Update long break duration
-  Future<void> updateLongBreakDuration(int minutes) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(longBreakDuration: minutes);
-    await updateSettings(newSettings);
-  }
-
-  /// Update long break interval
-  Future<void> updateLongBreakInterval(int sessions) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(longBreakInterval: sessions);
-    await updateSettings(newSettings);
-  }
-
-  /// Update break notifications setting
-  Future<void> updateBreakNotifications(bool enabled) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(enableBreakNotifications: enabled);
-    await updateSettings(newSettings);
-  }
-
-  /// Update notification sound
-  Future<void> updateNotificationSound(String sound) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(notificationSound: sound);
-    await updateSettings(newSettings);
-  }
-
-  /// Update system notifications
-  Future<void> updateSystemNotifications(bool enabled) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(enableSystemNotifications: enabled);
-    await updateSettings(newSettings);
-  }
-
-  /// Update break reminders
-  Future<void> updateBreakReminders(bool enabled) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(enableBreakReminders: enabled);
-    await updateSettings(newSettings);
-  }
-
-  /// Update daily summary
-  Future<void> updateDailySummary(bool enabled) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(enableDailySummary: enabled);
-    await updateSettings(newSettings);
-  }
-
-  /// Update quiet hours
-  Future<void> updateQuietHours({
-    TimeOfDay? startTime,
-    TimeOfDay? endTime,
-  }) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(
-      quietHoursStart: startTime ?? currentSettings.quietHoursStart,
-      quietHoursEnd: endTime ?? currentSettings.quietHoursEnd,
-    );
-    await updateSettings(newSettings);
-  }
-
-  /// Update daily goal
-  Future<void> updateDailyGoal(double hours) async {
-    final currentSettings = state.value ?? const AppSettings();
-    final newSettings = currentSettings.copyWith(dailyGoalHours: hours);
-    await updateSettings(newSettings);
-  }
-
-  /// Reset settings to defaults
+  /// Reset to default settings
   Future<void> resetToDefaults() async {
     await updateSettings(const AppSettings());
   }
-
-  /// Clear all settings data
-  Future<void> clearAllData() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_settingsKey);
-    state = const AsyncValue.data(AppSettings());
-  }
-
-  Future<void> _saveSettings(AppSettings settings) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final settingsJson = settings.toJson();
-      // In a real app, you'd use json.encode here
-      await prefs.setString(_settingsKey, settingsJson.toString());
-    } catch (e) {
-      // Handle error - maybe show a notification
-      debugPrint('Failed to save settings: $e');
-    }
-  }
 }
 
-/// Provider for current theme mode
+/// Provider for watching specific setting values
 @riverpod
-ThemeMode currentThemeMode(Ref ref) {
-  final settings = ref.watch(settingsProvider);
-  return settings.when(
+ThemeMode themeMode(ThemeModeRef ref) {
+  return ref.watch(settingsProvider).when(
     data: (settings) => settings.themeMode,
     loading: () => ThemeMode.system,
     error: (_, __) => ThemeMode.system,
   );
 }
 
-/// Provider for current language
 @riverpod
-String currentLanguage(Ref ref) {
-  final settings = ref.watch(settingsProvider);
-  return settings.when(
+String language(LanguageRef ref) {
+  return ref.watch(settingsProvider).when(
     data: (settings) => settings.language,
     loading: () => 'en',
     error: (_, __) => 'en',
   );
 }
 
-/// Provider for break settings
 @riverpod
-BreakSettings breakSettings(Ref ref) {
-  final settings = ref.watch(settingsProvider);
-  return settings.when(
-    data: (settings) => BreakSettings(
-      workSessionDuration: settings.workSessionDuration,
-      shortBreakDuration: settings.shortBreakDuration,
-      longBreakDuration: settings.longBreakDuration,
-      longBreakInterval: settings.longBreakInterval,
-      enableBreakNotifications: settings.enableBreakNotifications,
-      notificationSound: settings.notificationSound,
-    ),
-    loading: () => const BreakSettings(
-      workSessionDuration: 25,
-      shortBreakDuration: 5,
-      longBreakDuration: 15,
-      longBreakInterval: 4,
-      enableBreakNotifications: true,
-      notificationSound: 'gentle_bell',
-    ),
-    error: (_, __) => const BreakSettings(
-      workSessionDuration: 25,
-      shortBreakDuration: 5,
-      longBreakDuration: 15,
-      longBreakInterval: 4,
-      enableBreakNotifications: true,
-      notificationSound: 'gentle_bell',
-    ),
+bool notificationsEnabled(NotificationsEnabledRef ref) {
+  return ref.watch(settingsProvider).when(
+    data: (settings) => settings.enableNotifications,
+    loading: () => true,
+    error: (_, __) => true,
   );
 }
 
-/// Break settings helper class
-class BreakSettings {
-  const BreakSettings({
-    required this.workSessionDuration,
-    required this.shortBreakDuration,
-    required this.longBreakDuration,
-    required this.longBreakInterval,
-    required this.enableBreakNotifications,
-    required this.notificationSound,
-  });
+@riverpod
+TimeFormat timeFormat(TimeFormatRef ref) {
+  return ref.watch(settingsProvider).when(
+    data: (settings) => settings.timeFormat,
+    loading: () => TimeFormat.format24h,
+    error: (_, __) => TimeFormat.format24h,
+  );
+}
 
-  final int workSessionDuration;
-  final int shortBreakDuration;
-  final int longBreakDuration;
-  final int longBreakInterval;
-  final bool enableBreakNotifications;
-  final String notificationSound;
+@riverpod
+WeekStartDay weekStartDay(WeekStartDayRef ref) {
+  return ref.watch(settingsProvider).when(
+    data: (settings) => settings.weekStartDay,
+    loading: () => WeekStartDay.monday,
+    error: (_, __) => WeekStartDay.monday,
+  );
 }

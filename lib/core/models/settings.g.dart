@@ -6,56 +6,128 @@ part of 'settings.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-AppSettings _$AppSettingsFromJson(Map<String, dynamic> json) => AppSettings(
-  language: json['language'] as String? ?? 'en',
-  themeMode: json['themeMode'] == null
-      ? ThemeMode.system
-      : const ThemeModeConverter().fromJson(json['themeMode'] as String),
-  use24HourFormat: json['use24HourFormat'] as bool? ?? true,
-  weekStartsOnMonday: json['weekStartsOnMonday'] as bool? ?? true,
-  defaultProjectId: json['defaultProjectId'] as String?,
-  workSessionDuration: (json['workSessionDuration'] as num?)?.toInt() ?? 25,
-  shortBreakDuration: (json['shortBreakDuration'] as num?)?.toInt() ?? 5,
-  longBreakDuration: (json['longBreakDuration'] as num?)?.toInt() ?? 15,
-  longBreakInterval: (json['longBreakInterval'] as num?)?.toInt() ?? 4,
-  enableBreakNotifications: json['enableBreakNotifications'] as bool? ?? true,
-  notificationSound: json['notificationSound'] as String? ?? 'gentle_bell',
-  enableSystemNotifications: json['enableSystemNotifications'] as bool? ?? true,
-  enableBreakReminders: json['enableBreakReminders'] as bool? ?? true,
-  enableDailySummary: json['enableDailySummary'] as bool? ?? true,
-  quietHoursStart: json['quietHoursStart'] == null
-      ? const TimeOfDay(hour: 22, minute: 0)
-      : const TimeOfDayConverter().fromJson(
-          json['quietHoursStart'] as Map<String, int>,
-        ),
-  quietHoursEnd: json['quietHoursEnd'] == null
-      ? const TimeOfDay(hour: 8, minute: 0)
-      : const TimeOfDayConverter().fromJson(
-          json['quietHoursEnd'] as Map<String, int>,
-        ),
-  dailyGoalHours: (json['dailyGoalHours'] as num?)?.toDouble() ?? 8.0,
-);
+_$AppSettingsImpl _$$AppSettingsImplFromJson(Map<String, dynamic> json) =>
+    _$AppSettingsImpl(
+      language: json['language'] as String? ?? 'en',
+      themeMode: json['themeMode'] == null
+          ? ThemeMode.system
+          : const ThemeModeConverter().fromJson(json['themeMode'] as String),
+      shortBreakInterval: json['shortBreakInterval'] == null
+          ? const Duration(minutes: 25)
+          : const DurationConverter().fromJson(
+              (json['shortBreakInterval'] as num).toInt(),
+            ),
+      longBreakInterval: json['longBreakInterval'] == null
+          ? const Duration(hours: 2)
+          : const DurationConverter().fromJson(
+              (json['longBreakInterval'] as num).toInt(),
+            ),
+      shortBreakDuration: json['shortBreakDuration'] == null
+          ? const Duration(minutes: 5)
+          : const DurationConverter().fromJson(
+              (json['shortBreakDuration'] as num).toInt(),
+            ),
+      longBreakDuration: json['longBreakDuration'] == null
+          ? const Duration(minutes: 15)
+          : const DurationConverter().fromJson(
+              (json['longBreakDuration'] as num).toInt(),
+            ),
+      enableNotifications: json['enableNotifications'] as bool? ?? true,
+      enableSoundNotifications:
+          json['enableSoundNotifications'] as bool? ?? true,
+      timeFormat:
+          $enumDecodeNullable(_$TimeFormatEnumMap, json['timeFormat']) ??
+          TimeFormat.format24h,
+      weekStartDay:
+          $enumDecodeNullable(_$WeekStartDayEnumMap, json['weekStartDay']) ??
+          WeekStartDay.monday,
+      workingHours:
+          (json['workingHours'] as List<dynamic>?)
+              ?.map((e) => WorkingHours.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      dailyWorkLimit: json['dailyWorkLimit'] == null
+          ? const Duration(hours: 8)
+          : const DurationConverter().fromJson(
+              (json['dailyWorkLimit'] as num).toInt(),
+            ),
+      enableBreakReminders: json['enableBreakReminders'] as bool? ?? true,
+      enableHealthTips: json['enableHealthTips'] as bool? ?? true,
+      enablePostureReminders: json['enablePostureReminders'] as bool? ?? false,
+      postureReminderInterval: json['postureReminderInterval'] == null
+          ? const Duration(minutes: 30)
+          : const DurationConverter().fromJson(
+              (json['postureReminderInterval'] as num).toInt(),
+            ),
+    );
 
-Map<String, dynamic> _$AppSettingsToJson(
-  AppSettings instance,
+Map<String, dynamic> _$$AppSettingsImplToJson(
+  _$AppSettingsImpl instance,
 ) => <String, dynamic>{
   'language': instance.language,
   'themeMode': const ThemeModeConverter().toJson(instance.themeMode),
-  'use24HourFormat': instance.use24HourFormat,
-  'weekStartsOnMonday': instance.weekStartsOnMonday,
-  'defaultProjectId': instance.defaultProjectId,
-  'workSessionDuration': instance.workSessionDuration,
-  'shortBreakDuration': instance.shortBreakDuration,
-  'longBreakDuration': instance.longBreakDuration,
-  'longBreakInterval': instance.longBreakInterval,
-  'enableBreakNotifications': instance.enableBreakNotifications,
-  'notificationSound': instance.notificationSound,
-  'enableSystemNotifications': instance.enableSystemNotifications,
-  'enableBreakReminders': instance.enableBreakReminders,
-  'enableDailySummary': instance.enableDailySummary,
-  'quietHoursStart': const TimeOfDayConverter().toJson(
-    instance.quietHoursStart,
+  'shortBreakInterval': const DurationConverter().toJson(
+    instance.shortBreakInterval,
   ),
-  'quietHoursEnd': const TimeOfDayConverter().toJson(instance.quietHoursEnd),
-  'dailyGoalHours': instance.dailyGoalHours,
+  'longBreakInterval': const DurationConverter().toJson(
+    instance.longBreakInterval,
+  ),
+  'shortBreakDuration': const DurationConverter().toJson(
+    instance.shortBreakDuration,
+  ),
+  'longBreakDuration': const DurationConverter().toJson(
+    instance.longBreakDuration,
+  ),
+  'enableNotifications': instance.enableNotifications,
+  'enableSoundNotifications': instance.enableSoundNotifications,
+  'timeFormat': _$TimeFormatEnumMap[instance.timeFormat]!,
+  'weekStartDay': _$WeekStartDayEnumMap[instance.weekStartDay]!,
+  'workingHours': instance.workingHours,
+  'dailyWorkLimit': const DurationConverter().toJson(instance.dailyWorkLimit),
+  'enableBreakReminders': instance.enableBreakReminders,
+  'enableHealthTips': instance.enableHealthTips,
+  'enablePostureReminders': instance.enablePostureReminders,
+  'postureReminderInterval': const DurationConverter().toJson(
+    instance.postureReminderInterval,
+  ),
+};
+
+const _$TimeFormatEnumMap = {
+  TimeFormat.format12h: '12h',
+  TimeFormat.format24h: '24h',
+};
+
+const _$WeekStartDayEnumMap = {
+  WeekStartDay.monday: 'monday',
+  WeekStartDay.sunday: 'sunday',
+};
+
+_$WorkingHoursImpl _$$WorkingHoursImplFromJson(Map<String, dynamic> json) =>
+    _$WorkingHoursImpl(
+      day: $enumDecode(_$WeekDayEnumMap, json['day']),
+      startTime: const TimeOfDayConverter().fromJson(
+        json['startTime'] as Map<String, dynamic>,
+      ),
+      endTime: const TimeOfDayConverter().fromJson(
+        json['endTime'] as Map<String, dynamic>,
+      ),
+      isEnabled: json['isEnabled'] as bool? ?? true,
+    );
+
+Map<String, dynamic> _$$WorkingHoursImplToJson(_$WorkingHoursImpl instance) =>
+    <String, dynamic>{
+      'day': _$WeekDayEnumMap[instance.day]!,
+      'startTime': const TimeOfDayConverter().toJson(instance.startTime),
+      'endTime': const TimeOfDayConverter().toJson(instance.endTime),
+      'isEnabled': instance.isEnabled,
+    };
+
+const _$WeekDayEnumMap = {
+  WeekDay.monday: 'monday',
+  WeekDay.tuesday: 'tuesday',
+  WeekDay.wednesday: 'wednesday',
+  WeekDay.thursday: 'thursday',
+  WeekDay.friday: 'friday',
+  WeekDay.saturday: 'saturday',
+  WeekDay.sunday: 'sunday',
 };

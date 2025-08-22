@@ -1,82 +1,242 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
+
+import '../../core/theme/app_theme.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../widgets/dashboard/dashboard_screen.dart';
-import '../widgets/calendar/calendar_screen.dart';
 import '../widgets/projects/projects_screen.dart';
+import '../widgets/calendar/calendar_screen.dart';
 import '../widgets/analytics/analytics_screen.dart';
 import '../widgets/settings/settings_screen.dart';
-import '../../l10n/app_localizations.dart';
+import '../../features/system_tray/system_tray_service.dart';
 
-/// Main screen with bottom navigation
-class MainScreen extends ConsumerStatefulWidget {
+// Navigation provider
+final currentPageProvider = StateProvider<int>((ref) => 0);
+
+class MainScreen extends ConsumerWidget {
   const MainScreen({super.key});
 
   @override
-  ConsumerState<MainScreen> createState() => _MainScreenState();
-}
-
-class _MainScreenState extends ConsumerState<MainScreen> {
-  int _currentIndex = 0;
-
-  // Navigation screens
-  late final List<Widget> _screens;
-
-  @override
-  void initState() {
-    super.initState();
-    _screens = [
-      const DashboardScreen(),
-      const CalendarScreen(),
-      const ProjectsScreen(),
-      const AnalyticsScreen(),
-      const SettingsScreen(),
-    ];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentPage = ref.watch(currentPageProvider);
+    final l10n = AppLocalizations.of(context);
+    
+    // Initialize system tray context
+    if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
+      SystemTrayService.setContext(context, ref);
+    }
     
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.dashboard_outlined),
-            selectedIcon: const Icon(Icons.dashboard),
-            label: l10n.dashboard,
+      body: Row(
+        children: [
+          // Adaptive Sidebar
+          _AdaptiveSidebar(
+            currentPage: currentPage,
+            onPageChanged: (page) => ref.read(currentPageProvider.notifier).state = page,
           ),
-          NavigationDestination(
-            icon: const Icon(Icons.calendar_month_outlined),
-            selectedIcon: const Icon(Icons.calendar_month),
-            label: l10n.calendar,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.folder_outlined),
-            selectedIcon: const Icon(Icons.folder),
-            label: l10n.projects,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.analytics_outlined),
-            selectedIcon: const Icon(Icons.analytics),
-            label: l10n.analytics,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.settings_outlined),
-            selectedIcon: const Icon(Icons.settings),
-            label: l10n.settings,
+          // Main Content Area
+          Expanded(
+            child: _getPageContent(currentPage),
           ),
         ],
       ),
     );
   }
+
+  Widget _getPageContent(int page) {
+    switch (page) {
+      case 0:
+        return const DashboardScreen();
+      case 1:
+        return const ProjectsScreen();
+      case 2:
+        return const CalendarScreen();
+      case 3:
+        return const AnalyticsScreen();
+      case 4:
+        return const SettingsScreen();
+      default:
+        return const DashboardScreen();
+    }
+  }
+}
+
+class _AdaptiveSidebar extends StatelessWidget {
+  final int currentPage;
+  final ValueChanged<int> onPageChanged;
+
+  const _AdaptiveSidebar({
+    required this.currentPage,
+    required this.onPageChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isCompact = MediaQuery.of(context).size.width < AppTheme.tabletBreakpoint;
+    
+    return Container(
+      width: isCompact ? AppTheme.space16 : AppTheme.sidebarWidth,
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.light 
+            ? AppTheme.youtubeLightSurface 
+            : AppTheme.youtubeDarkBg,
+        border: Border(
+          right: BorderSide(
+            color: Theme.of(context).brightness == Brightness.light 
+                ? AppTheme.youtubeLightBorder 
+                : AppTheme.youtubeDarkBorder,
+            width: 1,
+          ),
+        ),
+      ),
+      child: Column(
+        children: [
+          // Logo/Header Area
+          Container(
+            height: AppTheme.navigationHeight,
+            padding: EdgeInsets.symmetric(
+              horizontal: isCompact ? AppTheme.space2 : AppTheme.space6,
+              vertical: AppTheme.space4,
+            ),
+            child: isCompact
+                ? const Icon(
+                    Symbols.timer,
+                    size: 32,
+                    color: AppTheme.youtubeRed,
+                  )
+                : Row(
+                    children: [
+                      const Icon(
+                        Symbols.timer,
+                        size: 32,
+                        color: AppTheme.youtubeRed,
+                      ),
+                      const SizedBox(width: AppTheme.space3),
+                      Text(
+                        'Trackich',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.youtubeRed,
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+          
+          // Navigation Items
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.symmetric(
+                horizontal: isCompact ? AppTheme.space1 : AppTheme.space3,
+                vertical: AppTheme.space4,
+              ),
+              children: _buildNavigationItems(context, isCompact),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildNavigationItems(BuildContext context, bool isCompact) {
+    final l10n = AppLocalizations.of(context);
+    final navigationItems = [
+      _NavigationItem(
+        icon: Symbols.dashboard,
+        label: l10n.dashboard,
+        index: 0,
+      ),
+      _NavigationItem(
+        icon: Symbols.folder,
+        label: l10n.projects,
+        index: 1,
+      ),
+      _NavigationItem(
+        icon: Symbols.calendar_month,
+        label: l10n.calendar,
+        index: 2,
+      ),
+      _NavigationItem(
+        icon: Symbols.analytics,
+        label: l10n.analytics,
+        index: 3,
+      ),
+      _NavigationItem(
+        icon: Symbols.settings,
+        label: l10n.settings,
+        index: 4,
+      ),
+    ];
+
+    return navigationItems.map((item) {
+      final isSelected = currentPage == item.index;
+      
+      return Container(
+        margin: const EdgeInsets.only(bottom: AppTheme.space1),
+        child: InkWell(
+          onTap: () => onPageChanged(item.index),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          child: Container(
+            height: 48,
+            padding: EdgeInsets.symmetric(
+              horizontal: isCompact ? AppTheme.space2 : AppTheme.space4,
+              vertical: AppTheme.space3,
+            ),
+            decoration: BoxDecoration(
+              color: isSelected 
+                  ? (Theme.of(context).brightness == Brightness.light 
+                     ? AppTheme.youtubeRed.withOpacity(0.1) 
+                     : AppTheme.youtubeRed.withOpacity(0.15))
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  item.icon,
+                  size: 20,
+                  color: isSelected 
+                      ? AppTheme.youtubeRed 
+                      : (Theme.of(context).brightness == Brightness.light 
+                         ? AppTheme.youtubeLightTextSecondary 
+                         : AppTheme.youtubeDarkTextSecondary),
+                ),
+                if (!isCompact) ...[
+                  const SizedBox(width: AppTheme.space3),
+                  Expanded(
+                    child: Text(
+                      item.label,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: isSelected 
+                            ? AppTheme.youtubeRed 
+                            : (Theme.of(context).brightness == Brightness.light 
+                               ? AppTheme.youtubeLightTextSecondary 
+                               : AppTheme.youtubeDarkTextSecondary),
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      );
+    }).toList();
+  }
+}
+
+class _NavigationItem {
+  final IconData icon;
+  final String label;
+  final int index;
+
+  const _NavigationItem({
+    required this.icon,
+    required this.label,
+    required this.index,
+  });
 }
