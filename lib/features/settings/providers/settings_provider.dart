@@ -40,20 +40,10 @@ class Settings extends _$Settings {
     await updateSettings(currentSettings.copyWith(themeMode: themeMode));
   }
 
-  /// Update timer intervals
-  Future<void> updateTimerIntervals({
-    Duration? shortBreakInterval,
-    Duration? longBreakInterval,
-    Duration? shortBreakDuration,
-    Duration? longBreakDuration,
-  }) async {
+  /// Update break interval
+  Future<void> updateBreakInterval(Duration breakInterval) async {
     final currentSettings = await future;
-    await updateSettings(currentSettings.copyWith(
-      shortBreakInterval: shortBreakInterval ?? currentSettings.shortBreakInterval,
-      longBreakInterval: longBreakInterval ?? currentSettings.longBreakInterval,
-      shortBreakDuration: shortBreakDuration ?? currentSettings.shortBreakDuration,
-      longBreakDuration: longBreakDuration ?? currentSettings.longBreakDuration,
-    ));
+    await updateSettings(currentSettings.copyWith(breakInterval: breakInterval));
   }
 
   /// Update notification settings

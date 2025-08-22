@@ -8,6 +8,7 @@ import '../../../../core/utils/time_formatter.dart';
 import '../../../../core/models/time_entry.dart';
 import '../../../../core/services/storage_service.dart';
 import '../../../../features/projects/providers/projects_provider.dart';
+import '../../../../features/timer/providers/timer_provider.dart';
 
 part 'enhanced_recent_tasks_widget.g.dart';
 
@@ -480,13 +481,13 @@ class _TaskItem extends StatelessWidget {
   }
 }
 
-class _TaskDetailsDialog extends StatelessWidget {
+class _TaskDetailsDialog extends ConsumerWidget {
   final TimeEntryWithProject entryWithProject;
 
   const _TaskDetailsDialog({required this.entryWithProject});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AlertDialog(
       backgroundColor: Theme.of(context).brightness == Brightness.light 
           ? AppTheme.youtubeLightBg 
@@ -555,14 +556,38 @@ class _TaskDetailsDialog extends StatelessWidget {
           style: FilledButton.styleFrom(
             backgroundColor: AppTheme.youtubeRed,
           ),
-          onPressed: () {
+          onPressed: () async {
             Navigator.of(context).pop();
-            // TODO: Start timer with this task
+            await _startSimilarTask(ref, entryWithProject);
           },
           child: const Text('Start Similar Task'),
         ),
       ],
     );
+  }
+
+  /// Start a similar task with timer conflict handling
+  Future<void> _startSimilarTask(WidgetRef ref, TimeEntryWithProject entryWithProject) async {
+    final timer = ref.read(timerProvider.notifier);
+    final currentTimer = ref.read(timerProvider);
+    
+    try {
+      // Check if there's already a timer running
+      if (currentTimer.isActive) {
+        // Stop the current timer first
+        await timer.stop();
+      }
+      
+      // Start the new timer with the same project and task name
+      await timer.start(
+        projectId: entryWithProject.timeEntry.projectId,
+        taskName: entryWithProject.timeEntry.taskName,
+      );
+      
+    } catch (e) {
+      // Handle any errors that might occur
+      debugPrint('Error starting similar task: $e');
+    }
   }
 }
 

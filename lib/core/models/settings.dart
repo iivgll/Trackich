@@ -9,10 +9,7 @@ class AppSettings with _$AppSettings {
   const factory AppSettings({
     @Default('en') String language,
     @ThemeModeConverter() @Default(ThemeMode.system) ThemeMode themeMode,
-    @DurationConverter() @Default(Duration(minutes: 25)) Duration shortBreakInterval,
-    @DurationConverter() @Default(Duration(hours: 2)) Duration longBreakInterval,
-    @DurationConverter() @Default(Duration(minutes: 5)) Duration shortBreakDuration,
-    @DurationConverter() @Default(Duration(minutes: 15)) Duration longBreakDuration,
+    @DurationConverter() @Default(Duration(minutes: 30)) Duration breakInterval,
     @Default(true) bool enableNotifications,
     @Default(true) bool enableSoundNotifications,
     @Default(TimeFormat.format24h) TimeFormat timeFormat,

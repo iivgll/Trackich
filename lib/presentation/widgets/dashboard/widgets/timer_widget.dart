@@ -28,10 +28,26 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // Initialize UI fields with current timer state
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _syncUIWithTimerState();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final timer = ref.watch(timerProvider);
     final recentProjects = ref.watch(recentProjectsProvider);
+
+    // Listen for timer state changes and sync UI fields
+    ref.listen<CurrentTimer>(timerProvider, (previous, next) {
+      if (previous != next) {
+        _syncUIWithTimerState();
+      }
+    });
 
     return Card(
       child: Container(
@@ -476,6 +492,34 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
         });
         ref.read(timerProvider.notifier).updateProject(projects.first.id);
       }
+    }
+  }
+
+  /// Synchronize UI fields with current timer state
+  void _syncUIWithTimerState() {
+    final timer = ref.read(timerProvider);
+    
+    // Update UI fields to match timer state
+    if (mounted) {
+      setState(() {
+        // Update selected project if it changed
+        if (_selectedProjectId != timer.projectId) {
+          _selectedProjectId = timer.projectId;
+        }
+        
+        // Update task name if it changed and field is not currently focused
+        // Only update if the field is not focused to avoid interrupting user typing
+        final focusNode = FocusScope.of(context);
+        final taskFieldHasFocus = focusNode.focusedChild != null;
+        
+        if (_taskController.text != timer.taskName && !taskFieldHasFocus) {
+          _taskController.text = timer.taskName;
+          // Move cursor to end of text
+          _taskController.selection = TextSelection.fromPosition(
+            TextPosition(offset: _taskController.text.length),
+          );
+        }
+      });
     }
   }
 }

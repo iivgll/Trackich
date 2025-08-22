@@ -227,5 +227,31 @@
         "example": "7.5"
       }
     }
+  },
+
+  "breakInterval": "Break Interval",
+  "@breakInterval": {
+    "description": "Break interval setting label"
+  },
+
+  "breakReminderDescription": "Get break reminders every {minutes} minutes",
+  "@breakReminderDescription": {
+    "description": "Break reminder interval description",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+
+  "breakRemindersToggle": "Break Reminders",
+  "@breakRemindersToggle": {
+    "description": "Break reminders toggle setting"
+  },
+
+  "breakRemindersDescription": "Get notified to take breaks automatically",
+  "@breakRemindersDescription": {
+    "description": "Break reminders description"
   }
 }

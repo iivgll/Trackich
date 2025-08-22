@@ -43,5 +43,9 @@
   "minutes": "минут",
   "takeBreak": "Сделайте перерыв",
   "breakTime": "Время для {breakType} перерыва!",
-  "workCompleted": "Отличная работа! Вы выполнили {hours} часов сегодня."
+  "workCompleted": "Отличная работа! Вы выполнили {hours} часов сегодня.",
+  "breakInterval": "Интервал перерывов",
+  "breakReminderDescription": "Напоминания о перерывах каждые {minutes} минут",
+  "breakRemindersToggle": "Напоминания о перерывах",
+  "breakRemindersDescription": "Автоматические уведомления о перерывах"
 }

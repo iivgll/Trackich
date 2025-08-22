@@ -144,4 +144,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
     return 'Great work! You\'ve completed $hoursString hours today.';
   }
+
+  @override
+  String get breakInterval => 'Break Interval';
+
+  @override
+  String breakReminderDescription(int minutes) {
+    return 'Get break reminders every $minutes minutes';
+  }
+
+  @override
+  String get breakRemindersToggle => 'Break Reminders';
+
+  @override
+  String get breakRemindersDescription =>
+      'Get notified to take breaks automatically';
 }

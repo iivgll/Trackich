@@ -25,13 +25,7 @@ mixin _$AppSettings {
   @ThemeModeConverter()
   ThemeMode get themeMode => throw _privateConstructorUsedError;
   @DurationConverter()
-  Duration get shortBreakInterval => throw _privateConstructorUsedError;
-  @DurationConverter()
-  Duration get longBreakInterval => throw _privateConstructorUsedError;
-  @DurationConverter()
-  Duration get shortBreakDuration => throw _privateConstructorUsedError;
-  @DurationConverter()
-  Duration get longBreakDuration => throw _privateConstructorUsedError;
+  Duration get breakInterval => throw _privateConstructorUsedError;
   bool get enableNotifications => throw _privateConstructorUsedError;
   bool get enableSoundNotifications => throw _privateConstructorUsedError;
   TimeFormat get timeFormat => throw _privateConstructorUsedError;
@@ -65,10 +59,7 @@ abstract class $AppSettingsCopyWith<$Res> {
   $Res call({
     String language,
     @ThemeModeConverter() ThemeMode themeMode,
-    @DurationConverter() Duration shortBreakInterval,
-    @DurationConverter() Duration longBreakInterval,
-    @DurationConverter() Duration shortBreakDuration,
-    @DurationConverter() Duration longBreakDuration,
+    @DurationConverter() Duration breakInterval,
     bool enableNotifications,
     bool enableSoundNotifications,
     TimeFormat timeFormat,
@@ -99,10 +90,7 @@ class _$AppSettingsCopyWithImpl<$Res, $Val extends AppSettings>
   $Res call({
     Object? language = null,
     Object? themeMode = null,
-    Object? shortBreakInterval = null,
-    Object? longBreakInterval = null,
-    Object? shortBreakDuration = null,
-    Object? longBreakDuration = null,
+    Object? breakInterval = null,
     Object? enableNotifications = null,
     Object? enableSoundNotifications = null,
     Object? timeFormat = null,
@@ -124,21 +112,9 @@ class _$AppSettingsCopyWithImpl<$Res, $Val extends AppSettings>
                 ? _value.themeMode
                 : themeMode // ignore: cast_nullable_to_non_nullable
                       as ThemeMode,
-            shortBreakInterval: null == shortBreakInterval
-                ? _value.shortBreakInterval
-                : shortBreakInterval // ignore: cast_nullable_to_non_nullable
-                      as Duration,
-            longBreakInterval: null == longBreakInterval
-                ? _value.longBreakInterval
-                : longBreakInterval // ignore: cast_nullable_to_non_nullable
-                      as Duration,
-            shortBreakDuration: null == shortBreakDuration
-                ? _value.shortBreakDuration
-                : shortBreakDuration // ignore: cast_nullable_to_non_nullable
-                      as Duration,
-            longBreakDuration: null == longBreakDuration
-                ? _value.longBreakDuration
-                : longBreakDuration // ignore: cast_nullable_to_non_nullable
+            breakInterval: null == breakInterval
+                ? _value.breakInterval
+                : breakInterval // ignore: cast_nullable_to_non_nullable
                       as Duration,
             enableNotifications: null == enableNotifications
                 ? _value.enableNotifications
@@ -198,10 +174,7 @@ abstract class _$$AppSettingsImplCopyWith<$Res>
   $Res call({
     String language,
     @ThemeModeConverter() ThemeMode themeMode,
-    @DurationConverter() Duration shortBreakInterval,
-    @DurationConverter() Duration longBreakInterval,
-    @DurationConverter() Duration shortBreakDuration,
-    @DurationConverter() Duration longBreakDuration,
+    @DurationConverter() Duration breakInterval,
     bool enableNotifications,
     bool enableSoundNotifications,
     TimeFormat timeFormat,
@@ -231,10 +204,7 @@ class __$$AppSettingsImplCopyWithImpl<$Res>
   $Res call({
     Object? language = null,
     Object? themeMode = null,
-    Object? shortBreakInterval = null,
-    Object? longBreakInterval = null,
-    Object? shortBreakDuration = null,
-    Object? longBreakDuration = null,
+    Object? breakInterval = null,
     Object? enableNotifications = null,
     Object? enableSoundNotifications = null,
     Object? timeFormat = null,
@@ -256,21 +226,9 @@ class __$$AppSettingsImplCopyWithImpl<$Res>
             ? _value.themeMode
             : themeMode // ignore: cast_nullable_to_non_nullable
                   as ThemeMode,
-        shortBreakInterval: null == shortBreakInterval
-            ? _value.shortBreakInterval
-            : shortBreakInterval // ignore: cast_nullable_to_non_nullable
-                  as Duration,
-        longBreakInterval: null == longBreakInterval
-            ? _value.longBreakInterval
-            : longBreakInterval // ignore: cast_nullable_to_non_nullable
-                  as Duration,
-        shortBreakDuration: null == shortBreakDuration
-            ? _value.shortBreakDuration
-            : shortBreakDuration // ignore: cast_nullable_to_non_nullable
-                  as Duration,
-        longBreakDuration: null == longBreakDuration
-            ? _value.longBreakDuration
-            : longBreakDuration // ignore: cast_nullable_to_non_nullable
+        breakInterval: null == breakInterval
+            ? _value.breakInterval
+            : breakInterval // ignore: cast_nullable_to_non_nullable
                   as Duration,
         enableNotifications: null == enableNotifications
             ? _value.enableNotifications
@@ -323,10 +281,7 @@ class _$AppSettingsImpl implements _AppSettings {
   const _$AppSettingsImpl({
     this.language = 'en',
     @ThemeModeConverter() this.themeMode = ThemeMode.system,
-    @DurationConverter() this.shortBreakInterval = const Duration(minutes: 25),
-    @DurationConverter() this.longBreakInterval = const Duration(hours: 2),
-    @DurationConverter() this.shortBreakDuration = const Duration(minutes: 5),
-    @DurationConverter() this.longBreakDuration = const Duration(minutes: 15),
+    @DurationConverter() this.breakInterval = const Duration(minutes: 30),
     this.enableNotifications = true,
     this.enableSoundNotifications = true,
     this.timeFormat = TimeFormat.format24h,
@@ -353,19 +308,7 @@ class _$AppSettingsImpl implements _AppSettings {
   @override
   @JsonKey()
   @DurationConverter()
-  final Duration shortBreakInterval;
-  @override
-  @JsonKey()
-  @DurationConverter()
-  final Duration longBreakInterval;
-  @override
-  @JsonKey()
-  @DurationConverter()
-  final Duration shortBreakDuration;
-  @override
-  @JsonKey()
-  @DurationConverter()
-  final Duration longBreakDuration;
+  final Duration breakInterval;
   @override
   @JsonKey()
   final bool enableNotifications;
@@ -407,7 +350,7 @@ class _$AppSettingsImpl implements _AppSettings {
 
   @override
   String toString() {
-    return 'AppSettings(language: $language, themeMode: $themeMode, shortBreakInterval: $shortBreakInterval, longBreakInterval: $longBreakInterval, shortBreakDuration: $shortBreakDuration, longBreakDuration: $longBreakDuration, enableNotifications: $enableNotifications, enableSoundNotifications: $enableSoundNotifications, timeFormat: $timeFormat, weekStartDay: $weekStartDay, workingHours: $workingHours, dailyWorkLimit: $dailyWorkLimit, enableBreakReminders: $enableBreakReminders, enableHealthTips: $enableHealthTips, enablePostureReminders: $enablePostureReminders, postureReminderInterval: $postureReminderInterval)';
+    return 'AppSettings(language: $language, themeMode: $themeMode, breakInterval: $breakInterval, enableNotifications: $enableNotifications, enableSoundNotifications: $enableSoundNotifications, timeFormat: $timeFormat, weekStartDay: $weekStartDay, workingHours: $workingHours, dailyWorkLimit: $dailyWorkLimit, enableBreakReminders: $enableBreakReminders, enableHealthTips: $enableHealthTips, enablePostureReminders: $enablePostureReminders, postureReminderInterval: $postureReminderInterval)';
   }
 
   @override
@@ -419,14 +362,8 @@ class _$AppSettingsImpl implements _AppSettings {
                 other.language == language) &&
             (identical(other.themeMode, themeMode) ||
                 other.themeMode == themeMode) &&
-            (identical(other.shortBreakInterval, shortBreakInterval) ||
-                other.shortBreakInterval == shortBreakInterval) &&
-            (identical(other.longBreakInterval, longBreakInterval) ||
-                other.longBreakInterval == longBreakInterval) &&
-            (identical(other.shortBreakDuration, shortBreakDuration) ||
-                other.shortBreakDuration == shortBreakDuration) &&
-            (identical(other.longBreakDuration, longBreakDuration) ||
-                other.longBreakDuration == longBreakDuration) &&
+            (identical(other.breakInterval, breakInterval) ||
+                other.breakInterval == breakInterval) &&
             (identical(other.enableNotifications, enableNotifications) ||
                 other.enableNotifications == enableNotifications) &&
             (identical(
@@ -463,10 +400,7 @@ class _$AppSettingsImpl implements _AppSettings {
     runtimeType,
     language,
     themeMode,
-    shortBreakInterval,
-    longBreakInterval,
-    shortBreakDuration,
-    longBreakDuration,
+    breakInterval,
     enableNotifications,
     enableSoundNotifications,
     timeFormat,
@@ -497,10 +431,7 @@ abstract class _AppSettings implements AppSettings {
   const factory _AppSettings({
     final String language,
     @ThemeModeConverter() final ThemeMode themeMode,
-    @DurationConverter() final Duration shortBreakInterval,
-    @DurationConverter() final Duration longBreakInterval,
-    @DurationConverter() final Duration shortBreakDuration,
-    @DurationConverter() final Duration longBreakDuration,
+    @DurationConverter() final Duration breakInterval,
     final bool enableNotifications,
     final bool enableSoundNotifications,
     final TimeFormat timeFormat,
@@ -523,16 +454,7 @@ abstract class _AppSettings implements AppSettings {
   ThemeMode get themeMode;
   @override
   @DurationConverter()
-  Duration get shortBreakInterval;
-  @override
-  @DurationConverter()
-  Duration get longBreakInterval;
-  @override
-  @DurationConverter()
-  Duration get shortBreakDuration;
-  @override
-  @DurationConverter()
-  Duration get longBreakDuration;
+  Duration get breakInterval;
   @override
   bool get enableNotifications;
   @override

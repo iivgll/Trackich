@@ -185,59 +185,50 @@ class SettingsScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(AppTheme.space6),
         child: Column(
           children: [
-            // Short break duration
+            // Break interval setting
             ListTile(
-              leading: const Icon(Symbols.coffee),
-              title: Text(l10n.shortBreak),
-              subtitle: Text('${settings.shortBreakDuration.inMinutes} ${l10n.minutes}'),
+              leading: const Icon(Symbols.schedule),
+              title: Text(l10n.breakInterval),
+              subtitle: Text(l10n.breakReminderDescription(settings.breakInterval.inMinutes)),
               trailing: SizedBox(
-                width: 100,
-                child: Slider(
-                  value: settings.shortBreakDuration.inMinutes.toDouble(),
-                  min: 5,
-                  max: 30,
-                  divisions: 5,
-                  label: '${settings.shortBreakDuration.inMinutes} min',
-                  onChanged: (value) {
-                    ref.read(settingsProvider.notifier).updateTimerIntervals(
-                      shortBreakDuration: Duration(minutes: value.round()),
-                    );
-                  },
+                width: 120,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 60,
+                      child: TextFormField(
+                        initialValue: settings.breakInterval.inMinutes.toString(),
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          final minutes = int.tryParse(value);
+                          if (minutes != null && minutes > 0 && minutes <= 120) {
+                            ref.read(settingsProvider.notifier).updateBreakInterval(
+                              Duration(minutes: minutes),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Text('min'),
+                  ],
                 ),
               ),
             ),
             
             const Divider(),
             
-            // Long break duration
-            ListTile(
-              leading: const Icon(Symbols.coffee),
-              title: Text(l10n.longBreak),
-              subtitle: Text('${settings.longBreakDuration.inMinutes} ${l10n.minutes}'),
-              trailing: SizedBox(
-                width: 100,
-                child: Slider(
-                  value: settings.longBreakDuration.inMinutes.toDouble(),
-                  min: 15,
-                  max: 60,
-                  divisions: 9,
-                  label: '${settings.longBreakDuration.inMinutes} min',
-                  onChanged: (value) {
-                    ref.read(settingsProvider.notifier).updateTimerIntervals(
-                      longBreakDuration: Duration(minutes: value.round()),
-                    );
-                  },
-                ),
-              ),
-            ),
-            
-            const Divider(),
-            
-            // Break reminders
+            // Break reminders toggle
             SwitchListTile(
               secondary: const Icon(Symbols.alarm),
-              title: const Text('Break Reminders'),
-              subtitle: const Text('Get notified to take breaks'),
+              title: Text(l10n.breakRemindersToggle),
+              subtitle: Text(l10n.breakRemindersDescription),
               value: settings.enableBreakReminders,
               onChanged: (enabled) {
                 ref.read(settingsProvider.notifier).updateNotificationSettings(

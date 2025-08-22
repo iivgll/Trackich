@@ -94,7 +94,7 @@ final weekStartDayProvider = AutoDisposeProvider<WeekStartDay>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef WeekStartDayRef = AutoDisposeProviderRef<WeekStartDay>;
-String _$settingsHash() => r'a053b10d0e08c2d09563703852afc02d77a1bd49';
+String _$settingsHash() => r'ad29c2f4749f173df73e37c784ec91c22b59dd51';
 
 /// Provider for app settings
 ///

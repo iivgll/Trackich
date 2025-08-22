@@ -12,25 +12,10 @@ _$AppSettingsImpl _$$AppSettingsImplFromJson(Map<String, dynamic> json) =>
       themeMode: json['themeMode'] == null
           ? ThemeMode.system
           : const ThemeModeConverter().fromJson(json['themeMode'] as String),
-      shortBreakInterval: json['shortBreakInterval'] == null
-          ? const Duration(minutes: 25)
+      breakInterval: json['breakInterval'] == null
+          ? const Duration(minutes: 30)
           : const DurationConverter().fromJson(
-              (json['shortBreakInterval'] as num).toInt(),
-            ),
-      longBreakInterval: json['longBreakInterval'] == null
-          ? const Duration(hours: 2)
-          : const DurationConverter().fromJson(
-              (json['longBreakInterval'] as num).toInt(),
-            ),
-      shortBreakDuration: json['shortBreakDuration'] == null
-          ? const Duration(minutes: 5)
-          : const DurationConverter().fromJson(
-              (json['shortBreakDuration'] as num).toInt(),
-            ),
-      longBreakDuration: json['longBreakDuration'] == null
-          ? const Duration(minutes: 15)
-          : const DurationConverter().fromJson(
-              (json['longBreakDuration'] as num).toInt(),
+              (json['breakInterval'] as num).toInt(),
             ),
       enableNotifications: json['enableNotifications'] as bool? ?? true,
       enableSoundNotifications:
@@ -66,18 +51,7 @@ Map<String, dynamic> _$$AppSettingsImplToJson(
 ) => <String, dynamic>{
   'language': instance.language,
   'themeMode': const ThemeModeConverter().toJson(instance.themeMode),
-  'shortBreakInterval': const DurationConverter().toJson(
-    instance.shortBreakInterval,
-  ),
-  'longBreakInterval': const DurationConverter().toJson(
-    instance.longBreakInterval,
-  ),
-  'shortBreakDuration': const DurationConverter().toJson(
-    instance.shortBreakDuration,
-  ),
-  'longBreakDuration': const DurationConverter().toJson(
-    instance.longBreakDuration,
-  ),
+  'breakInterval': const DurationConverter().toJson(instance.breakInterval),
   'enableNotifications': instance.enableNotifications,
   'enableSoundNotifications': instance.enableSoundNotifications,
   'timeFormat': _$TimeFormatEnumMap[instance.timeFormat]!,

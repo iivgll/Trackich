@@ -72,6 +72,7 @@ class CurrentTimer {
 @riverpod
 class Timer extends _$Timer {
   dart.Timer? _ticker;
+  int _lastBreakNotificationMinutes = -1; // Track last notification to prevent duplicates
 
   @override
   CurrentTimer build() {
@@ -134,6 +135,9 @@ class Timer extends _$Timer {
       breakType: breakType,
     );
 
+    // Reset notification tracking when starting a new timer
+    _lastBreakNotificationMinutes = -1;
+
     // Update project last active time
     if (!isBreak) {
       ref.read(projectsProvider.notifier).updateLastActive(projectId);
@@ -155,6 +159,11 @@ class Timer extends _$Timer {
     if (!state.canPause) return;
 
     _ticker?.cancel();
+    
+    // Stop notification timers when pausing
+    final notificationService = ref.read(notificationServiceProvider);
+    notificationService.stopAllTimers();
+    
     state = state.copyWith(state: TimerState.paused);
     await _saveCurrentTimer();
     
@@ -181,10 +190,15 @@ class Timer extends _$Timer {
 
     _ticker?.cancel();
     
+    // Stop notification timers and cancel pending notifications
+    final notificationService = ref.read(notificationServiceProvider);
+    notificationService.stopAllTimers();
+    
     final timeEntry = await _createTimeEntry();
     
-    // Reset timer state
+    // Reset timer state and notification tracking
     state = const CurrentTimer();
+    _lastBreakNotificationMinutes = -1;
     
     // Clear saved timer
     final storage = ref.read(storageServiceProvider);
@@ -279,13 +293,22 @@ class Timer extends _$Timer {
     if (state.isBreak) return;
     
     ref.read(settingsProvider).whenData((settings) async {
-      if (!settings.enableBreakReminders) return;
+      if (!settings.enableBreakReminders || !settings.enableNotifications) return;
       
-      // Check for break reminder every 25 minutes (Pomodoro technique)
+      // Check for break reminder based on user-defined interval
       final workMinutes = state.elapsed.inMinutes;
-      // Only trigger on exact minute boundaries and avoid duplicate notifications
       final workSeconds = state.elapsed.inSeconds;
-      if (workMinutes > 0 && workMinutes % 25 == 0 && workSeconds % 60 < 5) {
+      final breakIntervalMinutes = settings.breakInterval.inMinutes;
+      
+      // Only trigger at exact intervals and prevent duplicates
+      if (workMinutes > 0 && 
+          workMinutes % breakIntervalMinutes == 0 && 
+          workSeconds % 60 == 0 && // Only trigger at exact minute boundaries (0 seconds)
+          workMinutes != _lastBreakNotificationMinutes) { // Prevent duplicate notifications
+        
+        // Mark this minute as having sent a notification
+        _lastBreakNotificationMinutes = workMinutes;
+        
         final notificationService = ref.read(notificationServiceProvider);
         
         // Get project name for notification
@@ -304,6 +327,8 @@ class Timer extends _$Timer {
           workDuration: state.elapsed,
           projectName: projectName,
         );
+        
+        debugPrint('Break reminder notification scheduled for ${workMinutes}m (interval: ${breakIntervalMinutes}m)');
       }
     });
   }

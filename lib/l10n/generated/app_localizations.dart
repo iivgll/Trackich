@@ -355,6 +355,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Great work! You\'ve completed {hours} hours today.'**
   String workCompleted(double hours);
+
+  /// Break interval setting label
+  ///
+  /// In en, this message translates to:
+  /// **'Break Interval'**
+  String get breakInterval;
+
+  /// Break reminder interval description
+  ///
+  /// In en, this message translates to:
+  /// **'Get break reminders every {minutes} minutes'**
+  String breakReminderDescription(int minutes);
+
+  /// Break reminders toggle setting
+  ///
+  /// In en, this message translates to:
+  /// **'Break Reminders'**
+  String get breakRemindersToggle;
+
+  /// Break reminders description
+  ///
+  /// In en, this message translates to:
+  /// **'Get notified to take breaks automatically'**
+  String get breakRemindersDescription;
 }
 
 class _AppLocalizationsDelegate

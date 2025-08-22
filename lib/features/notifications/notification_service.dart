@@ -232,12 +232,22 @@ class NotificationService {
     );
   }
   
-  // Stop all timers
+  // Stop all timers and clear any pending notifications
   void stopAllTimers() {
     _breakTimer?.cancel();
     _workTimer?.cancel();
     _breakTimer = null;
     _workTimer = null;
+    
+    // Cancel any pending break reminder notifications
+    cancelNotification(1);
+  }
+  
+  // Clean shutdown method
+  static void shutdown() {
+    final instance = NotificationService();
+    instance.stopAllTimers();
+    instance.cancelAllNotifications();
   }
   
   // Cancel specific notification
