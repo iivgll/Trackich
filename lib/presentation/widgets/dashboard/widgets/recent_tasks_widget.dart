@@ -89,10 +89,10 @@ class RecentTasksWidget extends ConsumerWidget {
                 DropdownButton<String>(
                   value: 'today',
                   underline: const SizedBox(),
-                  items: const [
-                    DropdownMenuItem(value: 'today', child: Text('Today')),
-                    DropdownMenuItem(value: 'week', child: Text('This Week')),
-                    DropdownMenuItem(value: 'all', child: Text('All Time')),
+                  items: [
+                    DropdownMenuItem(value: 'today', child: Text(AppLocalizations.of(context).today)),
+                    DropdownMenuItem(value: 'week', child: Text(AppLocalizations.of(context).thisWeek)),
+                    DropdownMenuItem(value: 'all', child: Text(AppLocalizations.of(context).allTime)),
                   ],
                   onChanged: (value) {
                     // TODO: Filter tasks based on selected period
@@ -331,14 +331,14 @@ class _TaskDetailsDialog extends ConsumerWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Close'),
+          child: Text(AppLocalizations.of(context).close),
         ),
         FilledButton(
           onPressed: () async {
             Navigator.of(context).pop();
             await _startSimilarTask(ref, entryWithProject);
           },
-          child: const Text('Start Similar Task'),
+          child: Text(AppLocalizations.of(context).startSimilarTask),
         ),
       ],
     );

@@ -150,7 +150,7 @@ class QuickStartWidget extends ConsumerWidget {
     // Navigate to main timer and pre-select the project
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Selected ${project.name}. Enter a task to start the timer.'),
+        content: Text(AppLocalizations.of(context).projectSelectedMessage(project.name)),
         duration: const Duration(seconds: 2),
       ),
     );

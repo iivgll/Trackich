@@ -192,7 +192,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
                   decoration: InputDecoration(
                     hintText: '0',
                     prefixIcon: const Icon(Symbols.schedule),
-                    suffix: const Text('hours/week'),
+                    suffix: Text(AppLocalizations.of(context).hoursPerWeek),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
@@ -255,7 +255,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
         Navigator.of(context).pop(true); // Return true to indicate success
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Project "${_nameController.text.trim()}" created successfully!'),
+            content: Text(AppLocalizations.of(context).projectCreated(_nameController.text.trim())),
             backgroundColor: AppTheme.successGreen,
           ),
         );
@@ -265,7 +265,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error creating project: $error'),
+            content: Text(AppLocalizations.of(context).errorCreatingProject(error.toString())),
             backgroundColor: AppTheme.getErrorColor(context),
           ),
         );

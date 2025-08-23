@@ -261,11 +261,11 @@ class AnalyticsScreen extends ConsumerWidget {
                   children: [
                     Icon(Symbols.error, size: 64, color: AppTheme.getErrorColor(context)),
                     const SizedBox(height: AppTheme.space4),
-                    Text('Error loading analytics: $error'),
+                    Text('${AppLocalizations.of(context).error} loading analytics: $error'),
                     const SizedBox(height: AppTheme.space4),
                     ElevatedButton(
                       onPressed: () => ref.invalidate(analyticsDataProvider),
-                      child: const Text('Retry'),
+                      child: Text(AppLocalizations.of(context).retry),
                     ),
                   ],
                 ),
@@ -301,22 +301,22 @@ class AnalyticsScreen extends ConsumerWidget {
           
           // Time range selector
           SegmentedButton<AnalyticsTimeRange>(
-            segments: const [
+            segments: [
               ButtonSegment(
                 value: AnalyticsTimeRange.week,
-                label: Text('Week'),
+                label: Text(AppLocalizations.of(context).week),
               ),
               ButtonSegment(
                 value: AnalyticsTimeRange.month,
-                label: Text('Month'),
+                label: Text(AppLocalizations.of(context).month),
               ),
               ButtonSegment(
                 value: AnalyticsTimeRange.quarter,
-                label: Text('Quarter'),
+                label: Text(AppLocalizations.of(context).quarter),
               ),
               ButtonSegment(
                 value: AnalyticsTimeRange.year,
-                label: Text('Year'),
+                label: Text(AppLocalizations.of(context).year),
               ),
             ],
             selected: {timeRange},

@@ -253,5 +253,336 @@
   "breakRemindersDescription": "Get notified to take breaks automatically",
   "@breakRemindersDescription": {
     "description": "Break reminders description"
+  },
+
+  "error": "Error",
+  "@error": {
+    "description": "Generic error text"
+  },
+
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button text"
+  },
+
+  "close": "Close",
+  "@close": {
+    "description": "Close button text"
+  },
+
+  "week": "Week",
+  "@week": {
+    "description": "Week filter option"
+  },
+
+  "month": "Month",
+  "@month": {
+    "description": "Month filter option"
+  },
+
+  "quarter": "Quarter",
+  "@quarter": {
+    "description": "Quarter filter option"
+  },
+
+  "year": "Year",
+  "@year": {
+    "description": "Year filter option"
+  },
+
+  "today": "Today",
+  "@today": {
+    "description": "Today filter option"
+  },
+
+  "thisWeek": "This Week",
+  "@thisWeek": {
+    "description": "This week filter option"
+  },
+
+  "thisMonth": "This Month",
+  "@thisMonth": {
+    "description": "This month filter option"
+  },
+
+  "allTime": "All Time",
+  "@allTime": {
+    "description": "All time filter option"
+  },
+
+  "startSimilarTask": "Start Similar Task",
+  "@startSimilarTask": {
+    "description": "Start similar task button"
+  },
+
+  "continueTask": "Continue Task",
+  "@continueTask": {
+    "description": "Continue task button"
+  },
+
+  "project": "Project:",
+  "@project": {
+    "description": "Project label"
+  },
+
+  "task": "Task:",
+  "@task": {
+    "description": "Task label"
+  },
+
+  "noProjectsAvailable": "No projects available. Create one first.",
+  "@noProjectsAvailable": {
+    "description": "No projects message"
+  },
+
+  "selectProjectHint": "Select a project",
+  "@selectProjectHint": {
+    "description": "Select project hint"
+  },
+
+  "startTimer": "Start Timer",
+  "@startTimer": {
+    "description": "Start timer button"
+  },
+
+  "day": "Day",
+  "@day": {
+    "description": "Day view option"
+  },
+
+  "exportingToExcel": "Exporting to Excel...",
+  "@exportingToExcel": {
+    "description": "Export progress message"
+  },
+
+  "exportSuccess": "Excel report exported successfully!",
+  "@exportSuccess": {
+    "description": "Export success message"
+  },
+
+  "exportFailed": "Export failed: {error}",
+  "@exportFailed": {
+    "description": "Export failed message",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "File not found"
+      }
+    }
+  },
+
+  "errorLoadingProject": "Error loading project",
+  "@errorLoadingProject": {
+    "description": "Error loading project message"
+  },
+
+  "filterCalendar": "Filter Calendar",
+  "@filterCalendar": {
+    "description": "Filter calendar title"
+  },
+
+  "allProjects": "All Projects",
+  "@allProjects": {
+    "description": "All projects filter option"
+  },
+
+  "clearAll": "Clear All",
+  "@clearAll": {
+    "description": "Clear all filters button"
+  },
+
+  "apply": "Apply",
+  "@apply": {
+    "description": "Apply filters button"
+  },
+
+  "clearFilters": "Clear Filters",
+  "@clearFilters": {
+    "description": "Clear filters button"
+  },
+
+  "filteredResults": "Filtered Results",
+  "@filteredResults": {
+    "description": "Filtered results title"
+  },
+
+  "english": "English",
+  "@english": {
+    "description": "English language option"
+  },
+
+  "russian": "Русский",
+  "@russian": {
+    "description": "Russian language option"
+  },
+
+  "min": "min",
+  "@min": {
+    "description": "Minutes abbreviation"
+  },
+
+  "testNotifications": "Test Notifications",
+  "@testNotifications": {
+    "description": "Test notifications title"
+  },
+
+  "testNotificationsSubtitle": "Send a test notification to verify the system is working",
+  "@testNotificationsSubtitle": {
+    "description": "Test notifications subtitle"
+  },
+
+  "testNotificationSent": "Test notification sent! Check your notification center.",
+  "@testNotificationSent": {
+    "description": "Test notification sent message"
+  },
+
+  "test": "Test",
+  "@test": {
+    "description": "Test button text"
+  },
+
+  "request": "Request",
+  "@request": {
+    "description": "Request button text"
+  },
+
+  "notificationPermissionsGranted": "Notification permissions granted!",
+  "@notificationPermissionsGranted": {
+    "description": "Notification permissions granted message"
+  },
+
+  "enableNotificationsTitle": "Enable Notifications",
+  "@enableNotificationsTitle": {
+    "description": "Enable notifications dialog title"
+  },
+
+  "enableNotificationsInstructions": "To enable notifications for Trackich:",
+  "@enableNotificationsInstructions": {
+    "description": "Enable notifications instructions"
+  },
+
+  "step1": "1. Open your device Settings",
+  "@step1": {
+    "description": "Step 1 instruction"
+  },
+
+  "step2": "2. Find \"Notifications\" or \"Apps & notifications\"",
+  "@step2": {
+    "description": "Step 2 instruction"
+  },
+
+  "step3": "3. Find \"Trackich\" in the app list",
+  "@step3": {
+    "description": "Step 3 instruction"
+  },
+
+  "step4": "4. Toggle notifications ON",
+  "@step4": {
+    "description": "Step 4 instruction"
+  },
+
+  "ok": "OK",
+  "@ok": {
+    "description": "OK button text"
+  },
+
+  "hoursPerWeek": "hours/week",
+  "@hoursPerWeek": {
+    "description": "Hours per week label"
+  },
+
+  "projectCreated": "Project \"{name}\" created successfully!",
+  "@projectCreated": {
+    "description": "Project created message",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "My Project"
+      }
+    }
+  },
+
+  "errorCreatingProject": "Error creating project: {error}",
+  "@errorCreatingProject": {
+    "description": "Error creating project message",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Database error"
+      }
+    }
+  },
+
+  "active": "Active",
+  "@active": {
+    "description": "Active filter option"
+  },
+
+  "archived": "Archived",
+  "@archived": {
+    "description": "Archived filter option"
+  },
+
+  "createProject": "Create Project",
+  "@createProject": {
+    "description": "Create project button text"
+  },
+
+  "deleteProject": "Delete Project",
+  "@deleteProject": {
+    "description": "Delete project dialog title"
+  },
+
+  "deleteProjectConfirmation": "Are you sure you want to delete \"{name}\"? This action cannot be undone and will also delete all associated time entries.",
+  "@deleteProjectConfirmation": {
+    "description": "Delete project confirmation message",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "My Project"
+      }
+    }
+  },
+
+  "projectDeleted": "Project \"{name}\" deleted",
+  "@projectDeleted": {
+    "description": "Project deleted message",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "My Project"
+      }
+    }
+  },
+
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button text"
+  },
+
+  "edit": "Edit",
+  "@edit": {
+    "description": "Edit button text"
+  },
+
+  "created": "created",
+  "@created": {
+    "description": "Created action text"
+  },
+
+  "updated": "updated",
+  "@updated": {
+    "description": "Updated action text"
+  },
+
+  "projectSelectedMessage": "Selected {projectName}. Enter a task to start the timer.",
+  "@projectSelectedMessage": {
+    "description": "Message when project is selected",
+    "placeholders": {
+      "projectName": {
+        "type": "String",
+        "example": "My Project"
+      }
+    }
   }
 }

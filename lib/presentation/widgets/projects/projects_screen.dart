@@ -119,15 +119,15 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
             items: [
               DropdownMenuItem(
                 value: ProjectFilter.all,
-                child: Text('All Projects'),
+                child: Text(l10n.allProjects),
               ),
               DropdownMenuItem(
                 value: ProjectFilter.active,
-                child: Text('Active'),
+                child: Text(l10n.active),
               ),
               DropdownMenuItem(
                 value: ProjectFilter.archived,
-                child: Text('Archived'),
+                child: Text(l10n.archived),
               ),
             ],
             onChanged: (value) {
@@ -164,6 +164,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
 
   Widget _buildProjectsContent(BuildContext context, WidgetRef ref, String searchQuery,
                               ProjectsViewMode viewMode, ProjectFilter filter) {
+    final l10n = AppLocalizations.of(context);
     final projectsAsync = _getFilteredProjects(ref, filter);
     
     return projectsAsync.when(
@@ -214,7 +215,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
             const SizedBox(height: AppTheme.space4),
             ElevatedButton(
               onPressed: () => ref.invalidate(projectsProvider),
-              child: const Text('Retry'),
+              child: Text(l10n.retry),
             ),
           ],
         ),
@@ -257,6 +258,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
   }
 
   Widget _buildEmptyState(BuildContext context, bool isSearchResult) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -288,7 +290,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
             ElevatedButton.icon(
               onPressed: () => _showCreateProjectDialog(context, ref),
               icon: const Icon(Symbols.add),
-              label: const Text('Create Project'),
+              label: Text(l10n.createProject),
             ),
           ],
         ],
@@ -337,10 +339,11 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
   }
 
   void _showCreateProjectDialog(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) => _ProjectFormDialog(
-        title: 'Create Project',
+        title: l10n.createProject,
         onSave: (name, description, color, tags, targetHours) {
           ref.read(projectsProvider.notifier).createProject(
             name: name,
@@ -355,10 +358,11 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
   }
 
   void _showEditProjectDialog(BuildContext context, WidgetRef ref, Project project) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) => _ProjectFormDialog(
-        title: 'Edit Project',
+        title: l10n.edit,
         project: project,
         onSave: (name, description, color, tags, targetHours) {
           ref.read(projectsProvider.notifier).updateProject(
@@ -383,26 +387,27 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
   }
 
   void _showDeleteConfirmation(BuildContext context, WidgetRef ref, Project project) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Project'),
-        content: Text('Are you sure you want to delete "${project.name}"? This action cannot be undone and will also delete all associated time entries.'),
+        title: Text(l10n.deleteProject),
+        content: Text(l10n.deleteProjectConfirmation(project.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           FilledButton(
             onPressed: () {
               ref.read(projectsProvider.notifier).deleteProject(project.id);
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Project "${project.name}" deleted')),
+                SnackBar(content: Text(l10n.projectDeleted(project.name))),
               );
             },
             style: FilledButton.styleFrom(backgroundColor: AppTheme.getErrorColor(context)),
-            child: const Text('Delete'),
+            child: Text(l10n.delete),
           ),
         ],
       ),
@@ -426,6 +431,7 @@ class _ProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -573,7 +579,7 @@ class _ProjectCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                       child: Text(
-                        'Archived',
+                        l10n.archived,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: AppTheme.gray600,
                           fontWeight: FontWeight.w500,
@@ -606,6 +612,7 @@ class _ProjectListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Card(
       margin: const EdgeInsets.only(bottom: AppTheme.space2),
       child: ListTile(
@@ -640,7 +647,7 @@ class _ProjectListTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 ),
                 child: Text(
-                  'Archived',
+                  l10n.archived,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: AppTheme.gray600,
                     fontWeight: FontWeight.w500,
@@ -689,7 +696,7 @@ class _ProjectListTile extends StatelessWidget {
                 children: [
                   const Icon(Symbols.edit, size: 16),
                   const SizedBox(width: AppTheme.space2),
-                  const Text('Edit'),
+                  Text(l10n.edit),
                 ],
               ),
             ),
@@ -699,7 +706,7 @@ class _ProjectListTile extends StatelessWidget {
                 children: [
                   Icon(Symbols.delete, size: 16, color: AppTheme.getErrorColor(context)),
                   const SizedBox(width: AppTheme.space2),
-                  Text('Delete', style: TextStyle(color: AppTheme.getErrorColor(context))),
+                  Text(l10n.delete, style: TextStyle(color: AppTheme.getErrorColor(context))),
                 ],
               ),
             ),
@@ -777,6 +784,7 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return AlertDialog(
       title: Text(widget.title),
       content: SizedBox(
@@ -896,7 +904,7 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
       actions: [
         TextButton(
           onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         FilledButton(
           onPressed: _isLoading ? null : _saveProject,
@@ -906,7 +914,7 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Save'),
+              : Text(l10n.save),
         ),
       ],
     );
@@ -933,14 +941,16 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
         tags,
         targetHours,
       );
+      final l10n = AppLocalizations.of(context);
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Project ${widget.project == null ? 'created' : 'updated'}')),
+        SnackBar(content: Text(widget.project == null ? l10n.created : l10n.updated)),
       );
     } catch (e) {
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error: ${e.toString()}'),
+          content: Text('${l10n.error}: ${e.toString()}'),
           backgroundColor: AppTheme.getErrorColor(context),
         ),
       );
@@ -960,6 +970,7 @@ class _ProjectDetailsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return AlertDialog(
       title: Row(
         children: [
@@ -1045,7 +1056,7 @@ class _ProjectDetailsDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Close'),
+          child: Text(l10n.close),
         ),
       ],
     );

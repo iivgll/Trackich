@@ -9,6 +9,7 @@ import '../../../../core/models/time_entry.dart';
 import '../../../../core/services/storage_service.dart';
 import '../../../../features/projects/providers/projects_provider.dart';
 import '../../../../features/timer/providers/timer_provider.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 
 part 'enhanced_recent_tasks_widget.g.dart';
 
@@ -206,22 +207,22 @@ class EnhancedRecentTasksWidget extends ConsumerWidget {
               value: period,
               underline: const SizedBox(),
               icon: const Icon(Symbols.arrow_drop_down, size: 20),
-              items: const [
+              items:  [
                 DropdownMenuItem(
                   value: TaskFilterPeriod.today,
-                  child: Text('Today'),
+                  child: Text(AppLocalizations.of(context).today),
                 ),
                 DropdownMenuItem(
                   value: TaskFilterPeriod.week,
-                  child: Text('This Week'),
+                  child: Text(AppLocalizations.of(context).thisWeek),
                 ),
                 DropdownMenuItem(
                   value: TaskFilterPeriod.month,
-                  child: Text('This Month'),
+                  child: Text(AppLocalizations.of(context).thisMonth),
                 ),
                 DropdownMenuItem(
                   value: TaskFilterPeriod.all,
-                  child: Text('All Time'),
+                  child: Text(AppLocalizations.of(context).allTime),
                 ),
               ],
               onChanged: (value) {
@@ -593,7 +594,7 @@ class _TaskGroupDetailsDialog extends ConsumerWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Close'),
+          child: Text(AppLocalizations.of(context).close),
         ),
         FilledButton(
           style: FilledButton.styleFrom(
@@ -603,7 +604,7 @@ class _TaskGroupDetailsDialog extends ConsumerWidget {
             Navigator.of(context).pop();
             await _continueTask(ref, taskGroupWithProject);
           },
-          child: const Text('Continue Task'),
+          child: Text(AppLocalizations.of(context).continueTask),
         ),
       ],
     );

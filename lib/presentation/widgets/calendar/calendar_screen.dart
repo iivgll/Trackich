@@ -156,33 +156,33 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           // Today button
           TextButton(
             onPressed: () => _goToToday(),
-            child: const Text('Today'),
+            child: Text(l10n.today),
           ),
           
           const SizedBox(width: AppTheme.space4),
           
           // View mode toggle
           SegmentedButton<CalendarViewMode>(
-            segments: const [
+            segments: [
               ButtonSegment(
                 value: CalendarViewMode.day,
-                label: Text('Day'),
-                icon: Icon(Symbols.today, size: 16),
+                label: Text(l10n.day),
+                icon: const Icon(Symbols.today, size: 16),
               ),
               ButtonSegment(
                 value: CalendarViewMode.week,
-                label: Text('Week'),
-                icon: Icon(Symbols.view_week, size: 16),
+                label: Text(l10n.week),
+                icon: const Icon(Symbols.view_week, size: 16),
               ),
               ButtonSegment(
                 value: CalendarViewMode.month,
-                label: Text('Month'),
-                icon: Icon(Symbols.calendar_view_month, size: 16),
+                label: Text(l10n.month),
+                icon: const Icon(Symbols.calendar_view_month, size: 16),
               ),
               ButtonSegment(
                 value: CalendarViewMode.year,
-                label: Text('Year'),
-                icon: Icon(Symbols.calendar_today, size: 16),
+                label: Text(l10n.year),
+                icon: const Icon(Symbols.calendar_today, size: 16),
               ),
             ],
             selected: {viewMode},
@@ -284,10 +284,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   Future<void> _exportToExcel(BuildContext context) async {
     try {
       // Show loading indicator
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Exporting to Excel...'),
-          duration: Duration(seconds: 1),
+        SnackBar(
+          content: Text(l10n.exportingToExcel),
+          duration: const Duration(seconds: 1),
         ),
       );
       
@@ -322,9 +323,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         }
         
         // Show success message
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Excel report exported successfully!'),
+            content: Text(l10n.exportSuccess),
             duration: const Duration(seconds: 3),
             backgroundColor: AppTheme.getSuccessColor(context),
           ),
@@ -333,9 +335,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     } catch (e) {
       // Show error message
       if (context.mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Export failed: $e'),
+            content: Text(l10n.exportFailed(e.toString())),
             backgroundColor: Theme.of(context).colorScheme.error,
             duration: const Duration(seconds: 3),
           ),
@@ -1015,7 +1018,7 @@ class _TimelineItem extends ConsumerWidget {
       error: (_, __) => Card(
         child: Container(
           height: 80,
-          child: const Center(child: Text('Error loading project')),
+          child: Center(child: Text(AppLocalizations.of(context).errorLoadingProject)),
         ),
       ),
     );
@@ -1167,7 +1170,7 @@ class _WeekTimelineItem extends ConsumerWidget {
       ),
       error: (_, __) => Container(
         height: 40,
-        child: const Center(child: Text('Error')),
+        child: Center(child: Text(AppLocalizations.of(context).error)),
       ),
     );
   }
@@ -1332,7 +1335,7 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
         children: [
           const Icon(Symbols.filter_list, color: AppTheme.primaryBlue),
           const SizedBox(width: AppTheme.space2),
-          const Text('Filter Calendar'),
+          Text(AppLocalizations.of(context).filterCalendar),
         ],
       ),
       content: SizedBox(
@@ -1357,13 +1360,13 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
                 ),
                 child: DropdownButton<String?>(
                   value: _selectedProjectId,
-                  hint: const Text('All Projects'),
+                  hint: Text(AppLocalizations.of(context).allProjects),
                   isExpanded: true,
                   underline: Container(),
                   items: [
-                    const DropdownMenuItem<String?>(
+                    DropdownMenuItem<String?>(
                       value: null,
-                      child: Text('All Projects'),
+                      child: Text(AppLocalizations.of(context).allProjects),
                     ),
                     ...projects.map((project) => DropdownMenuItem<String?>(
                       value: project.id,
@@ -1457,15 +1460,15 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context).cancel),
         ),
         TextButton(
           onPressed: _clearFilters,
-          child: const Text('Clear All'),
+          child: Text(AppLocalizations.of(context).clearAll),
         ),
         ElevatedButton(
           onPressed: _applyFilters,
-          child: const Text('Apply'),
+          child: Text(AppLocalizations.of(context).apply),
         ),
       ],
     );
@@ -1744,7 +1747,7 @@ class _CalendarFilteredListView extends ConsumerWidget {
               Navigator.of(context).pop();
             },
             icon: const Icon(Symbols.filter_list_off),
-            label: const Text('Clear Filters'),
+            label: Text(AppLocalizations.of(context).clearFilters),
           ),
         ],
       ),
@@ -2044,7 +2047,7 @@ class _CalendarTaskItem extends ConsumerWidget {
       error: (_, __) => Container(
         height: 56,
         padding: const EdgeInsets.all(AppTheme.space4),
-        child: const Center(child: Text('Error loading project')),
+        child: Center(child: Text(AppLocalizations.of(context).errorLoadingProject)),
       ),
     );
   }

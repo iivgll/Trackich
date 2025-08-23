@@ -159,4 +159,193 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get breakRemindersDescription =>
       'Автоматические уведомления о перерывах';
+
+  @override
+  String get error => 'Ошибка';
+
+  @override
+  String get retry => 'Повторить';
+
+  @override
+  String get close => 'Закрыть';
+
+  @override
+  String get week => 'Неделя';
+
+  @override
+  String get month => 'Месяц';
+
+  @override
+  String get quarter => 'Квартал';
+
+  @override
+  String get year => 'Год';
+
+  @override
+  String get today => 'Сегодня';
+
+  @override
+  String get thisWeek => 'На этой неделе';
+
+  @override
+  String get thisMonth => 'В этом месяце';
+
+  @override
+  String get allTime => 'Все время';
+
+  @override
+  String get startSimilarTask => 'Начать похожую задачу';
+
+  @override
+  String get continueTask => 'Продолжить задачу';
+
+  @override
+  String get project => 'Проект:';
+
+  @override
+  String get task => 'Задача:';
+
+  @override
+  String get noProjectsAvailable =>
+      'Нет доступных проектов. Создайте сначала один.';
+
+  @override
+  String get selectProjectHint => 'Выберите проект';
+
+  @override
+  String get day => 'День';
+
+  @override
+  String get exportingToExcel => 'Экспорт в Excel...';
+
+  @override
+  String get exportSuccess => 'Отчет Excel успешно экспортирован!';
+
+  @override
+  String exportFailed(String error) {
+    return 'Ошибка экспорта: $error';
+  }
+
+  @override
+  String get errorLoadingProject => 'Ошибка загрузки проекта';
+
+  @override
+  String get filterCalendar => 'Фильтр календаря';
+
+  @override
+  String get allProjects => 'Все проекты';
+
+  @override
+  String get clearAll => 'Очистить все';
+
+  @override
+  String get apply => 'Применить';
+
+  @override
+  String get clearFilters => 'Очистить фильтры';
+
+  @override
+  String get filteredResults => 'Результаты фильтрации';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get russian => 'Русский';
+
+  @override
+  String get min => 'мин';
+
+  @override
+  String get testNotifications => 'Тест уведомлений';
+
+  @override
+  String get testNotificationsSubtitle =>
+      'Отправить тестовое уведомление для проверки работы системы';
+
+  @override
+  String get testNotificationSent =>
+      'Тестовое уведомление отправлено! Проверьте центр уведомлений.';
+
+  @override
+  String get test => 'Тест';
+
+  @override
+  String get request => 'Запросить';
+
+  @override
+  String get notificationPermissionsGranted =>
+      'Разрешения на уведомления предоставлены!';
+
+  @override
+  String get enableNotificationsTitle => 'Включить уведомления';
+
+  @override
+  String get enableNotificationsInstructions =>
+      'Чтобы включить уведомления для Трэкича:';
+
+  @override
+  String get step1 => '1. Откройте настройки устройства';
+
+  @override
+  String get step2 =>
+      '2. Найдите \"Уведомления\" или \"Приложения и уведомления\"';
+
+  @override
+  String get step3 => '3. Найдите \"Trackich\" в списке приложений';
+
+  @override
+  String get step4 => '4. Включите уведомления';
+
+  @override
+  String get ok => 'ОК';
+
+  @override
+  String get hoursPerWeek => 'часов/неделя';
+
+  @override
+  String projectCreated(String name) {
+    return 'Проект \"$name\" успешно создан!';
+  }
+
+  @override
+  String errorCreatingProject(String error) {
+    return 'Ошибка создания проекта: $error';
+  }
+
+  @override
+  String get active => 'Активный';
+
+  @override
+  String get archived => 'Архивированный';
+
+  @override
+  String get deleteProject => 'Удалить проект';
+
+  @override
+  String deleteProjectConfirmation(String name) {
+    return 'Вы уверены, что хотите удалить \"$name\"? Это действие нельзя отменить, также будут удалены все связанные записи времени.';
+  }
+
+  @override
+  String projectDeleted(String name) {
+    return 'Проект \"$name\" удален';
+  }
+
+  @override
+  String get delete => 'Удалить';
+
+  @override
+  String get edit => 'Редактировать';
+
+  @override
+  String get created => 'создан';
+
+  @override
+  String get updated => 'обновлен';
+
+  @override
+  String projectSelectedMessage(String projectName) {
+    return 'Выбран проект $projectName. Введите задачу для запуска таймера.';
+  }
 }

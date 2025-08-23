@@ -159,4 +159,191 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get breakRemindersDescription =>
       'Get notified to take breaks automatically';
+
+  @override
+  String get error => 'Error';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get week => 'Week';
+
+  @override
+  String get month => 'Month';
+
+  @override
+  String get quarter => 'Quarter';
+
+  @override
+  String get year => 'Year';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get thisWeek => 'This Week';
+
+  @override
+  String get thisMonth => 'This Month';
+
+  @override
+  String get allTime => 'All Time';
+
+  @override
+  String get startSimilarTask => 'Start Similar Task';
+
+  @override
+  String get continueTask => 'Continue Task';
+
+  @override
+  String get project => 'Project:';
+
+  @override
+  String get task => 'Task:';
+
+  @override
+  String get noProjectsAvailable => 'No projects available. Create one first.';
+
+  @override
+  String get selectProjectHint => 'Select a project';
+
+  @override
+  String get day => 'Day';
+
+  @override
+  String get exportingToExcel => 'Exporting to Excel...';
+
+  @override
+  String get exportSuccess => 'Excel report exported successfully!';
+
+  @override
+  String exportFailed(String error) {
+    return 'Export failed: $error';
+  }
+
+  @override
+  String get errorLoadingProject => 'Error loading project';
+
+  @override
+  String get filterCalendar => 'Filter Calendar';
+
+  @override
+  String get allProjects => 'All Projects';
+
+  @override
+  String get clearAll => 'Clear All';
+
+  @override
+  String get apply => 'Apply';
+
+  @override
+  String get clearFilters => 'Clear Filters';
+
+  @override
+  String get filteredResults => 'Filtered Results';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get russian => 'Русский';
+
+  @override
+  String get min => 'min';
+
+  @override
+  String get testNotifications => 'Test Notifications';
+
+  @override
+  String get testNotificationsSubtitle =>
+      'Send a test notification to verify the system is working';
+
+  @override
+  String get testNotificationSent =>
+      'Test notification sent! Check your notification center.';
+
+  @override
+  String get test => 'Test';
+
+  @override
+  String get request => 'Request';
+
+  @override
+  String get notificationPermissionsGranted =>
+      'Notification permissions granted!';
+
+  @override
+  String get enableNotificationsTitle => 'Enable Notifications';
+
+  @override
+  String get enableNotificationsInstructions =>
+      'To enable notifications for Trackich:';
+
+  @override
+  String get step1 => '1. Open your device Settings';
+
+  @override
+  String get step2 => '2. Find \"Notifications\" or \"Apps & notifications\"';
+
+  @override
+  String get step3 => '3. Find \"Trackich\" in the app list';
+
+  @override
+  String get step4 => '4. Toggle notifications ON';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get hoursPerWeek => 'hours/week';
+
+  @override
+  String projectCreated(String name) {
+    return 'Project \"$name\" created successfully!';
+  }
+
+  @override
+  String errorCreatingProject(String error) {
+    return 'Error creating project: $error';
+  }
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get archived => 'Archived';
+
+  @override
+  String get deleteProject => 'Delete Project';
+
+  @override
+  String deleteProjectConfirmation(String name) {
+    return 'Are you sure you want to delete \"$name\"? This action cannot be undone and will also delete all associated time entries.';
+  }
+
+  @override
+  String projectDeleted(String name) {
+    return 'Project \"$name\" deleted';
+  }
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get created => 'created';
+
+  @override
+  String get updated => 'updated';
+
+  @override
+  String projectSelectedMessage(String projectName) {
+    return 'Selected $projectName. Enter a task to start the timer.';
+  }
 }

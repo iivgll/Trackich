@@ -36,11 +36,11 @@ class SettingsScreen extends ConsumerWidget {
                   children: [
                     Icon(Symbols.error, size: 64, color: AppTheme.getErrorColor(context)),
                     const SizedBox(height: AppTheme.space4),
-                    Text('Error loading settings: $error'),
+                    Text('${AppLocalizations.of(context).error} loading settings: $error'),
                     const SizedBox(height: AppTheme.space4),
                     ElevatedButton(
                       onPressed: () => ref.invalidate(settingsProvider),
-                      child: const Text('Retry'),
+                      child: Text(AppLocalizations.of(context).retry),
                     ),
                   ],
                 ),
@@ -156,14 +156,14 @@ class SettingsScreen extends ConsumerWidget {
               trailing: DropdownButton<String>(
                 value: settings.language,
                 underline: const SizedBox(),
-                items: const [
+                items:  [
                   DropdownMenuItem(
                     value: 'en',
-                    child: Text('English'),
+                    child: Text(AppLocalizations.of(context).english),
                   ),
                   DropdownMenuItem(
                     value: 'ru',
-                    child: Text('Русский'),
+                    child: Text(AppLocalizations.of(context).russian),
                   ),
                 ],
                 onChanged: (language) {
@@ -216,7 +216,7 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    const Text('min'),
+                    Text(AppLocalizations.of(context).min),
                   ],
                 ),
               ),
@@ -276,8 +276,8 @@ class SettingsScreen extends ConsumerWidget {
             // Test notification button
             ListTile(
               leading: const Icon(Symbols.notification_add),
-              title: const Text('Test Notifications'),
-              subtitle: const Text('Send a test notification to verify the system is working'),
+              title: Text(AppLocalizations.of(context).testNotifications),
+              subtitle: Text(AppLocalizations.of(context).testNotificationsSubtitle),
               trailing: ElevatedButton.icon(
                 onPressed: (permissionState.status == NotificationPermissionStatus.granted && 
                            settings.enableNotifications && 
@@ -288,8 +288,8 @@ class SettingsScreen extends ConsumerWidget {
                         
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Test notification sent! Check your notification center.'),
+                             SnackBar(
+                              content: Text(AppLocalizations.of(context).testNotificationSent),
                               duration: Duration(seconds: 3),
                             ),
                           );
@@ -303,7 +303,7 @@ class SettingsScreen extends ConsumerWidget {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Symbols.send),
-                label: const Text('Test'),
+                label: Text(AppLocalizations.of(context).test),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.getPrimaryColor(context),
                   foregroundColor: Colors.white,
@@ -347,7 +347,7 @@ class SettingsScreen extends ConsumerWidget {
         statusSubtitle = 'Enable in system settings to receive notifications';
         trailing = ElevatedButton.icon(
           icon: const Icon(Symbols.settings),
-          label: const Text('Settings'),
+          label: Text(l10n.settings),
           onPressed: () => _showPermissionInstructions(context),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.warningOrange,
@@ -362,15 +362,15 @@ class SettingsScreen extends ConsumerWidget {
         statusSubtitle = 'Tap to request notification permissions';
         trailing = ElevatedButton.icon(
           icon: const Icon(Symbols.notification_add),
-          label: const Text('Request'),
+          label: Text(AppLocalizations.of(context).request),
           onPressed: permissionState.isLoading 
               ? null 
               : () async {
                   final granted = await ref.read(notificationPermissionProvider.notifier).requestPermissions();
                   if (context.mounted && granted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Notification permissions granted!'),
+                       SnackBar(
+                        content: Text(AppLocalizations.of(context).notificationPermissionsGranted),
                         backgroundColor: AppTheme.successGreen,
                       ),
                     );
@@ -424,17 +424,17 @@ class SettingsScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Enable Notifications'),
-        content: const Column(
+        title: Text(AppLocalizations.of(context).enableNotificationsTitle),
+        content:  Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('To enable notifications for Trackich:'),
+            Text(AppLocalizations.of(context).enableNotificationsInstructions),
             SizedBox(height: 16),
-            Text('1. Open your device Settings'),
-            Text('2. Find "Notifications" or "Apps & notifications"'),
-            Text('3. Find "Trackich" in the app list'),
-            Text('4. Toggle notifications ON'),
+            Text(AppLocalizations.of(context).step1),
+            Text(AppLocalizations.of(context).step2),
+            Text(AppLocalizations.of(context).step3),
+            Text(AppLocalizations.of(context).step4),
             SizedBox(height: 16),
             Text(
               'After enabling, return to this screen and tap the refresh button.',
@@ -445,7 +445,7 @@ class SettingsScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
+            child: Text(AppLocalizations.of(context).ok),
           ),
         ],
       ),

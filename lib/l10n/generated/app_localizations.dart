@@ -134,7 +134,7 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settings;
 
-  /// Start timer button text
+  /// Start timer button
   ///
   /// In en, this message translates to:
   /// **'Start Timer'**
@@ -379,6 +379,348 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Get notified to take breaks automatically'**
   String get breakRemindersDescription;
+
+  /// Generic error text
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// Retry button text
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// Close button text
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// Week filter option
+  ///
+  /// In en, this message translates to:
+  /// **'Week'**
+  String get week;
+
+  /// Month filter option
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get month;
+
+  /// Quarter filter option
+  ///
+  /// In en, this message translates to:
+  /// **'Quarter'**
+  String get quarter;
+
+  /// Year filter option
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get year;
+
+  /// Today filter option
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// This week filter option
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get thisWeek;
+
+  /// This month filter option
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get thisMonth;
+
+  /// All time filter option
+  ///
+  /// In en, this message translates to:
+  /// **'All Time'**
+  String get allTime;
+
+  /// Start similar task button
+  ///
+  /// In en, this message translates to:
+  /// **'Start Similar Task'**
+  String get startSimilarTask;
+
+  /// Continue task button
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Task'**
+  String get continueTask;
+
+  /// Project label
+  ///
+  /// In en, this message translates to:
+  /// **'Project:'**
+  String get project;
+
+  /// Task label
+  ///
+  /// In en, this message translates to:
+  /// **'Task:'**
+  String get task;
+
+  /// No projects message
+  ///
+  /// In en, this message translates to:
+  /// **'No projects available. Create one first.'**
+  String get noProjectsAvailable;
+
+  /// Select project hint
+  ///
+  /// In en, this message translates to:
+  /// **'Select a project'**
+  String get selectProjectHint;
+
+  /// Day view option
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get day;
+
+  /// Export progress message
+  ///
+  /// In en, this message translates to:
+  /// **'Exporting to Excel...'**
+  String get exportingToExcel;
+
+  /// Export success message
+  ///
+  /// In en, this message translates to:
+  /// **'Excel report exported successfully!'**
+  String get exportSuccess;
+
+  /// Export failed message
+  ///
+  /// In en, this message translates to:
+  /// **'Export failed: {error}'**
+  String exportFailed(String error);
+
+  /// Error loading project message
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading project'**
+  String get errorLoadingProject;
+
+  /// Filter calendar title
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Calendar'**
+  String get filterCalendar;
+
+  /// All projects filter option
+  ///
+  /// In en, this message translates to:
+  /// **'All Projects'**
+  String get allProjects;
+
+  /// Clear all filters button
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All'**
+  String get clearAll;
+
+  /// Apply filters button
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get apply;
+
+  /// Clear filters button
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Filters'**
+  String get clearFilters;
+
+  /// Filtered results title
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered Results'**
+  String get filteredResults;
+
+  /// English language option
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// Russian language option
+  ///
+  /// In en, this message translates to:
+  /// **'Русский'**
+  String get russian;
+
+  /// Minutes abbreviation
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get min;
+
+  /// Test notifications title
+  ///
+  /// In en, this message translates to:
+  /// **'Test Notifications'**
+  String get testNotifications;
+
+  /// Test notifications subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Send a test notification to verify the system is working'**
+  String get testNotificationsSubtitle;
+
+  /// Test notification sent message
+  ///
+  /// In en, this message translates to:
+  /// **'Test notification sent! Check your notification center.'**
+  String get testNotificationSent;
+
+  /// Test button text
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get test;
+
+  /// Request button text
+  ///
+  /// In en, this message translates to:
+  /// **'Request'**
+  String get request;
+
+  /// Notification permissions granted message
+  ///
+  /// In en, this message translates to:
+  /// **'Notification permissions granted!'**
+  String get notificationPermissionsGranted;
+
+  /// Enable notifications dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Notifications'**
+  String get enableNotificationsTitle;
+
+  /// Enable notifications instructions
+  ///
+  /// In en, this message translates to:
+  /// **'To enable notifications for Trackich:'**
+  String get enableNotificationsInstructions;
+
+  /// Step 1 instruction
+  ///
+  /// In en, this message translates to:
+  /// **'1. Open your device Settings'**
+  String get step1;
+
+  /// Step 2 instruction
+  ///
+  /// In en, this message translates to:
+  /// **'2. Find \"Notifications\" or \"Apps & notifications\"'**
+  String get step2;
+
+  /// Step 3 instruction
+  ///
+  /// In en, this message translates to:
+  /// **'3. Find \"Trackich\" in the app list'**
+  String get step3;
+
+  /// Step 4 instruction
+  ///
+  /// In en, this message translates to:
+  /// **'4. Toggle notifications ON'**
+  String get step4;
+
+  /// OK button text
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// Hours per week label
+  ///
+  /// In en, this message translates to:
+  /// **'hours/week'**
+  String get hoursPerWeek;
+
+  /// Project created message
+  ///
+  /// In en, this message translates to:
+  /// **'Project \"{name}\" created successfully!'**
+  String projectCreated(String name);
+
+  /// Error creating project message
+  ///
+  /// In en, this message translates to:
+  /// **'Error creating project: {error}'**
+  String errorCreatingProject(String error);
+
+  /// Active filter option
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active;
+
+  /// Archived filter option
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get archived;
+
+  /// Delete project dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Project'**
+  String get deleteProject;
+
+  /// Delete project confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{name}\"? This action cannot be undone and will also delete all associated time entries.'**
+  String deleteProjectConfirmation(String name);
+
+  /// Project deleted message
+  ///
+  /// In en, this message translates to:
+  /// **'Project \"{name}\" deleted'**
+  String projectDeleted(String name);
+
+  /// Delete button text
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// Edit button text
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// Created action text
+  ///
+  /// In en, this message translates to:
+  /// **'created'**
+  String get created;
+
+  /// Updated action text
+  ///
+  /// In en, this message translates to:
+  /// **'updated'**
+  String get updated;
+
+  /// Message when project is selected
+  ///
+  /// In en, this message translates to:
+  /// **'Selected {projectName}. Enter a task to start the timer.'**
+  String projectSelectedMessage(String projectName);
 }
 
 class _AppLocalizationsDelegate

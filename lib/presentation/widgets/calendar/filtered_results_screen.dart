@@ -8,6 +8,7 @@ import '../../../core/models/project.dart';
 import '../../../core/services/excel_export_service.dart';
 import '../../../core/utils/time_formatter.dart';
 import '../../../features/projects/providers/projects_provider.dart';
+import '../../../l10n/generated/app_localizations.dart';
 
 class FilteredResultsScreen extends ConsumerStatefulWidget {
   final String? projectId;
@@ -44,7 +45,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
           ? AppTheme.gray50 
           : AppTheme.gray900,
       appBar: AppBar(
-        title: Text('Filtered Results'),
+        title: Text(AppLocalizations.of(context).filteredResults),
         elevation: 0,
         actions: [
           IconButton(
@@ -421,8 +422,8 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
     try {
       // Show loading indicator
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Exporting to Excel...'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context).exportingToExcel),
           duration: Duration(seconds: 1),
         ),
       );
@@ -469,7 +470,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Export failed: $e'),
+            content: Text(AppLocalizations.of(context).exportFailed(e.toString())),
             backgroundColor: Theme.of(context).colorScheme.error,
             duration: const Duration(seconds: 3),
           ),
