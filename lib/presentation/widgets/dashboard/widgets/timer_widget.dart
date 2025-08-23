@@ -61,7 +61,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                 Icon(
                   Symbols.timer,
                   size: 24,
-                  color: AppTheme.primaryBlue,
+                  color: AppTheme.getPrimaryColor(context),
                 ),
                 const SizedBox(width: AppTheme.space2),
                 Text(
@@ -80,12 +80,12 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                     decoration: BoxDecoration(
                       color: timer.state == TimerState.running
                           ? AppTheme.successGreen.withOpacity(0.1)
-                          : AppTheme.warningAmber.withOpacity(0.1),
+                          : AppTheme.getWarningColor(context).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                       border: Border.all(
                         color: timer.state == TimerState.running
                             ? AppTheme.successGreen
-                            : AppTheme.warningAmber,
+                            : AppTheme.getWarningColor(context),
                         width: 1,
                       ),
                     ),
@@ -99,7 +99,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                           size: 16,
                           color: timer.state == TimerState.running
                               ? AppTheme.successGreen
-                              : AppTheme.warningAmber,
+                              : AppTheme.getWarningColor(context),
                         ),
                         const SizedBox(width: AppTheme.space1),
                         Text(
@@ -107,7 +107,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: timer.state == TimerState.running
                                 ? AppTheme.successGreen
-                                : AppTheme.warningAmber,
+                                : AppTheme.getWarningColor(context),
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -125,15 +125,20 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                 padding: const EdgeInsets.all(AppTheme.space6),
                 decoration: BoxDecoration(
                   color: Theme.of(context).brightness == Brightness.light
-                      ? AppTheme.gray50
-                      : AppTheme.gray800,
-                  borderRadius: BorderRadius.circular(AppTheme.radiusXl),
-                  border: Border.all(
-                    color: timer.isActive && timer.state == TimerState.running
-                        ? AppTheme.focusPurple.withOpacity(0.3)
-                        : Theme.of(context).dividerColor,
-                    width: 2,
-                  ),
+                      ? AppTheme.lightSurfaceSecondary
+                      : AppTheme.darkSurfaceSecondary,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusXLarge),
+                  border: timer.isActive && timer.state == TimerState.running
+                      ? Border.all(
+                          color: AppTheme.getPrimaryColor(context).withValues(alpha: 0.3),
+                          width: 1.0,
+                        )
+                      : Border.all(
+                          color: Theme.of(context).brightness == Brightness.light
+                              ? AppTheme.lightSeparator
+                              : AppTheme.darkSeparator,
+                          width: 0.33,
+                        ),
                 ),
                 child: Column(
                   children: [
@@ -141,7 +146,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                       duration: AppTheme.animationMedium,
                       style: AppTheme.timerLarge(context).copyWith(
                         color: timer.isActive && timer.state == TimerState.running
-                            ? AppTheme.focusPurple
+                            ? AppTheme.getAccentColor(context)
                             : Theme.of(context).textTheme.displayLarge?.color,
                       ),
                       child: Text(
@@ -156,16 +161,16 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                           vertical: AppTheme.space1,
                         ),
                         decoration: BoxDecoration(
-                          color: AppTheme.focusPurple.withOpacity(0.1),
+                          color: AppTheme.getAccentColor(context).withOpacity(0.1),
                           borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                           border: Border.all(
-                            color: AppTheme.focusPurple.withOpacity(0.3),
+                            color: AppTheme.getAccentColor(context).withOpacity(0.3),
                           ),
                         ),
                         child: Text(
                           'Previous: ${TimeFormatter.formatDuration(timer.totalAccumulatedTime)} + Session: ${TimeFormatter.formatDuration(timer.elapsed)}',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppTheme.focusPurple,
+                            color: AppTheme.getAccentColor(context),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -232,6 +237,31 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                 isExpanded: true,
                 underline: Container(),
                 items: [
+                  // Add break option when timer is in break mode
+                  if (_selectedProjectId == 'break')
+                    DropdownMenuItem<String>(
+                      value: 'break',
+                      child: Row(
+                        children: [
+                          Icon(
+                            Symbols.coffee,
+                            size: 16,
+                            color: AppTheme.getSecondaryColor(context),
+                          ),
+                          const SizedBox(width: AppTheme.space3),
+                          Expanded(
+                            child: Text(
+                              'Break',
+                              style: TextStyle(
+                                color: AppTheme.getSecondaryColor(context),
+                                fontWeight: FontWeight.w500,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ...projects.map((project) => DropdownMenuItem<String>(
                     value: project.id,
                     child: Row(
@@ -254,20 +284,20 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                       ],
                     ),
                   )),
-                  const DropdownMenuItem(
+                  DropdownMenuItem(
                     value: 'create_new',
                     child: Row(
                       children: [
                         Icon(
                           Symbols.add,
                           size: 16,
-                          color: AppTheme.primaryBlue,
+                          color: AppTheme.getPrimaryColor(context),
                         ),
                         SizedBox(width: AppTheme.space3),
                         Text(
                           'Create New Project',
                           style: TextStyle(
-                            color: AppTheme.primaryBlue,
+                            color: AppTheme.getPrimaryColor(context),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -278,6 +308,10 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                 onChanged: (value) {
                   if (value == 'create_new') {
                     _showCreateProjectDialog();
+                  } else if (value == 'break') {
+                    // Break is read-only when timer is active, prevent changes
+                    // This case shouldn't normally occur as break is only shown when already selected
+                    return;
                   } else {
                     setState(() {
                       _selectedProjectId = value;
@@ -358,8 +392,8 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
               icon: const Icon(Symbols.stop),
               label: Text(l10n.stopTimer),
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppTheme.errorRed,
-                side: const BorderSide(color: AppTheme.errorRed),
+                foregroundColor: AppTheme.getErrorColor(context),
+                side: BorderSide(color: AppTheme.getErrorColor(context)),
                 padding: const EdgeInsets.symmetric(vertical: AppTheme.space4),
               ),
             ),
@@ -374,8 +408,8 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
           icon: const Icon(Symbols.coffee),
           tooltip: 'Take a break',
           style: IconButton.styleFrom(
-            backgroundColor: AppTheme.breakBlue.withOpacity(0.1),
-            foregroundColor: AppTheme.breakBlue,
+            backgroundColor: AppTheme.getSecondaryColor(context).withOpacity(0.1),
+            foregroundColor: AppTheme.getSecondaryColor(context),
           ),
         ),
       ],
@@ -419,11 +453,11 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
     if (timer.canStart) {
       return AppTheme.successGreen;
     } else if (timer.canPause) {
-      return AppTheme.warningAmber;
+      return AppTheme.getWarningColor(context);
     } else if (timer.canResume) {
       return AppTheme.successGreen;
     }
-    return AppTheme.primaryBlue;
+    return AppTheme.getPrimaryColor(context);
   }
 
   bool _canStartTimer() {
@@ -473,10 +507,10 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
           margin: const EdgeInsets.only(top: AppTheme.space3),
           padding: const EdgeInsets.all(AppTheme.space3),
           decoration: BoxDecoration(
-            color: AppTheme.focusPurple.withOpacity(0.1),
+            color: AppTheme.getAccentColor(context).withOpacity(0.1),
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             border: Border.all(
-              color: AppTheme.focusPurple.withOpacity(0.3),
+              color: AppTheme.getAccentColor(context).withOpacity(0.3),
             ),
           ),
           child: Row(
@@ -484,7 +518,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
               Icon(
                 Symbols.history,
                 size: 16,
-                color: AppTheme.focusPurple,
+                color: AppTheme.getAccentColor(context),
               ),
               const SizedBox(width: AppTheme.space2),
               Expanded(
@@ -495,7 +529,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                       return Text(
                         'This task will be continued',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppTheme.focusPurple,
+                          color: AppTheme.getAccentColor(context),
                           fontWeight: FontWeight.w500,
                         ),
                       );
@@ -504,7 +538,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                     return Text(
                       'Continue task - Previous time: ${TimeFormatter.formatDurationWords(timeSnapshot.data!)}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppTheme.focusPurple,
+                        color: AppTheme.getAccentColor(context),
                         fontWeight: FontWeight.w500,
                       ),
                     );
@@ -557,7 +591,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
             icon: const Icon(Symbols.add),
             label: Text(l10n.createProject),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primaryBlue,
+              backgroundColor: AppTheme.getPrimaryColor(context),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(
                 horizontal: AppTheme.space4,

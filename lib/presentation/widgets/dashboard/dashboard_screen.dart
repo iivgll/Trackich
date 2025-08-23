@@ -19,10 +19,10 @@ class DashboardScreen extends ConsumerWidget {
     
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.light 
-          ? AppTheme.youtubeLightBg 
-          : AppTheme.youtubeDarkBg,
+          ? AppTheme.lightBackground 
+          : AppTheme.darkBackground,
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppTheme.space8),
+        padding: const EdgeInsets.all(AppTheme.space5), // 16px
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -46,13 +46,14 @@ class DashboardScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(AppTheme.space8),
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.light 
-            ? AppTheme.youtubeLightSurface 
-            : AppTheme.youtubeDarkSurface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+            ? AppTheme.lightSurface 
+            : AppTheme.darkSurface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
         border: Border.all(
           color: Theme.of(context).brightness == Brightness.light 
-              ? AppTheme.youtubeLightBorder 
-              : AppTheme.youtubeDarkBorder,
+              ? AppTheme.lightSeparator 
+              : AppTheme.darkSeparator,
+          width: 0.33,
         ),
       ),
       child: Row(
@@ -65,8 +66,8 @@ class DashboardScreen extends ConsumerWidget {
                   'Good ${_getTimeOfDayGreeting()}, User!',
                   style: Theme.of(context).textTheme.displayMedium?.copyWith(
                     color: Theme.of(context).brightness == Brightness.light 
-                        ? AppTheme.youtubeLightText 
-                        : AppTheme.youtubeDarkText,
+                        ? AppTheme.lightText 
+                        : AppTheme.darkText,
                   ),
                 ),
                 const SizedBox(height: AppTheme.space2),
@@ -74,8 +75,8 @@ class DashboardScreen extends ConsumerWidget {
                   TimeFormatter.formatDate(now),
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).brightness == Brightness.light 
-                        ? AppTheme.youtubeLightTextSecondary 
-                        : AppTheme.youtubeDarkTextSecondary,
+                        ? AppTheme.lightTextSecondary 
+                        : AppTheme.darkTextSecondary,
                   ),
                 ),
               ],
@@ -96,7 +97,7 @@ class DashboardScreen extends ConsumerWidget {
           },
           icon: const Icon(Symbols.add_circle),
           iconSize: 32,
-          color: AppTheme.youtubeRed,
+          color: AppTheme.getPrimaryColor(context),
           tooltip: 'Create Project',
         ),
         const SizedBox(width: AppTheme.space2),
@@ -107,8 +108,8 @@ class DashboardScreen extends ConsumerWidget {
           icon: const Icon(Symbols.settings),
           iconSize: 32,
           color: Theme.of(context).brightness == Brightness.light 
-              ? AppTheme.youtubeLightTextSecondary 
-              : AppTheme.youtubeDarkTextSecondary,
+              ? AppTheme.calmLightTextSecondary 
+              : AppTheme.falloutTextSecondary,
           tooltip: 'Settings',
         ),
       ],

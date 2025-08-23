@@ -41,8 +41,8 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
     
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.light 
-          ? AppTheme.youtubeLightBg 
-          : AppTheme.youtubeDarkBg,
+          ? AppTheme.lightBackground 
+          : AppTheme.darkBackground,
       body: Column(
         children: [
           // Toolbar
@@ -57,7 +57,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showCreateProjectDialog(context, ref),
         tooltip: l10n.createProject,
-        backgroundColor: AppTheme.youtubeRed,
+        backgroundColor: AppTheme.getPrimaryColor(context),
         child: const Icon(Symbols.add, color: Colors.white),
       ),
     );
@@ -69,14 +69,14 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
       padding: const EdgeInsets.all(AppTheme.space6),
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.light 
-            ? AppTheme.youtubeLightSurface 
-            : AppTheme.youtubeDarkSurface,
+            ? AppTheme.lightSurface 
+            : AppTheme.darkSurface,
         border: Border(
           bottom: BorderSide(
             color: Theme.of(context).brightness == Brightness.light 
-                ? AppTheme.youtubeLightBorder 
-                : AppTheme.youtubeDarkBorder,
-            width: 1,
+                ? AppTheme.lightSeparator 
+                : AppTheme.darkSeparator,
+            width: 0.33,
           ),
         ),
       ),
@@ -193,10 +193,10 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Symbols.error,
               size: 64,
-              color: AppTheme.errorRed,
+              color: AppTheme.getErrorColor(context),
             ),
             const SizedBox(height: AppTheme.space4),
             Text(
@@ -401,7 +401,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
                 SnackBar(content: Text('Project "${project.name}" deleted')),
               );
             },
-            style: FilledButton.styleFrom(backgroundColor: AppTheme.errorRed),
+            style: FilledButton.styleFrom(backgroundColor: AppTheme.getErrorColor(context)),
             child: const Text('Delete'),
           ),
         ],
@@ -427,10 +427,19 @@ class _ProjectCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+        side: BorderSide(
+          color: Theme.of(context).brightness == Brightness.light
+              ? AppTheme.lightSeparator
+              : AppTheme.darkSeparator,
+          width: 0.33,
+        ),
+      ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
         child: Container(
           padding: const EdgeInsets.all(AppTheme.space4),
           child: Column(
@@ -477,9 +486,9 @@ class _ProjectCard extends StatelessWidget {
                         value: 'delete',
                         child: Row(
                           children: [
-                            const Icon(Symbols.delete, size: 16, color: AppTheme.errorRed),
+                            Icon(Symbols.delete, size: 16, color: AppTheme.getErrorColor(context)),
                             const SizedBox(width: AppTheme.space2),
-                            const Text('Delete', style: TextStyle(color: AppTheme.errorRed)),
+                            Text('Delete', style: TextStyle(color: AppTheme.getErrorColor(context))),
                           ],
                         ),
                       ),
@@ -688,9 +697,9 @@ class _ProjectListTile extends StatelessWidget {
               value: 'delete',
               child: Row(
                 children: [
-                  const Icon(Symbols.delete, size: 16, color: AppTheme.errorRed),
+                  Icon(Symbols.delete, size: 16, color: AppTheme.getErrorColor(context)),
                   const SizedBox(width: AppTheme.space2),
-                  const Text('Delete', style: TextStyle(color: AppTheme.errorRed)),
+                  Text('Delete', style: TextStyle(color: AppTheme.getErrorColor(context))),
                 ],
               ),
             ),
@@ -734,7 +743,7 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
   final _targetHoursController = TextEditingController();
   final _tagsController = TextEditingController();
   
-  Color _selectedColor = AppTheme.projectColors[0];
+  Color? _selectedColor;
   bool _isLoading = false;
 
   @override
@@ -746,6 +755,14 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
       _selectedColor = widget.project!.color;
       _targetHoursController.text = widget.project!.targetHoursPerWeek.toString();
       _tagsController.text = widget.project!.tags.join(', ');
+    } else {
+      // Initialize with first project color for new projects
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _selectedColor = AppTheme.getProjectColors(context).first;
+          setState(() {});
+        }
+      });
     }
   }
 
@@ -808,8 +825,8 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
                     const SizedBox(height: AppTheme.space3),
                     Wrap(
                       spacing: AppTheme.space3,
-                      children: AppTheme.projectColors.map((color) {
-                        final isSelected = _selectedColor == color;
+                      children: AppTheme.getProjectColors(context).map((color) {
+                        final isSelected = _selectedColor != null && _selectedColor == color;
                         return GestureDetector(
                           onTap: () => setState(() => _selectedColor = color),
                           child: Container(
@@ -912,7 +929,7 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
       widget.onSave(
         _nameController.text.trim(),
         _descriptionController.text.trim(),
-        _selectedColor,
+        _selectedColor ?? AppTheme.getProjectColors(context).first,
         tags,
         targetHours,
       );
@@ -924,7 +941,7 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error: ${e.toString()}'),
-          backgroundColor: AppTheme.errorRed,
+          backgroundColor: AppTheme.getErrorColor(context),
         ),
       );
     } finally {

@@ -23,24 +23,23 @@ class MainScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentPage = ref.watch(currentPageProvider);
     final l10n = AppLocalizations.of(context);
-    
+
     // Initialize system tray context
     if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
       SystemTrayService.setContext(context, ref);
     }
-    
+
     return Scaffold(
       body: Row(
         children: [
           // Adaptive Sidebar
           _AdaptiveSidebar(
             currentPage: currentPage,
-            onPageChanged: (page) => ref.read(currentPageProvider.notifier).state = page,
+            onPageChanged: (page) =>
+                ref.read(currentPageProvider.notifier).state = page,
           ),
           // Main Content Area
-          Expanded(
-            child: _getPageContent(currentPage),
-          ),
+          Expanded(child: _getPageContent(currentPage)),
         ],
       ),
     );
@@ -75,20 +74,21 @@ class _AdaptiveSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isCompact = MediaQuery.of(context).size.width < AppTheme.tabletBreakpoint;
-    
+    final isCompact =
+        MediaQuery.of(context).size.width < AppTheme.tabletBreakpoint;
+
     return Container(
       width: isCompact ? AppTheme.space16 : AppTheme.sidebarWidth,
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.light 
-            ? AppTheme.youtubeLightSurface 
-            : AppTheme.youtubeDarkBg,
+        color: Theme.of(context).brightness == Brightness.light
+            ? AppTheme.lightSurfaceGrouped
+            : AppTheme.darkSurfaceGrouped,
         border: Border(
           right: BorderSide(
-            color: Theme.of(context).brightness == Brightness.light 
-                ? AppTheme.youtubeLightBorder 
-                : AppTheme.youtubeDarkBorder,
-            width: 1,
+            color: Theme.of(context).brightness == Brightness.light
+                ? AppTheme.lightSeparator
+                : AppTheme.darkSeparator,
+            width: 0.33, // Apple border width
           ),
         ),
       ),
@@ -102,30 +102,30 @@ class _AdaptiveSidebar extends StatelessWidget {
               vertical: AppTheme.space4,
             ),
             child: isCompact
-                ? const Icon(
+                ? Icon(
                     Symbols.timer,
                     size: 32,
-                    color: AppTheme.youtubeRed,
+                    color: AppTheme.getPrimaryColor(context),
                   )
                 : Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Symbols.timer,
                         size: 32,
-                        color: AppTheme.youtubeRed,
+                        color: AppTheme.getPrimaryColor(context),
                       ),
                       const SizedBox(width: AppTheme.space3),
                       Text(
                         'Trackich',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: AppTheme.youtubeRed,
+                          color: AppTheme.getPrimaryColor(context),
                         ),
                       ),
                     ],
                   ),
           ),
-          
+
           // Navigation Items
           Expanded(
             child: ListView(
@@ -144,65 +144,47 @@ class _AdaptiveSidebar extends StatelessWidget {
   List<Widget> _buildNavigationItems(BuildContext context, bool isCompact) {
     final l10n = AppLocalizations.of(context);
     final navigationItems = [
-      _NavigationItem(
-        icon: Symbols.dashboard,
-        label: l10n.dashboard,
-        index: 0,
-      ),
-      _NavigationItem(
-        icon: Symbols.folder,
-        label: l10n.projects,
-        index: 1,
-      ),
+      _NavigationItem(icon: Symbols.dashboard, label: l10n.dashboard, index: 0),
+      _NavigationItem(icon: Symbols.folder, label: l10n.projects, index: 1),
       _NavigationItem(
         icon: Symbols.calendar_month,
         label: l10n.calendar,
         index: 2,
       ),
-      _NavigationItem(
-        icon: Symbols.analytics,
-        label: l10n.analytics,
-        index: 3,
-      ),
-      _NavigationItem(
-        icon: Symbols.settings,
-        label: l10n.settings,
-        index: 4,
-      ),
+      _NavigationItem(icon: Symbols.analytics, label: l10n.analytics, index: 3),
+      _NavigationItem(icon: Symbols.settings, label: l10n.settings, index: 4),
     ];
 
     return navigationItems.map((item) {
       final isSelected = currentPage == item.index;
-      
+
       return Container(
         margin: const EdgeInsets.only(bottom: AppTheme.space1),
         child: InkWell(
           onTap: () => onPageChanged(item.index),
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           child: Container(
-            height: 48,
+            height: 44, // Apple list row height
             padding: EdgeInsets.symmetric(
-              horizontal: isCompact ? AppTheme.space2 : AppTheme.space4,
-              vertical: AppTheme.space3,
+              horizontal: isCompact ? AppTheme.space3 : AppTheme.space5,
+              vertical: 0,
             ),
             decoration: BoxDecoration(
-              color: isSelected 
-                  ? (Theme.of(context).brightness == Brightness.light 
-                     ? AppTheme.youtubeRed.withOpacity(0.1) 
-                     : AppTheme.youtubeRed.withOpacity(0.15))
+              color: isSelected
+                  ? AppTheme.getPrimaryColor(context).withValues(alpha: 0.12)
                   : Colors.transparent,
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
             ),
             child: Row(
               children: [
                 Icon(
                   item.icon,
                   size: 20,
-                  color: isSelected 
-                      ? AppTheme.youtubeRed 
-                      : (Theme.of(context).brightness == Brightness.light 
-                         ? AppTheme.youtubeLightTextSecondary 
-                         : AppTheme.youtubeDarkTextSecondary),
+                  color: isSelected
+                      ? AppTheme.getPrimaryColor(context)
+                      : (Theme.of(context).brightness == Brightness.light
+                            ? AppTheme.lightTextSecondary
+                            : AppTheme.darkTextSecondary),
                 ),
                 if (!isCompact) ...[
                   const SizedBox(width: AppTheme.space3),
@@ -210,12 +192,14 @@ class _AdaptiveSidebar extends StatelessWidget {
                     child: Text(
                       item.label,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: isSelected 
-                            ? AppTheme.youtubeRed 
-                            : (Theme.of(context).brightness == Brightness.light 
-                               ? AppTheme.youtubeLightTextSecondary 
-                               : AppTheme.youtubeDarkTextSecondary),
-                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                        color: isSelected
+                            ? AppTheme.getPrimaryColor(context)
+                            : (Theme.of(context).brightness == Brightness.light
+                                  ? AppTheme.lightTextSecondary
+                                  : AppTheme.darkTextSecondary),
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.w400,
                       ),
                     ),
                   ),

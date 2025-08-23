@@ -26,10 +26,10 @@ class TodaySummaryWidget extends ConsumerWidget {
             // Header
             Row(
               children: [
-                const Icon(
+                Icon(
                   Symbols.today,
                   size: 20,
-                  color: AppTheme.primaryBlue,
+                  color: AppTheme.getPrimaryColor(context),
                 ),
                 const SizedBox(width: AppTheme.space2),
                 Text(
@@ -75,7 +75,7 @@ class TodaySummaryWidget extends ConsumerWidget {
               Text(
                 TimeFormatter.formatHours(workHours),
                 style: AppTheme.timerMedium(context).copyWith(
-                  color: AppTheme.primaryBlue,
+                  color: AppTheme.getPrimaryColor(context),
                 ),
               ),
               const SizedBox(height: AppTheme.space1),
@@ -171,7 +171,7 @@ class TodaySummaryWidget extends ConsumerWidget {
                 icon: Symbols.coffee,
                 label: 'Breaks',
                 value: TimeFormatter.formatHours(breakHours),
-                color: AppTheme.breakBlue,
+                color: AppTheme.getSecondaryColor(context),
               ),
             ),
           ],

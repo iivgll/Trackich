@@ -17,7 +17,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
-  Color _selectedColor = AppTheme.projectColors.first;
+  Color? _selectedColor;
   final _tagsController = TextEditingController();
   double _targetHoursPerWeek = 0.0;
   bool _isLoading = false;
@@ -25,11 +25,13 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
   @override
   void initState() {
     super.initState();
-    // Get the next available color from the projects provider
+    // Initialize with first project color
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final projectsNotifier = ref.read(projectsProvider.notifier);
-      _selectedColor = projectsNotifier.getNextAvailableColor();
-      if (mounted) setState(() {});
+      if (mounted) {
+        final projectsNotifier = ref.read(projectsProvider.notifier);
+        _selectedColor = projectsNotifier.getNextAvailableColor();
+        setState(() {});
+      }
     });
   }
 
@@ -48,9 +50,9 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
     return AlertDialog(
       title: Row(
         children: [
-          const Icon(
+          Icon(
             Symbols.add_circle,
-            color: AppTheme.primaryBlue,
+            color: AppTheme.getPrimaryColor(context),
             size: 24,
           ),
           const SizedBox(width: AppTheme.space2),
@@ -128,8 +130,8 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
                   child: Wrap(
                     spacing: AppTheme.space2,
                     runSpacing: AppTheme.space2,
-                    children: AppTheme.projectColors.map((color) {
-                      final isSelected = color == _selectedColor;
+                    children: AppTheme.getProjectColors(context).map((color) {
+                      final isSelected = _selectedColor != null && color == _selectedColor;
                       return GestureDetector(
                         onTap: () => setState(() => _selectedColor = color),
                         child: Container(
@@ -221,7 +223,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
               : const Icon(Symbols.add),
           label: Text(l10n.createProject),
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.primaryBlue,
+            backgroundColor: AppTheme.getPrimaryColor(context),
             foregroundColor: Colors.white,
           ),
         ),
@@ -244,7 +246,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
       await ref.read(projectsProvider.notifier).createProject(
         name: _nameController.text.trim(),
         description: _descriptionController.text.trim(),
-        color: _selectedColor,
+        color: _selectedColor ?? AppTheme.getProjectColors(context).first,
         tags: tags,
         targetHoursPerWeek: _targetHoursPerWeek,
       );
@@ -264,7 +266,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error creating project: $error'),
-            backgroundColor: AppTheme.errorRed,
+            backgroundColor: AppTheme.getErrorColor(context),
           ),
         );
       }

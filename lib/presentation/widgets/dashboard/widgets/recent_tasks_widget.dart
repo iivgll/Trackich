@@ -60,11 +60,11 @@ class RecentTasksWidget extends ConsumerWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.light 
-            ? AppTheme.youtubeLightBg 
-            : AppTheme.youtubeDarkSurface,
+            ? AppTheme.calmWhite 
+            : AppTheme.falloutSurface,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         border: Theme.of(context).brightness == Brightness.light 
-            ? Border.all(color: AppTheme.youtubeLightBorder, width: 1)
+            ? Border.all(color: AppTheme.calmLightBorder, width: 1)
             : null,
       ),
       child: Padding(
@@ -78,7 +78,7 @@ class RecentTasksWidget extends ConsumerWidget {
                 const Icon(
                   Symbols.history,
                   size: 20,
-                  color: AppTheme.youtubeRed,
+                  color: AppTheme.calmBlue,
                 ),
                 const SizedBox(width: AppTheme.space2),
                 Text(

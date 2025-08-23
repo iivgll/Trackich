@@ -34,7 +34,7 @@ class SettingsScreen extends ConsumerWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Symbols.error, size: 64, color: AppTheme.errorRed),
+                    Icon(Symbols.error, size: 64, color: AppTheme.getErrorColor(context)),
                     const SizedBox(height: AppTheme.space4),
                     Text('Error loading settings: $error'),
                     const SizedBox(height: AppTheme.space4),
@@ -305,7 +305,7 @@ class SettingsScreen extends ConsumerWidget {
                     : const Icon(Symbols.send),
                 label: const Text('Test'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryBlue,
+                  backgroundColor: AppTheme.getPrimaryColor(context),
                   foregroundColor: Colors.white,
                 ),
               ),
@@ -342,7 +342,7 @@ class SettingsScreen extends ConsumerWidget {
         break;
       case NotificationPermissionStatus.denied:
         statusIcon = Symbols.block;
-        statusColor = AppTheme.errorRed;
+        statusColor = AppTheme.getErrorColor(context);
         statusText = 'Notifications Disabled';
         statusSubtitle = 'Enable in system settings to receive notifications';
         trailing = ElevatedButton.icon(
@@ -377,7 +377,7 @@ class SettingsScreen extends ConsumerWidget {
                   }
                 },
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.primaryBlue,
+            backgroundColor: AppTheme.getPrimaryColor(context),
             foregroundColor: Colors.white,
           ),
         );
@@ -397,7 +397,7 @@ class SettingsScreen extends ConsumerWidget {
 
     if (permissionState.error != null) {
       statusIcon = Symbols.error;
-      statusColor = AppTheme.errorRed;
+      statusColor = AppTheme.getErrorColor(context);
       statusText = 'Permission Error';
       statusSubtitle = permissionState.error!;
       trailing = IconButton(

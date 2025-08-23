@@ -108,11 +108,11 @@ class EnhancedRecentTasksWidget extends ConsumerWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.light 
-            ? AppTheme.youtubeLightBg 
-            : AppTheme.youtubeDarkSurface,
+            ? AppTheme.calmWhite 
+            : AppTheme.falloutSurface,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         border: Theme.of(context).brightness == Brightness.light 
-            ? Border.all(color: AppTheme.youtubeLightBorder, width: 1)
+            ? Border.all(color: AppTheme.calmLightBorder, width: 1)
             : null,
       ),
       child: Column(
@@ -130,7 +130,7 @@ class EnhancedRecentTasksWidget extends ConsumerWidget {
                   : _buildGroupedTasksList(context, groupedTasks),
               loading: () => const Center(
                 child: CircularProgressIndicator(
-                  color: AppTheme.youtubeRed,
+                  color: AppTheme.calmBlue,
                 ),
               ),
               error: (error, _) => Center(
@@ -166,8 +166,8 @@ class EnhancedRecentTasksWidget extends ConsumerWidget {
         border: Border(
           bottom: BorderSide(
             color: Theme.of(context).brightness == Brightness.light 
-                ? AppTheme.youtubeLightBorder 
-                : AppTheme.youtubeDarkBorder,
+                ? AppTheme.calmLightBorder 
+                : AppTheme.falloutBorder,
             width: 1,
           ),
         ),
@@ -177,7 +177,7 @@ class EnhancedRecentTasksWidget extends ConsumerWidget {
           const Icon(
             Symbols.history,
             size: 24,
-            color: AppTheme.youtubeRed,
+            color: AppTheme.calmBlue,
           ),
           const SizedBox(width: AppTheme.space3),
           Text(
@@ -193,13 +193,13 @@ class EnhancedRecentTasksWidget extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.space3),
             decoration: BoxDecoration(
               color: Theme.of(context).brightness == Brightness.light 
-                  ? AppTheme.youtubeLightSurfaceVariant 
-                  : AppTheme.youtubeDarkSurfaceVariant,
+                  ? AppTheme.calmLightSurfaceVariant 
+                  : AppTheme.falloutSurfaceVariant,
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               border: Border.all(
                 color: Theme.of(context).brightness == Brightness.light 
-                    ? AppTheme.youtubeLightBorder 
-                    : AppTheme.youtubeDarkBorder,
+                    ? AppTheme.calmLightBorder 
+                    : AppTheme.falloutBorder,
               ),
             ),
             child: DropdownButton<TaskFilterPeriod>(
@@ -260,8 +260,8 @@ class EnhancedRecentTasksWidget extends ConsumerWidget {
               ),
               decoration: BoxDecoration(
                 color: Theme.of(context).brightness == Brightness.light 
-                    ? AppTheme.youtubeLightSurfaceVariant 
-                    : AppTheme.youtubeDarkSurfaceVariant,
+                    ? AppTheme.calmLightSurfaceVariant 
+                    : AppTheme.falloutSurfaceVariant,
               ),
               child: Row(
                 children: [
@@ -270,8 +270,8 @@ class EnhancedRecentTasksWidget extends ConsumerWidget {
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w500,
                       color: Theme.of(context).brightness == Brightness.light 
-                          ? AppTheme.youtubeLightTextSecondary 
-                          : AppTheme.youtubeDarkTextSecondary,
+                          ? AppTheme.calmLightTextSecondary 
+                          : AppTheme.falloutTextSecondary,
                     ),
                   ),
                   const SizedBox(width: AppTheme.space2),
@@ -281,13 +281,13 @@ class EnhancedRecentTasksWidget extends ConsumerWidget {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: AppTheme.youtubeRed.withValues(alpha: 0.1),
+                      color: AppTheme.calmBlue.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                     ),
                     child: Text(
                       '${tasks.length}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppTheme.youtubeRed,
+                        color: AppTheme.calmBlue,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -338,16 +338,16 @@ class EnhancedRecentTasksWidget extends ConsumerWidget {
             Symbols.task_alt,
             size: 64,
             color: Theme.of(context).brightness == Brightness.light 
-                ? AppTheme.youtubeLightTextTertiary 
-                : AppTheme.youtubeDarkTextTertiary,
+                ? AppTheme.calmLightTextTertiary 
+                : AppTheme.falloutTextTertiary,
           ),
           const SizedBox(height: AppTheme.space4),
           Text(
             message,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               color: Theme.of(context).brightness == Brightness.light 
-                  ? AppTheme.youtubeLightTextSecondary 
-                  : AppTheme.youtubeDarkTextSecondary,
+                  ? AppTheme.calmLightTextSecondary 
+                  : AppTheme.falloutTextSecondary,
             ),
           ),
           const SizedBox(height: AppTheme.space2),
@@ -355,8 +355,8 @@ class EnhancedRecentTasksWidget extends ConsumerWidget {
             subtitle,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).brightness == Brightness.light 
-                  ? AppTheme.youtubeLightTextTertiary 
-                  : AppTheme.youtubeDarkTextTertiary,
+                  ? AppTheme.calmLightTextTertiary 
+                  : AppTheme.falloutTextTertiary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -395,8 +395,8 @@ class _TaskGroupItem extends StatelessWidget {
           border: Border(
             bottom: BorderSide(
               color: Theme.of(context).brightness == Brightness.light 
-                  ? AppTheme.youtubeLightBorder 
-                  : AppTheme.youtubeDarkBorder,
+                  ? AppTheme.calmLightBorder 
+                  : AppTheme.falloutBorder,
               width: 0.5,
             ),
           ),
@@ -468,16 +468,16 @@ class _TaskGroupItem extends StatelessWidget {
                         ' • ',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).brightness == Brightness.light 
-                              ? AppTheme.youtubeLightTextTertiary 
-                              : AppTheme.youtubeDarkTextTertiary,
+                              ? AppTheme.calmLightTextTertiary 
+                              : AppTheme.falloutTextTertiary,
                         ),
                       ),
                       Text(
                         'Last: ${TimeFormatter.formatTime(taskGroupWithProject.taskGroup.lastActivity)}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).brightness == Brightness.light 
-                              ? AppTheme.youtubeLightTextSecondary 
-                              : AppTheme.youtubeDarkTextSecondary,
+                              ? AppTheme.calmLightTextSecondary 
+                              : AppTheme.falloutTextSecondary,
                         ),
                       ),
                     ],
@@ -494,8 +494,8 @@ class _TaskGroupItem extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 color: Theme.of(context).brightness == Brightness.light 
-                    ? AppTheme.youtubeLightSurfaceVariant 
-                    : AppTheme.youtubeDarkSurfaceVariant,
+                    ? AppTheme.calmLightSurfaceVariant 
+                    : AppTheme.falloutSurfaceVariant,
                 borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               ),
               child: Text(
@@ -503,8 +503,8 @@ class _TaskGroupItem extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: Theme.of(context).brightness == Brightness.light 
-                      ? AppTheme.youtubeLightTextSecondary 
-                      : AppTheme.youtubeDarkTextSecondary,
+                      ? AppTheme.calmLightTextSecondary 
+                      : AppTheme.falloutTextSecondary,
                 ),
               ),
             ),
@@ -524,8 +524,8 @@ class _TaskGroupDetailsDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AlertDialog(
       backgroundColor: Theme.of(context).brightness == Brightness.light 
-          ? AppTheme.youtubeLightBg 
-          : AppTheme.youtubeDarkSurface,
+          ? AppTheme.calmWhite 
+          : AppTheme.falloutSurface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       ),
@@ -597,7 +597,7 @@ class _TaskGroupDetailsDialog extends ConsumerWidget {
         ),
         FilledButton(
           style: FilledButton.styleFrom(
-            backgroundColor: AppTheme.youtubeRed,
+            backgroundColor: AppTheme.calmBlue,
           ),
           onPressed: () async {
             Navigator.of(context).pop();
@@ -654,8 +654,8 @@ class _DetailRow extends StatelessWidget {
           icon,
           size: 16,
           color: Theme.of(context).brightness == Brightness.light 
-              ? AppTheme.youtubeLightTextSecondary 
-              : AppTheme.youtubeDarkTextSecondary,
+              ? AppTheme.calmLightTextSecondary 
+              : AppTheme.falloutTextSecondary,
         ),
         const SizedBox(width: AppTheme.space2),
         Text(
@@ -663,8 +663,8 @@ class _DetailRow extends StatelessWidget {
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w500,
             color: Theme.of(context).brightness == Brightness.light 
-                ? AppTheme.youtubeLightTextSecondary 
-                : AppTheme.youtubeDarkTextSecondary,
+                ? AppTheme.calmLightTextSecondary 
+                : AppTheme.falloutTextSecondary,
           ),
         ),
         Expanded(
