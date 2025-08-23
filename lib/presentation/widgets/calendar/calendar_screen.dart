@@ -4,7 +4,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/models/time_entry.dart';
+import '../../../core/models/project.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/services/excel_export_service.dart';
 import '../../../core/utils/time_formatter.dart';
 import '../../../features/projects/providers/projects_provider.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -50,23 +52,21 @@ final filteredTimeEntriesProvider = FutureProvider<List<TimeEntry>>((ref) async 
   // Filter by date range if selected
   if (dateRange != null) {
     filteredEntries = filteredEntries.where((entry) {
-      final entryDate = DateTime(entry.startTime.year, entry.startTime.month, entry.startTime.day);
-      final startDate = DateTime(dateRange.start.year, dateRange.start.month, dateRange.start.day);
-      final endDate = DateTime(dateRange.end.year, dateRange.end.month, dateRange.end.day);
-      return entryDate.isAfter(startDate.subtract(const Duration(days: 1))) && 
-             entryDate.isBefore(endDate.add(const Duration(days: 1)));
+      final entryTime = entry.startTime;
+      // Use actual time for more precise filtering
+      return entryTime.isAfter(dateRange.start) && entryTime.isBefore(dateRange.end);
     }).toList();
   }
   
   return filteredEntries;
 });
 
-// Grouped calendar data by date - uses unfiltered data for main calendar view
+// Grouped calendar data by date - now uses filtered data
 final calendarDataByDateProvider = FutureProvider<Map<DateTime, List<TimeEntry>>>((ref) async {
-  final unfilteredEntries = await ref.watch(unfilteredTimeEntriesProvider.future);
+  final filteredEntries = await ref.watch(filteredTimeEntriesProvider.future);
   
   final entriesByDate = <DateTime, List<TimeEntry>>{};
-  for (final entry in unfilteredEntries) {
+  for (final entry in filteredEntries) {
     final entryDate = DateTime(entry.startTime.year, entry.startTime.month, entry.startTime.day);
     if (entriesByDate[entryDate] == null) {
       entriesByDate[entryDate] = [];
@@ -195,11 +195,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           
           const SizedBox(width: AppTheme.space4),
           
-          // Calendar Filtered List View button
+          // Export to Excel button
           IconButton(
-            onPressed: () => _showCalendarFilteredList(context),
-            icon: const Icon(Symbols.list),
-            tooltip: 'Filtered List View',
+            onPressed: () => _exportToExcel(context),
+            icon: const Icon(Symbols.file_download),
+            tooltip: 'Export to Excel',
           ),
           
           const SizedBox(width: AppTheme.space2),
@@ -281,19 +281,67 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     );
   }
   
-  void _showCalendarFilteredList(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.8,
-        minChildSize: 0.5,
-        maxChildSize: 0.95,
-        builder: (context, scrollController) => _CalendarFilteredListView(
-          scrollController: scrollController,
+  Future<void> _exportToExcel(BuildContext context) async {
+    try {
+      // Show loading indicator
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Exporting to Excel...'),
+          duration: Duration(seconds: 1),
         ),
-      ),
-    );
+      );
+      
+      // Get filtered time entries
+      final filteredEntries = await ref.read(filteredTimeEntriesProvider.future);
+      
+      // Get projects map
+      final projectsAsync = ref.read(projectsProvider);
+      final projects = <String, Project>{};
+      
+      if (projectsAsync.hasValue) {
+        for (final project in projectsAsync.value!) {
+          projects[project.id] = project;
+        }
+      }
+      
+      // Get current date range for filename
+      final selectedDateRange = ref.read(calendarDateRangeProvider);
+      
+      // Export to Excel
+      final result = await ExcelExportService.exportTimeEntries(
+        entries: filteredEntries,
+        projects: projects,
+        dateRange: selectedDateRange,
+      );
+      
+      // Handle result
+      if (context.mounted) {
+        if (result == 'cancelled') {
+          // User cancelled - no message needed
+          return;
+        }
+        
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Excel report exported successfully!'),
+            duration: const Duration(seconds: 3),
+            backgroundColor: AppTheme.getSuccessColor(context),
+          ),
+        );
+      }
+    } catch (e) {
+      // Show error message
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Export failed: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
   }
 }
 
@@ -1437,15 +1485,19 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
   }
 
   void _setQuickDateRange(int days) {
-    final end = DateTime.now();
-    final start = end.subtract(Duration(days: days));
+    final now = DateTime.now();
+    // Set end to end of today to include today's entries
+    final end = DateTime(now.year, now.month, now.day, 23, 59, 59);
+    // Set start to beginning of the day N days ago
+    final startDate = now.subtract(Duration(days: days - 1)); // -1 to include today
+    final start = DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
     setState(() => _selectedDateRange = DateTimeRange(start: start, end: end));
   }
 
   void _setCurrentYear() {
     final year = DateTime.now().year;
-    final start = DateTime(year, 1, 1);
-    final end = DateTime(year, 12, 31);
+    final start = DateTime(year, 1, 1, 0, 0, 0);
+    final end = DateTime(year, 12, 31, 23, 59, 59);
     setState(() => _selectedDateRange = DateTimeRange(start: start, end: end));
   }
 
@@ -1456,24 +1508,43 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
     Navigator.of(context).pop();
   }
 
-  void _applyFilters() {
-    // Update the providers for the calendar view (for other components that might use them)
+  void _applyFilters() async {
+    // Update the providers for the calendar view
     ref.read(calendarSelectedProjectProvider.notifier).state = _selectedProjectId;
     ref.read(calendarDateRangeProvider.notifier).state = _selectedDateRange;
     ref.read(calendarYearProvider.notifier).state = _selectedYear;
     
-    // Close the dialog first
+    // Close the dialog
     Navigator.of(context).pop();
     
-    // Navigate to the filtered results screen
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => FilteredResultsScreen(
-          projectId: _selectedProjectId,
-          dateRange: _selectedDateRange,
-        ),
-      ),
-    );
+    // Get filtered entries for the new screen
+    try {
+      final filteredEntries = await ref.read(filteredTimeEntriesProvider.future);
+      
+      // Navigate to filtered results screen
+      if (context.mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => FilteredResultsScreen(
+              projectId: _selectedProjectId,
+              dateRange: _selectedDateRange,
+              filteredEntries: filteredEntries,
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      // Show error if filtering fails
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error applying filters: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
   }
 }
 

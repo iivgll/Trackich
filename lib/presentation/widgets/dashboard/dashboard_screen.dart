@@ -63,7 +63,7 @@ class DashboardScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Good ${_getTimeOfDayGreeting()}, User!',
+                  'Good ${_getTimeOfDayGreeting()}',
                   style: Theme.of(context).textTheme.displayMedium?.copyWith(
                     color: Theme.of(context).brightness == Brightness.light 
                         ? AppTheme.lightText 
@@ -82,39 +82,13 @@ class DashboardScreen extends ConsumerWidget {
               ],
             ),
           ),
-          _buildQuickActions(context),
+          
         ],
       ),
     );
   }
 
-  Widget _buildQuickActions(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          onPressed: () {
-            // TODO: Navigate to create project
-          },
-          icon: const Icon(Symbols.add_circle),
-          iconSize: 32,
-          color: AppTheme.getPrimaryColor(context),
-          tooltip: 'Create Project',
-        ),
-        const SizedBox(width: AppTheme.space2),
-        IconButton(
-          onPressed: () {
-            // TODO: Navigate to settings
-          },
-          icon: const Icon(Symbols.settings),
-          iconSize: 32,
-          color: Theme.of(context).brightness == Brightness.light 
-              ? AppTheme.calmLightTextSecondary 
-              : AppTheme.falloutTextSecondary,
-          tooltip: 'Settings',
-        ),
-      ],
-    );
-  }
+
 
   Widget _buildMainContent(BuildContext context) {
     return LayoutBuilder(

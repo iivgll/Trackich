@@ -399,19 +399,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
             ),
           ),
         ],
-        
-        const SizedBox(width: AppTheme.space3),
-        
-        // Break Button
-        IconButton(
-          onPressed: () => _startBreak(),
-          icon: const Icon(Symbols.coffee),
-          tooltip: 'Take a break',
-          style: IconButton.styleFrom(
-            backgroundColor: AppTheme.getSecondaryColor(context).withOpacity(0.1),
-            foregroundColor: AppTheme.getSecondaryColor(context),
-          ),
-        ),
+      
       ],
     );
   }
