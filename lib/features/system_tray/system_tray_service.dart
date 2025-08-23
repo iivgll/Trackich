@@ -39,7 +39,7 @@ class SystemTrayService with TrayListener {
       if (Platform.isMacOS) {
         iconPath = 'assets/images/tray_icon_macos.png';
       } else if (Platform.isWindows) {
-        iconPath = 'assets/images/tray_icon.ico';
+        iconPath = 'assets/images/tray_icon.png';
       } else {
         iconPath = 'assets/images/tray_icon.png';
       }
