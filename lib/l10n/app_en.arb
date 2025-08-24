@@ -584,5 +584,300 @@
         "example": "My Project"
       }
     }
+  },
+
+  "appName": "Trackich",
+  "@appName": {
+    "description": "Application name"
+  },
+
+  "noDataForPeriod": "No data for this period",
+  "@noDataForPeriod": {
+    "description": "No data message for analytics"
+  },
+
+  "startTrackingMessage": "Start tracking time to see analytics",
+  "@startTrackingMessage": {
+    "description": "Message to start tracking time"
+  },
+
+  "keyMetrics": "Key Metrics",
+  "@keyMetrics": {
+    "description": "Key metrics section title"
+  },
+
+  "totalWorkTime": "Total Work Time",
+  "@totalWorkTime": {
+    "description": "Total work time metric"
+  },
+
+  "breakTime": "Break Time",
+  "@breakTime": {
+    "description": "Break time metric"
+  },
+
+  "tasksCompleted": "Tasks Completed",
+  "@tasksCompleted": {
+    "description": "Tasks completed metric"
+  },
+
+  "projectBreakdown": "Project Breakdown",
+  "@projectBreakdown": {
+    "description": "Project breakdown chart title"
+  },
+
+  "dailyActivity": "Daily Activity",
+  "@dailyActivity": {
+    "description": "Daily activity chart title"
+  },
+
+  "enableAppNotifications": "Enable app notifications",
+  "@enableAppNotifications": {
+    "description": "Enable notifications button text"
+  },
+
+  "notificationPermissionsRequired": "Notification permissions required",
+  "@notificationPermissionsRequired": {
+    "description": "Permissions required message"
+  },
+
+  "notificationsEnabled": "Notifications Enabled",
+  "@notificationsEnabled": {
+    "description": "Notifications enabled status"
+  },
+
+  "notificationsEnabledDescription": "System notifications are working properly",
+  "@notificationsEnabledDescription": {
+    "description": "Notifications enabled description"
+  },
+
+  "refreshStatus": "Refresh status",
+  "@refreshStatus": {
+    "description": "Refresh status tooltip"
+  },
+
+  "notificationsDisabled": "Notifications Disabled",
+  "@notificationsDisabled": {
+    "description": "Notifications disabled status"
+  },
+
+  "notificationsDisabledDescription": "Enable in system settings to receive notifications",
+  "@notificationsDisabledDescription": {
+    "description": "Notifications disabled description"
+  },
+
+  "permissionRequired": "Permission Required",
+  "@permissionRequired": {
+    "description": "Permission required status"
+  },
+
+  "permissionRequiredDescription": "Tap to request notification permissions",
+  "@permissionRequiredDescription": {
+    "description": "Permission required description"
+  },
+
+  "morning": "morning",
+  "@morning": {
+    "description": "Morning time period"
+  },
+
+  "afternoon": "afternoon",
+  "@afternoon": {
+    "description": "Afternoon time period"
+  },
+
+  "evening": "evening",
+  "@evening": {
+    "description": "Evening time period"
+  },
+
+  "yesterday": "Yesterday",
+  "@yesterday": {
+    "description": "Yesterday label"
+  },
+
+  "errorLoadingTasks": "Error loading tasks",
+  "@errorLoadingTasks": {
+    "description": "Error loading tasks message"
+  },
+
+  "recentActivity": "Recent Activity",
+  "@recentActivity": {
+    "description": "Recent activity section title"
+  },
+
+  "noTasksToday": "No tasks today",
+  "@noTasksToday": {
+    "description": "No tasks today message"
+  },
+
+  "startTimerToTrack": "Start a timer to track your work",
+  "@startTimerToTrack": {
+    "description": "Start timer instruction"
+  },
+
+  "noTasksThisWeek": "No tasks this week",
+  "@noTasksThisWeek": {
+    "description": "No tasks this week message"
+  },
+
+  "recentActivityWillAppear": "Your recent activity will appear here",
+  "@recentActivityWillAppear": {
+    "description": "Recent activity placeholder"
+  },
+
+  "noTasksThisMonth": "No tasks this month",
+  "@noTasksThisMonth": {
+    "description": "No tasks this month message"
+  },
+
+  "monthlyActivityWillAppear": "Your monthly activity will appear here",
+  "@monthlyActivityWillAppear": {
+    "description": "Monthly activity placeholder"
+  },
+
+  "noTasksFound": "No tasks found",
+  "@noTasksFound": {
+    "description": "No tasks found message"
+  },
+
+  "startTrackingToSeeActivity": "Start tracking time to see your activity",
+  "@startTrackingToSeeActivity": {
+    "description": "Start tracking instruction"
+  },
+
+  "totalTime": "Total Time",
+  "@totalTime": {
+    "description": "Total time column header"
+  },
+
+  "sessions": "Sessions",
+  "@sessions": {
+    "description": "Sessions column header"
+  },
+
+  "lastActivity": "Last Activity",
+  "@lastActivity": {
+    "description": "Last activity column header"
+  },
+
+  "averagePerSession": "Average per Session",
+  "@averagePerSession": {
+    "description": "Average per session column header"
+  },
+
+  "goodMorning": "Good morning",
+  "@goodMorning": {
+    "description": "Good morning greeting"
+  },
+
+  "goodAfternoon": "Good afternoon",
+  "@goodAfternoon": {
+    "description": "Good afternoon greeting"
+  },
+
+  "goodEvening": "Good evening",
+  "@goodEvening": {
+    "description": "Good evening greeting"
+  },
+
+  "timeForBreakTitle": "Time for a Break!",
+  "@timeForBreakTitle": {
+    "description": "Break reminder notification title"
+  },
+
+  "breakReminderBody": "You have been working{projectText} for {workMinutes}m. Consider taking a short break to stay productive.",
+  "@breakReminderBody": {
+    "description": "Break reminder notification body",
+    "placeholders": {
+      "projectText": {
+        "type": "String",
+        "example": " on Project Name"
+      },
+      "workMinutes": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+
+  "backToWorkTitle": "Break Time Over!",
+  "@backToWorkTitle": {
+    "description": "Work reminder notification title"
+  },
+
+  "workReminderBody": "You have been on break for {breakMinutes} minutes. Ready to get back to work?",
+  "@workReminderBody": {
+    "description": "Work reminder notification body",
+    "placeholders": {
+      "breakMinutes": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+
+  "taskCompletedTitle": "Task Completed!",
+  "@taskCompletedTitle": {
+    "description": "Task completed notification title"
+  },
+
+  "taskCompletedBody": "Great job! You completed \"{taskName}\" in {projectName} after {minutes}m of focused work.",
+  "@taskCompletedBody": {
+    "description": "Task completed notification body",
+    "placeholders": {
+      "taskName": {
+        "type": "String",
+        "example": "Feature implementation"
+      },
+      "projectName": {
+        "type": "String", 
+        "example": "My Project"
+      },
+      "minutes": {
+        "type": "int",
+        "example": "45"
+      }
+    }
+  },
+
+  "testNotificationTitle": "Test Notification",
+  "@testNotificationTitle": {
+    "description": "Test notification title"
+  },
+
+  "testNotificationBody": "This is a test notification to verify that notifications are working properly.",
+  "@testNotificationBody": {
+    "description": "Test notification body"
+  },
+
+  "enableNotifications": "Enable Notifications",
+  "@enableNotifications": {
+    "description": "Enable notifications button text"
+  },
+
+  "skip": "Skip",
+  "@skip": {
+    "description": "Skip button text"
+  },
+
+  "notificationPermissionTitle": "Enable Notifications",
+  "@notificationPermissionTitle": {
+    "description": "Notification permission dialog title"
+  },
+
+  "notificationPermissionBody": "Get break reminders and stay productive with timely notifications. You can change this setting later in Settings.",
+  "@notificationPermissionBody": {
+    "description": "Notification permission dialog body"
+  },
+
+  "notificationPermissionDenied": "Notification permission denied. You can enable it later in Settings.",
+  "@notificationPermissionDenied": {
+    "description": "Message when notification permission is denied"
+  },
+
+  "errorOccurred": "An error occurred. Please try again.",
+  "@errorOccurred": {
+    "description": "Generic error message"
   }
 }

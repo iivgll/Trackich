@@ -95,7 +95,7 @@ class TimeFormatter {
 
   static String formatWeekRange(DateTime startOfWeek) {
     final endOfWeek = startOfWeek.add(const Duration(days: 6));
-    
+
     if (startOfWeek.month == endOfWeek.month) {
       return '${DateFormat('MMM d').format(startOfWeek)} - ${DateFormat('d, yyyy').format(endOfWeek)}';
     } else {
@@ -106,7 +106,11 @@ class TimeFormatter {
   static DateTime getStartOfWeek(DateTime date, {bool mondayFirst = true}) {
     final weekday = date.weekday;
     final daysToSubtract = mondayFirst ? weekday - 1 : weekday % 7;
-    return DateTime(date.year, date.month, date.day).subtract(Duration(days: daysToSubtract));
+    return DateTime(
+      date.year,
+      date.month,
+      date.day,
+    ).subtract(Duration(days: daysToSubtract));
   }
 
   static DateTime getStartOfMonth(DateTime date) {
@@ -119,8 +123,8 @@ class TimeFormatter {
 
   static bool isSameDay(DateTime date1, DateTime date2) {
     return date1.year == date2.year &&
-           date1.month == date2.month &&
-           date1.day == date2.day;
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
   static bool isToday(DateTime date) {
@@ -146,7 +150,6 @@ class TimeFormatter {
   static String formatMonthYear(DateTime dateTime) {
     return DateFormat('MMMM y').format(dateTime);
   }
-
 
   /// Format day of week (e.g., "Monday")
   static String formatDayOfWeek(DateTime dateTime) {

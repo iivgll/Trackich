@@ -18,7 +18,9 @@ final selectedDateProvider = StateProvider<DateTime>((ref) {
   return DateTime(now.year, now.month, now.day);
 });
 
-final calendarViewModeProvider = StateProvider<CalendarViewMode>((ref) => CalendarViewMode.month);
+final calendarViewModeProvider = StateProvider<CalendarViewMode>(
+  (ref) => CalendarViewMode.month,
+);
 
 // Calendar filtering providers
 final calendarSelectedProjectProvider = StateProvider<String?>((ref) => null);
@@ -26,56 +28,70 @@ final calendarDateRangeProvider = StateProvider<DateTimeRange?>((ref) => null);
 final calendarYearProvider = StateProvider<int>((ref) => DateTime.now().year);
 
 // Unfiltered time entries provider - shows ALL completed tasks regardless of filter settings
-final unfilteredTimeEntriesProvider = FutureProvider<List<TimeEntry>>((ref) async {
+final unfilteredTimeEntriesProvider = FutureProvider<List<TimeEntry>>((
+  ref,
+) async {
   final storage = ref.read(storageServiceProvider);
   final allEntries = await storage.getTimeEntries();
-  
+
   // Only filter by completion status - no project or date filtering for main calendar
   return allEntries.where((entry) => entry.isCompleted).toList();
 });
 
 // Filtered time entries provider - used only for filtered results screen
-final filteredTimeEntriesProvider = FutureProvider<List<TimeEntry>>((ref) async {
+final filteredTimeEntriesProvider = FutureProvider<List<TimeEntry>>((
+  ref,
+) async {
   final storage = ref.read(storageServiceProvider);
   final allEntries = await storage.getTimeEntries();
   final selectedProject = ref.watch(calendarSelectedProjectProvider);
   final dateRange = ref.watch(calendarDateRangeProvider);
-  
+
   // Filter by completion status
   var filteredEntries = allEntries.where((entry) => entry.isCompleted).toList();
-  
+
   // Filter by project if selected
   if (selectedProject != null) {
-    filteredEntries = filteredEntries.where((entry) => entry.projectId == selectedProject).toList();
+    filteredEntries = filteredEntries
+        .where((entry) => entry.projectId == selectedProject)
+        .toList();
   }
-  
+
   // Filter by date range if selected
   if (dateRange != null) {
     filteredEntries = filteredEntries.where((entry) {
       final entryTime = entry.startTime;
       // Use actual time for more precise filtering
-      return entryTime.isAfter(dateRange.start) && entryTime.isBefore(dateRange.end);
+      return entryTime.isAfter(dateRange.start) &&
+          entryTime.isBefore(dateRange.end);
     }).toList();
   }
-  
+
   return filteredEntries;
 });
 
 // Grouped calendar data by date - now uses filtered data
-final calendarDataByDateProvider = FutureProvider<Map<DateTime, List<TimeEntry>>>((ref) async {
-  final filteredEntries = await ref.watch(filteredTimeEntriesProvider.future);
-  
-  final entriesByDate = <DateTime, List<TimeEntry>>{};
-  for (final entry in filteredEntries) {
-    final entryDate = DateTime(entry.startTime.year, entry.startTime.month, entry.startTime.day);
-    if (entriesByDate[entryDate] == null) {
-      entriesByDate[entryDate] = [];
-    }
-    entriesByDate[entryDate]!.add(entry);
-  }
-  
-  return entriesByDate;
-});
+final calendarDataByDateProvider =
+    FutureProvider<Map<DateTime, List<TimeEntry>>>((ref) async {
+      final filteredEntries = await ref.watch(
+        filteredTimeEntriesProvider.future,
+      );
+
+      final entriesByDate = <DateTime, List<TimeEntry>>{};
+      for (final entry in filteredEntries) {
+        final entryDate = DateTime(
+          entry.startTime.year,
+          entry.startTime.month,
+          entry.startTime.day,
+        );
+        if (entriesByDate[entryDate] == null) {
+          entriesByDate[entryDate] = [];
+        }
+        entriesByDate[entryDate]!.add(entry);
+      }
+
+      return entriesByDate;
+    });
 
 enum CalendarViewMode { day, week, month, year }
 
@@ -92,16 +108,16 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final l10n = AppLocalizations.of(context);
     final selectedDate = ref.watch(selectedDateProvider);
     final viewMode = ref.watch(calendarViewModeProvider);
-    
+
     return Scaffold(
-      backgroundColor: Theme.of(context).brightness == Brightness.light 
-          ? AppTheme.gray50 
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? AppTheme.gray50
           : AppTheme.gray900,
       body: Column(
         children: [
           // Header with controls
           _buildHeader(context, l10n, selectedDate, viewMode),
-          
+
           // Calendar content
           Expanded(
             child: _buildCalendarContent(context, selectedDate, viewMode),
@@ -111,16 +127,18 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     );
   }
 
-  Widget _buildHeader(BuildContext context, AppLocalizations l10n, DateTime selectedDate, CalendarViewMode viewMode) {
+  Widget _buildHeader(
+    BuildContext context,
+    AppLocalizations l10n,
+    DateTime selectedDate,
+    CalendarViewMode viewMode,
+  ) {
     return Container(
       padding: const EdgeInsets.all(AppTheme.space6),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).dividerColor,
-            width: 1,
-          ),
+          bottom: BorderSide(color: Theme.of(context).dividerColor, width: 1),
         ),
       ),
       child: Row(
@@ -132,35 +150,32 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             tooltip: 'Previous',
           ),
           const SizedBox(width: AppTheme.space2),
-          
+
           // Current period title
           Expanded(
             child: Text(
               _getHeaderTitle(selectedDate, viewMode),
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
           ),
           const SizedBox(width: AppTheme.space2),
-          
+
           IconButton(
             onPressed: () => _navigateDate(1, viewMode),
             icon: const Icon(Symbols.chevron_right),
             tooltip: 'Next',
           ),
-          
+
           const SizedBox(width: AppTheme.space4),
-          
+
           // Today button
-          TextButton(
-            onPressed: () => _goToToday(),
-            child: Text(l10n.today),
-          ),
-          
+          TextButton(onPressed: () => _goToToday(), child: Text(l10n.today)),
+
           const SizedBox(width: AppTheme.space4),
-          
+
           // View mode toggle
           SegmentedButton<CalendarViewMode>(
             segments: [
@@ -188,22 +203,23 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             selected: {viewMode},
             onSelectionChanged: (Set<CalendarViewMode> selection) {
               if (selection.isNotEmpty) {
-                ref.read(calendarViewModeProvider.notifier).state = selection.first;
+                ref.read(calendarViewModeProvider.notifier).state =
+                    selection.first;
               }
             },
           ),
-          
+
           const SizedBox(width: AppTheme.space4),
-          
+
           // Export to Excel button
           IconButton(
             onPressed: () => _exportToExcel(context),
             icon: const Icon(Symbols.file_download),
             tooltip: 'Export to Excel',
           ),
-          
+
           const SizedBox(width: AppTheme.space2),
-          
+
           // Filter button
           IconButton(
             onPressed: () => _showFilterDialog(context),
@@ -215,7 +231,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     );
   }
 
-  Widget _buildCalendarContent(BuildContext context, DateTime selectedDate, CalendarViewMode viewMode) {
+  Widget _buildCalendarContent(
+    BuildContext context,
+    DateTime selectedDate,
+    CalendarViewMode viewMode,
+  ) {
     switch (viewMode) {
       case CalendarViewMode.day:
         return _DayView(selectedDate: selectedDate);
@@ -233,7 +253,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       case CalendarViewMode.day:
         return TimeFormatter.formatDate(selectedDate);
       case CalendarViewMode.week:
-        final startOfWeek = selectedDate.subtract(Duration(days: selectedDate.weekday - 1));
+        final startOfWeek = selectedDate.subtract(
+          Duration(days: selectedDate.weekday - 1),
+        );
         final endOfWeek = startOfWeek.add(const Duration(days: 6));
         if (startOfWeek.month == endOfWeek.month) {
           return '${TimeFormatter.formatDate(startOfWeek)} - ${endOfWeek.day}, ${endOfWeek.year}';
@@ -250,7 +272,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   void _navigateDate(int direction, CalendarViewMode viewMode) {
     final current = ref.read(selectedDateProvider);
     DateTime newDate;
-    
+
     switch (viewMode) {
       case CalendarViewMode.day:
         newDate = current.add(Duration(days: direction));
@@ -262,25 +284,30 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         newDate = DateTime(current.year, current.month + direction, 1);
         break;
       case CalendarViewMode.year:
-        newDate = DateTime(current.year + direction, current.month, current.day);
+        newDate = DateTime(
+          current.year + direction,
+          current.month,
+          current.day,
+        );
         break;
     }
-    
+
     ref.read(selectedDateProvider.notifier).state = newDate;
   }
 
   void _goToToday() {
     final now = DateTime.now();
-    ref.read(selectedDateProvider.notifier).state = DateTime(now.year, now.month, now.day);
+    ref.read(selectedDateProvider.notifier).state = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    );
   }
 
   void _showFilterDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => _CalendarFilterDialog(),
-    );
+    showDialog(context: context, builder: (context) => _CalendarFilterDialog());
   }
-  
+
   Future<void> _exportToExcel(BuildContext context) async {
     try {
       // Show loading indicator
@@ -291,37 +318,39 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           duration: const Duration(seconds: 1),
         ),
       );
-      
+
       // Get filtered time entries
-      final filteredEntries = await ref.read(filteredTimeEntriesProvider.future);
-      
+      final filteredEntries = await ref.read(
+        filteredTimeEntriesProvider.future,
+      );
+
       // Get projects map
       final projectsAsync = ref.read(projectsProvider);
       final projects = <String, Project>{};
-      
+
       if (projectsAsync.hasValue) {
         for (final project in projectsAsync.value!) {
           projects[project.id] = project;
         }
       }
-      
+
       // Get current date range for filename
       final selectedDateRange = ref.read(calendarDateRangeProvider);
-      
+
       // Export to Excel
       final result = await ExcelExportService.exportTimeEntries(
         entries: filteredEntries,
         projects: projects,
         dateRange: selectedDateRange,
       );
-      
+
       // Handle result
       if (context.mounted) {
         if (result == 'cancelled') {
           // User cancelled - no message needed
           return;
         }
-        
+
         // Show success message
         final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -373,13 +402,14 @@ class _DayView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Day summary
-              _DaySummaryCard(workEntries: workEntries, breakEntries: breakEntries),
-              const SizedBox(height: AppTheme.space6),
-              
-              // Timeline
-              Expanded(
-                child: _buildTimeline(context, entries),
+              _DaySummaryCard(
+                workEntries: workEntries,
+                breakEntries: breakEntries,
               ),
+              const SizedBox(height: AppTheme.space6),
+
+              // Timeline
+              Expanded(child: _buildTimeline(context, entries)),
             ],
           ),
         );
@@ -398,7 +428,8 @@ class _DayView extends ConsumerWidget {
 
     return ListView.separated(
       itemCount: sortedEntries.length,
-      separatorBuilder: (context, index) => const SizedBox(height: AppTheme.space3),
+      separatorBuilder: (context, index) =>
+          const SizedBox(height: AppTheme.space3),
       itemBuilder: (context, index) {
         return _TimelineItem(entry: sortedEntries[index]);
       },
@@ -410,31 +441,30 @@ class _DayView extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Symbols.event_busy,
-            size: 64,
-            color: AppTheme.gray400,
-          ),
+          const Icon(Symbols.event_busy, size: 64, color: AppTheme.gray400),
           const SizedBox(height: AppTheme.space4),
           Text(
             'No activity for this day',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: AppTheme.gray600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(color: AppTheme.gray600),
           ),
           const SizedBox(height: AppTheme.space2),
           Text(
             'Start a timer to track your work',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: AppTheme.gray500,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: AppTheme.gray500),
           ),
         ],
       ),
     );
   }
 
-  Future<List<TimeEntry>> _getEntriesForDate(WidgetRef ref, DateTime date) async {
+  Future<List<TimeEntry>> _getEntriesForDate(
+    WidgetRef ref,
+    DateTime date,
+  ) async {
     final entriesByDate = await ref.read(calendarDataByDateProvider.future);
     final targetDate = DateTime(date.year, date.month, date.day);
     return entriesByDate[targetDate] ?? [];
@@ -458,7 +488,7 @@ class _WeekView extends ConsumerWidget {
 
         final entriesByDate = snapshot.data ?? {};
         final weekDays = _getWeekDays(selectedDate);
-        
+
         return Padding(
           padding: const EdgeInsets.all(AppTheme.space6),
           child: Column(
@@ -466,10 +496,15 @@ class _WeekView extends ConsumerWidget {
               // Week summary
               _WeekSummaryCard(entriesByDate: entriesByDate),
               const SizedBox(height: AppTheme.space6),
-              
+
               // Week calendar
               Expanded(
-                child: _buildWeekCalendar(context, ref, weekDays, entriesByDate),
+                child: _buildWeekCalendar(
+                  context,
+                  ref,
+                  weekDays,
+                  entriesByDate,
+                ),
               ),
             ],
           ),
@@ -478,34 +513,40 @@ class _WeekView extends ConsumerWidget {
     );
   }
 
-  Widget _buildWeekCalendar(BuildContext context, WidgetRef ref, List<DateTime> weekDays, Map<DateTime, List<TimeEntry>> entriesByDate) {
+  Widget _buildWeekCalendar(
+    BuildContext context,
+    WidgetRef ref,
+    List<DateTime> weekDays,
+    Map<DateTime, List<TimeEntry>> entriesByDate,
+  ) {
     return Row(
       children: weekDays.map((day) {
         final normalizedDay = DateTime(day.year, day.month, day.day);
         final dayEntries = entriesByDate[normalizedDay] ?? [];
         final isToday = _isToday(day);
         final isSelected = _isSameDay(day, ref.watch(selectedDateProvider));
-        
+
         return Expanded(
           child: GestureDetector(
             onTap: () {
               ref.read(selectedDateProvider.notifier).state = normalizedDay;
-              ref.read(calendarViewModeProvider.notifier).state = CalendarViewMode.day;
+              ref.read(calendarViewModeProvider.notifier).state =
+                  CalendarViewMode.day;
             },
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 2),
               decoration: BoxDecoration(
-                color: isSelected 
-                    ? AppTheme.primaryBlue.withOpacity(0.1) 
-                    : isToday 
-                        ? AppTheme.successGreen.withOpacity(0.1)
-                        : null,
+                color: isSelected
+                    ? AppTheme.primaryBlue.withOpacity(0.1)
+                    : isToday
+                    ? AppTheme.successGreen.withOpacity(0.1)
+                    : null,
                 borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                border: isSelected 
+                border: isSelected
                     ? Border.all(color: AppTheme.primaryBlue, width: 2)
-                    : isToday 
-                        ? Border.all(color: AppTheme.successGreen, width: 1)
-                        : Border.all(color: Theme.of(context).dividerColor),
+                    : isToday
+                    ? Border.all(color: AppTheme.successGreen, width: 1)
+                    : Border.all(color: Theme.of(context).dividerColor),
               ),
               child: Column(
                 children: [
@@ -513,13 +554,13 @@ class _WeekView extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(AppTheme.space3),
                     decoration: BoxDecoration(
-                      color: isSelected 
-                          ? AppTheme.primaryBlue.withOpacity(0.1) 
-                          : isToday 
-                              ? AppTheme.successGreen.withOpacity(0.1)
-                              : Theme.of(context).brightness == Brightness.light
-                                  ? AppTheme.gray50
-                                  : AppTheme.gray800,
+                      color: isSelected
+                          ? AppTheme.primaryBlue.withOpacity(0.1)
+                          : isToday
+                          ? AppTheme.successGreen.withOpacity(0.1)
+                          : Theme.of(context).brightness == Brightness.light
+                          ? AppTheme.gray50
+                          : AppTheme.gray800,
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(AppTheme.radiusMd),
                         topRight: Radius.circular(AppTheme.radiusMd),
@@ -528,32 +569,42 @@ class _WeekView extends ConsumerWidget {
                     child: Column(
                       children: [
                         Text(
-                          ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][day.weekday - 1],
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: isSelected 
-                                ? AppTheme.primaryBlue 
-                                : isToday 
+                          [
+                            'Mon',
+                            'Tue',
+                            'Wed',
+                            'Thu',
+                            'Fri',
+                            'Sat',
+                            'Sun',
+                          ][day.weekday - 1],
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: isSelected
+                                    ? AppTheme.primaryBlue
+                                    : isToday
                                     ? AppTheme.successGreen
                                     : AppTheme.gray600,
-                          ),
+                              ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           day.day.toString(),
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: isSelected 
-                                ? AppTheme.primaryBlue 
-                                : isToday 
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: isSelected
+                                    ? AppTheme.primaryBlue
+                                    : isToday
                                     ? AppTheme.successGreen
                                     : null,
-                          ),
+                              ),
                         ),
                       ],
                     ),
                   ),
-                  
+
                   // Day entries
                   Expanded(
                     child: dayEntries.isEmpty
@@ -568,7 +619,9 @@ class _WeekView extends ConsumerWidget {
                             padding: const EdgeInsets.all(AppTheme.space2),
                             itemCount: dayEntries.length,
                             itemBuilder: (context, index) {
-                              return _WeekTimelineItem(entry: dayEntries[index]);
+                              return _WeekTimelineItem(
+                                entry: dayEntries[index],
+                              );
                             },
                           ),
                   ),
@@ -582,14 +635,19 @@ class _WeekView extends ConsumerWidget {
   }
 
   List<DateTime> _getWeekDays(DateTime selectedDate) {
-    final startOfWeek = selectedDate.subtract(Duration(days: selectedDate.weekday - 1));
+    final startOfWeek = selectedDate.subtract(
+      Duration(days: selectedDate.weekday - 1),
+    );
     return List.generate(7, (index) => startOfWeek.add(Duration(days: index)));
   }
 
-  Future<Map<DateTime, List<TimeEntry>>> _getEntriesForWeek(WidgetRef ref, DateTime selectedDate) async {
+  Future<Map<DateTime, List<TimeEntry>>> _getEntriesForWeek(
+    WidgetRef ref,
+    DateTime selectedDate,
+  ) async {
     final allEntriesByDate = await ref.read(calendarDataByDateProvider.future);
     final weekDays = _getWeekDays(selectedDate);
-    
+
     final weekEntriesByDate = <DateTime, List<TimeEntry>>{};
     for (final day in weekDays) {
       final normalizedDay = DateTime(day.year, day.month, day.day);
@@ -598,17 +656,21 @@ class _WeekView extends ConsumerWidget {
         weekEntriesByDate[normalizedDay] = dayEntries;
       }
     }
-    
+
     return weekEntriesByDate;
   }
 
   bool _isToday(DateTime date) {
     final now = DateTime.now();
-    return date.year == now.year && date.month == now.month && date.day == now.day;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 
   bool _isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 }
 
@@ -628,7 +690,7 @@ class _MonthView extends ConsumerWidget {
         }
 
         final entriesByDate = snapshot.data ?? {};
-        
+
         return Padding(
           padding: const EdgeInsets.all(AppTheme.space6),
           child: _buildMonthCalendar(context, ref, selectedDate, entriesByDate),
@@ -637,18 +699,28 @@ class _MonthView extends ConsumerWidget {
     );
   }
 
-  Widget _buildMonthCalendar(BuildContext context, WidgetRef ref, DateTime month, Map<DateTime, List<TimeEntry>> entriesByDate) {
+  Widget _buildMonthCalendar(
+    BuildContext context,
+    WidgetRef ref,
+    DateTime month,
+    Map<DateTime, List<TimeEntry>> entriesByDate,
+  ) {
     final firstDayOfMonth = DateTime(month.year, month.month, 1);
     final lastDayOfMonth = DateTime(month.year, month.month + 1, 0);
-    
+
     // Calculate calendar grid
-    final startDate = firstDayOfMonth.subtract(Duration(days: firstDayOfMonth.weekday - 1));
-    final endDate = lastDayOfMonth.add(Duration(days: 7 - lastDayOfMonth.weekday));
-    
+    final startDate = firstDayOfMonth.subtract(
+      Duration(days: firstDayOfMonth.weekday - 1),
+    );
+    final endDate = lastDayOfMonth.add(
+      Duration(days: 7 - lastDayOfMonth.weekday),
+    );
+
     final calendarDays = <DateTime>[];
     DateTime currentDate = startDate;
-    
-    while (currentDate.isBefore(endDate) || currentDate.isAtSameMomentAs(endDate)) {
+
+    while (currentDate.isBefore(endDate) ||
+        currentDate.isAtSameMomentAs(endDate)) {
       calendarDays.add(currentDate);
       currentDate = currentDate.add(const Duration(days: 1));
     }
@@ -659,21 +731,23 @@ class _MonthView extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.symmetric(vertical: AppTheme.space2),
           child: Row(
-            children: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => 
-              Expanded(
-                child: Text(
-                  day,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.gray600,
+            children: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                .map(
+                  (day) => Expanded(
+                    child: Text(
+                      day,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.gray600,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ).toList(),
+                )
+                .toList(),
           ),
         ),
-        
+
         // Calendar grid
         Expanded(
           child: GridView.builder(
@@ -688,27 +762,32 @@ class _MonthView extends ConsumerWidget {
               final dayEntries = entriesByDate[normalizedDate] ?? [];
               final isCurrentMonth = date.month == month.month;
               final isToday = _isToday(date);
-              final isSelected = _isSameDay(date, ref.watch(selectedDateProvider));
-              
+              final isSelected = _isSameDay(
+                date,
+                ref.watch(selectedDateProvider),
+              );
+
               return GestureDetector(
                 onTap: () {
-                  ref.read(selectedDateProvider.notifier).state = normalizedDate;
-                  ref.read(calendarViewModeProvider.notifier).state = CalendarViewMode.day;
+                  ref.read(selectedDateProvider.notifier).state =
+                      normalizedDate;
+                  ref.read(calendarViewModeProvider.notifier).state =
+                      CalendarViewMode.day;
                 },
                 child: Container(
                   margin: const EdgeInsets.all(1),
                   decoration: BoxDecoration(
-                    color: isSelected 
-                        ? AppTheme.primaryBlue.withOpacity(0.1) 
-                        : isToday 
-                            ? AppTheme.successGreen.withOpacity(0.1)
-                            : null,
+                    color: isSelected
+                        ? AppTheme.primaryBlue.withOpacity(0.1)
+                        : isToday
+                        ? AppTheme.successGreen.withOpacity(0.1)
+                        : null,
                     borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                    border: isSelected 
+                    border: isSelected
                         ? Border.all(color: AppTheme.primaryBlue, width: 2)
-                        : isToday 
-                            ? Border.all(color: AppTheme.successGreen, width: 1)
-                            : null,
+                        : isToday
+                        ? Border.all(color: AppTheme.successGreen, width: 1)
+                        : null,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -716,13 +795,15 @@ class _MonthView extends ConsumerWidget {
                       Text(
                         date.day.toString(),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: isToday ? FontWeight.w700 : FontWeight.w500,
-                          color: isCurrentMonth 
-                              ? (isSelected 
-                                  ? AppTheme.primaryBlue 
-                                  : isToday 
-                                      ? AppTheme.successGreen
-                                      : null)
+                          fontWeight: isToday
+                              ? FontWeight.w700
+                              : FontWeight.w500,
+                          color: isCurrentMonth
+                              ? (isSelected
+                                    ? AppTheme.primaryBlue
+                                    : isToday
+                                    ? AppTheme.successGreen
+                                    : null)
                               : AppTheme.gray400,
                         ),
                       ),
@@ -740,7 +821,9 @@ class _MonthView extends ConsumerWidget {
                                   shape: BoxShape.circle,
                                 ),
                               ),
-                            if (dayEntries.where((e) => e.isBreak).isNotEmpty) ...[
+                            if (dayEntries
+                                .where((e) => e.isBreak)
+                                .isNotEmpty) ...[
                               const SizedBox(width: 2),
                               Container(
                                 width: 6,
@@ -765,11 +848,14 @@ class _MonthView extends ConsumerWidget {
     );
   }
 
-  Future<Map<DateTime, List<TimeEntry>>> _getEntriesForMonth(WidgetRef ref, DateTime month) async {
+  Future<Map<DateTime, List<TimeEntry>>> _getEntriesForMonth(
+    WidgetRef ref,
+    DateTime month,
+  ) async {
     final allEntriesByDate = await ref.read(calendarDataByDateProvider.future);
     final startOfMonth = DateTime(month.year, month.month, 1);
     final endOfMonth = DateTime(month.year, month.month + 1, 0);
-    
+
     final monthEntriesByDate = <DateTime, List<TimeEntry>>{};
     for (final date in allEntriesByDate.keys) {
       if (date.isAfter(startOfMonth.subtract(const Duration(days: 1))) &&
@@ -777,17 +863,21 @@ class _MonthView extends ConsumerWidget {
         monthEntriesByDate[date] = allEntriesByDate[date]!;
       }
     }
-    
+
     return monthEntriesByDate;
   }
 
   bool _isToday(DateTime date) {
     final now = DateTime.now();
-    return date.year == now.year && date.month == now.month && date.day == now.day;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 
   bool _isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 }
 
@@ -889,9 +979,9 @@ class _SummaryItem extends StatelessWidget {
           ),
           Text(
             label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppTheme.gray600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppTheme.gray600),
           ),
         ],
       ),
@@ -931,7 +1021,7 @@ class _TimelineItem extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(width: AppTheme.space4),
-                
+
                 // Entry details
                 Expanded(
                   child: Column(
@@ -942,15 +1032,16 @@ class _TimelineItem extends ConsumerWidget {
                           Icon(
                             entry.isBreak ? Symbols.coffee : Symbols.work,
                             size: 16,
-                            color: entry.isBreak ? AppTheme.breakBlue : project.color,
+                            color: entry.isBreak
+                                ? AppTheme.breakBlue
+                                : project.color,
                           ),
                           const SizedBox(width: AppTheme.space2),
                           Expanded(
                             child: Text(
                               entry.taskName,
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w600),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -976,16 +1067,15 @@ class _TimelineItem extends ConsumerWidget {
                           const SizedBox(width: AppTheme.space1),
                           Text(
                             '${TimeFormatter.formatTime(entry.startTime)} - ${TimeFormatter.formatTime(entry.effectiveEndTime)}',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: AppTheme.gray600,
-                            ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: AppTheme.gray600),
                           ),
                         ],
                       ),
                     ],
                   ),
                 ),
-                
+
                 // Duration
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -993,7 +1083,8 @@ class _TimelineItem extends ConsumerWidget {
                     vertical: AppTheme.space2,
                   ),
                   decoration: BoxDecoration(
-                    color: (entry.isBreak ? AppTheme.breakBlue : project.color).withOpacity(0.1),
+                    color: (entry.isBreak ? AppTheme.breakBlue : project.color)
+                        .withOpacity(0.1),
                     borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                   ),
                   child: Text(
@@ -1010,15 +1101,17 @@ class _TimelineItem extends ConsumerWidget {
         );
       },
       loading: () => Card(
-        child: Container(
+        child: SizedBox(
           height: 80,
           child: const Center(child: CircularProgressIndicator()),
         ),
       ),
       error: (_, __) => Card(
-        child: Container(
+        child: SizedBox(
           height: 80,
-          child: Center(child: Text(AppLocalizations.of(context).errorLoadingProject)),
+          child: Center(
+            child: Text(AppLocalizations.of(context).errorLoadingProject),
+          ),
         ),
       ),
     );
@@ -1114,10 +1207,12 @@ class _WeekTimelineItem extends ConsumerWidget {
           margin: const EdgeInsets.only(bottom: AppTheme.space2),
           padding: const EdgeInsets.all(AppTheme.space2),
           decoration: BoxDecoration(
-            color: (entry.isBreak ? AppTheme.breakBlue : project.color).withOpacity(0.1),
+            color: (entry.isBreak ? AppTheme.breakBlue : project.color)
+                .withOpacity(0.1),
             borderRadius: BorderRadius.circular(AppTheme.radiusSm),
             border: Border.all(
-              color: (entry.isBreak ? AppTheme.breakBlue : project.color).withOpacity(0.3),
+              color: (entry.isBreak ? AppTheme.breakBlue : project.color)
+                  .withOpacity(0.3),
             ),
           ),
           child: Column(
@@ -1164,11 +1259,11 @@ class _WeekTimelineItem extends ConsumerWidget {
           ),
         );
       },
-      loading: () => Container(
+      loading: () => SizedBox(
         height: 40,
         child: const Center(child: CircularProgressIndicator()),
       ),
-      error: (_, __) => Container(
+      error: (_, __) => SizedBox(
         height: 40,
         child: Center(child: Text(AppLocalizations.of(context).error)),
       ),
@@ -1192,7 +1287,7 @@ class _YearView extends ConsumerWidget {
         }
 
         final entriesByMonth = snapshot.data ?? {};
-        
+
         return Padding(
           padding: const EdgeInsets.all(AppTheme.space6),
           child: GridView.builder(
@@ -1208,11 +1303,12 @@ class _YearView extends ConsumerWidget {
               final monthDate = DateTime(selectedDate.year, month, 1);
               final monthEntries = entriesByMonth[month] ?? {};
               final totalHours = _getTotalHoursForMonth(monthEntries);
-              
+
               return GestureDetector(
                 onTap: () {
                   ref.read(selectedDateProvider.notifier).state = monthDate;
-                  ref.read(calendarViewModeProvider.notifier).state = CalendarViewMode.month;
+                  ref.read(calendarViewModeProvider.notifier).state =
+                      CalendarViewMode.month;
                 },
                 child: Card(
                   child: Padding(
@@ -1221,9 +1317,8 @@ class _YearView extends ConsumerWidget {
                       children: [
                         Text(
                           _getMonthName(month),
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: AppTheme.space2),
                         Expanded(
@@ -1238,24 +1333,31 @@ class _YearView extends ConsumerWidget {
                                   children: [
                                     Text(
                                       '${monthEntries.keys.length}',
-                                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                        color: AppTheme.primaryBlue,
-                                        fontWeight: FontWeight.w700,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineMedium
+                                          ?.copyWith(
+                                            color: AppTheme.primaryBlue,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                     ),
                                     Text(
                                       'active days',
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: AppTheme.gray600,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(color: AppTheme.gray600),
                                     ),
                                     const SizedBox(height: AppTheme.space2),
                                     Text(
                                       '${totalHours.toStringAsFixed(1)}h',
-                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                        color: AppTheme.successGreen,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            color: AppTheme.successGreen,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -1272,11 +1374,14 @@ class _YearView extends ConsumerWidget {
     );
   }
 
-  Future<Map<int, Map<DateTime, List<TimeEntry>>>> _getEntriesForYear(WidgetRef ref, DateTime year) async {
+  Future<Map<int, Map<DateTime, List<TimeEntry>>>> _getEntriesForYear(
+    WidgetRef ref,
+    DateTime year,
+  ) async {
     final allEntriesByDate = await ref.read(calendarDataByDateProvider.future);
     final startOfYear = DateTime(year.year, 1, 1);
     final endOfYear = DateTime(year.year, 12, 31);
-    
+
     final entriesByMonth = <int, Map<DateTime, List<TimeEntry>>>{};
     for (final date in allEntriesByDate.keys) {
       if (date.isAfter(startOfYear.subtract(const Duration(days: 1))) &&
@@ -1288,20 +1393,33 @@ class _YearView extends ConsumerWidget {
         entriesByMonth[month]![date] = allEntriesByDate[date]!;
       }
     }
-    
+
     return entriesByMonth;
   }
 
   double _getTotalHoursForMonth(Map<DateTime, List<TimeEntry>> monthEntries) {
     final allEntries = monthEntries.values.expand((e) => e).toList();
     final workEntries = allEntries.where((e) => !e.isBreak);
-    return workEntries.fold<double>(0.0, (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)));
+    return workEntries.fold<double>(
+      0.0,
+      (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)),
+    );
   }
 
   String _getMonthName(int month) {
     const monthNames = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return monthNames[month - 1];
   }
@@ -1310,7 +1428,8 @@ class _YearView extends ConsumerWidget {
 // Calendar Filter Dialog
 class _CalendarFilterDialog extends ConsumerStatefulWidget {
   @override
-  ConsumerState<_CalendarFilterDialog> createState() => _CalendarFilterDialogState();
+  ConsumerState<_CalendarFilterDialog> createState() =>
+      _CalendarFilterDialogState();
 }
 
 class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
@@ -1353,7 +1472,9 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
             projectsAsync.when(
               data: (projects) => Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.space4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.space4,
+                ),
                 decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).dividerColor),
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -1368,33 +1489,36 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
                       value: null,
                       child: Text(AppLocalizations.of(context).allProjects),
                     ),
-                    ...projects.map((project) => DropdownMenuItem<String?>(
-                      value: project.id,
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 12,
-                            height: 12,
-                            decoration: BoxDecoration(
-                              color: project.color,
-                              shape: BoxShape.circle,
+                    ...projects.map(
+                      (project) => DropdownMenuItem<String?>(
+                        value: project.id,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                color: project.color,
+                                shape: BoxShape.circle,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: AppTheme.space3),
-                          Text(project.name),
-                        ],
+                            const SizedBox(width: AppTheme.space3),
+                            Text(project.name),
+                          ],
+                        ),
                       ),
-                    )),
+                    ),
                   ],
-                  onChanged: (value) => setState(() => _selectedProjectId = value),
+                  onChanged: (value) =>
+                      setState(() => _selectedProjectId = value),
                 ),
               ),
               loading: () => const LinearProgressIndicator(),
               error: (_, __) => const Text('Error loading projects'),
             ),
-            
+
             const SizedBox(height: AppTheme.space6),
-            
+
             // Date Range Filter
             Text(
               'Custom Date Range',
@@ -1424,9 +1548,9 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
                 ],
               ],
             ),
-            
+
             const SizedBox(height: AppTheme.space6),
-            
+
             // Quick Filters
             Text(
               'Quick Filters',
@@ -1481,7 +1605,7 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
       lastDate: DateTime.now().add(const Duration(days: 365)),
       initialDateRange: _selectedDateRange,
     );
-    
+
     if (picked != null) {
       setState(() => _selectedDateRange = picked);
     }
@@ -1492,8 +1616,17 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
     // Set end to end of today to include today's entries
     final end = DateTime(now.year, now.month, now.day, 23, 59, 59);
     // Set start to beginning of the day N days ago
-    final startDate = now.subtract(Duration(days: days - 1)); // -1 to include today
-    final start = DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0);
+    final startDate = now.subtract(
+      Duration(days: days - 1),
+    ); // -1 to include today
+    final start = DateTime(
+      startDate.year,
+      startDate.month,
+      startDate.day,
+      0,
+      0,
+      0,
+    );
     setState(() => _selectedDateRange = DateTimeRange(start: start, end: end));
   }
 
@@ -1513,17 +1646,20 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
 
   void _applyFilters() async {
     // Update the providers for the calendar view
-    ref.read(calendarSelectedProjectProvider.notifier).state = _selectedProjectId;
+    ref.read(calendarSelectedProjectProvider.notifier).state =
+        _selectedProjectId;
     ref.read(calendarDateRangeProvider.notifier).state = _selectedDateRange;
     ref.read(calendarYearProvider.notifier).state = _selectedYear;
-    
+
     // Close the dialog
     Navigator.of(context).pop();
-    
+
     // Get filtered entries for the new screen
     try {
-      final filteredEntries = await ref.read(filteredTimeEntriesProvider.future);
-      
+      final filteredEntries = await ref.read(
+        filteredTimeEntriesProvider.future,
+      );
+
       // Navigate to filtered results screen
       if (context.mounted) {
         Navigator.of(context).push(
@@ -1570,16 +1706,16 @@ class _QuickFilterChip extends StatelessWidget {
 }
 
 // Calendar Filtered List View
-class _CalendarFilteredListView extends ConsumerWidget {
+class CalendarFilteredListView extends ConsumerWidget {
   final ScrollController scrollController;
 
-  const _CalendarFilteredListView({required this.scrollController});
+  const CalendarFilteredListView({super.key, required this.scrollController});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedProject = ref.watch(calendarSelectedProjectProvider);
     final dateRange = ref.watch(calendarDateRangeProvider);
-    
+
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -1600,7 +1736,7 @@ class _CalendarFilteredListView extends ConsumerWidget {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          
+
           // Header
           Padding(
             padding: const EdgeInsets.all(AppTheme.space6),
@@ -1610,10 +1746,7 @@ class _CalendarFilteredListView extends ConsumerWidget {
                 const SizedBox(width: AppTheme.space2),
                 const Text(
                   'Completed Tasks',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 ),
                 const Spacer(),
                 if (selectedProject != null || dateRange != null) ...[
@@ -1635,11 +1768,11 @@ class _CalendarFilteredListView extends ConsumerWidget {
                       ),
                     ),
                   ),
-                ]
+                ],
               ],
             ),
           ),
-          
+
           // Content
           Expanded(
             child: FutureBuilder<List<TimeEntry>>(
@@ -1648,7 +1781,7 @@ class _CalendarFilteredListView extends ConsumerWidget {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                
+
                 if (snapshot.hasError) {
                   return Center(
                     child: Column(
@@ -1662,35 +1795,43 @@ class _CalendarFilteredListView extends ConsumerWidget {
                         const SizedBox(height: AppTheme.space4),
                         Text(
                           'Error loading data',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: AppTheme.errorRed,
-                          ),
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(color: AppTheme.errorRed),
                         ),
                       ],
                     ),
                   );
                 }
-                
+
                 final filteredEntries = snapshot.data ?? [];
-                
+
                 if (filteredEntries.isEmpty) {
-                  return _buildEmptyFilteredState(context, ref, selectedProject, dateRange);
+                  return _buildEmptyFilteredState(
+                    context,
+                    ref,
+                    selectedProject,
+                    dateRange,
+                  );
                 }
-                
+
                 // Group filtered entries by date
                 final entriesByDate = <DateTime, List<TimeEntry>>{};
                 for (final entry in filteredEntries) {
-                  final entryDate = DateTime(entry.startTime.year, entry.startTime.month, entry.startTime.day);
+                  final entryDate = DateTime(
+                    entry.startTime.year,
+                    entry.startTime.month,
+                    entry.startTime.day,
+                  );
                   if (entriesByDate[entryDate] == null) {
                     entriesByDate[entryDate] = [];
                   }
                   entriesByDate[entryDate]!.add(entry);
                 }
-                
+
                 // Sort dates in descending order (most recent first)
                 final sortedDates = entriesByDate.keys.toList()
                   ..sort((a, b) => b.compareTo(a));
-                
+
                 return ListView.builder(
                   controller: scrollController,
                   padding: const EdgeInsets.all(AppTheme.space6),
@@ -1698,11 +1839,8 @@ class _CalendarFilteredListView extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     final date = sortedDates[index];
                     final dayEntries = entriesByDate[date]!;
-                    
-                    return _CalendarDayGroup(
-                      date: date,
-                      entries: dayEntries,
-                    );
+
+                    return _CalendarDayGroup(date: date, entries: dayEntries);
                   },
                 );
               },
@@ -1712,17 +1850,18 @@ class _CalendarFilteredListView extends ConsumerWidget {
       ),
     );
   }
-  
-  Widget _buildEmptyFilteredState(BuildContext context, WidgetRef ref, String? selectedProject, DateTimeRange? dateRange) {
+
+  Widget _buildEmptyFilteredState(
+    BuildContext context,
+    WidgetRef ref,
+    String? selectedProject,
+    DateTimeRange? dateRange,
+  ) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Symbols.search_off,
-            size: 80,
-            color: AppTheme.gray400,
-          ),
+          const Icon(Symbols.search_off, size: 80, color: AppTheme.gray400),
           const SizedBox(height: AppTheme.space6),
           Text(
             'No tasks found',
@@ -1734,9 +1873,9 @@ class _CalendarFilteredListView extends ConsumerWidget {
           const SizedBox(height: AppTheme.space3),
           Text(
             _getEmptyStateMessage(selectedProject, dateRange),
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: AppTheme.gray500,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: AppTheme.gray500),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppTheme.space6),
@@ -1753,8 +1892,11 @@ class _CalendarFilteredListView extends ConsumerWidget {
       ),
     );
   }
-  
-  String _getEmptyStateMessage(String? selectedProject, DateTimeRange? dateRange) {
+
+  String _getEmptyStateMessage(
+    String? selectedProject,
+    DateTimeRange? dateRange,
+  ) {
     if (selectedProject != null && dateRange != null) {
       return 'No completed tasks found for the selected project and date range.\nTry adjusting your filters.';
     } else if (selectedProject != null) {
@@ -1772,29 +1914,26 @@ class _CalendarDayGroup extends ConsumerWidget {
   final DateTime date;
   final List<TimeEntry> entries;
 
-  const _CalendarDayGroup({
-    required this.date,
-    required this.entries,
-  });
+  const _CalendarDayGroup({required this.date, required this.entries});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final workEntries = entries.where((e) => !e.isBreak).toList();
-    
+
     final totalWorkTime = workEntries.fold<Duration>(
       Duration.zero,
       (sum, entry) => sum + entry.duration,
     );
-    
+
     final isToday = _isToday(date);
     final isYesterday = _isYesterday(date);
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.space6),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         border: Border.all(
-          color: isToday 
+          color: isToday
               ? AppTheme.successGreen.withOpacity(0.3)
               : Theme.of(context).dividerColor,
         ),
@@ -1806,11 +1945,11 @@ class _CalendarDayGroup extends ConsumerWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(AppTheme.space4),
             decoration: BoxDecoration(
-              color: isToday 
+              color: isToday
                   ? AppTheme.successGreen.withOpacity(0.1)
                   : Theme.of(context).brightness == Brightness.light
-                      ? AppTheme.gray50
-                      : AppTheme.gray800,
+                  ? AppTheme.gray50
+                  : AppTheme.gray800,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(AppTheme.radiusMd),
                 topRight: Radius.circular(AppTheme.radiusMd),
@@ -1830,10 +1969,11 @@ class _CalendarDayGroup extends ConsumerWidget {
                     children: [
                       Text(
                         _getDateLabel(date, isToday, isYesterday),
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: isToday ? AppTheme.successGreen : null,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: isToday ? AppTheme.successGreen : null,
+                            ),
                       ),
                       Text(
                         TimeFormatter.formatDate(date),
@@ -1880,20 +2020,24 @@ class _CalendarDayGroup extends ConsumerWidget {
               ],
             ),
           ),
-          
+
           // Tasks list
           ...entries.asMap().entries.map((entry) {
             final index = entry.key;
             final task = entry.value;
             final isLast = index == entries.length - 1;
-            
+
             return Container(
               decoration: BoxDecoration(
-                border: !isLast ? Border(
-                  bottom: BorderSide(
-                    color: Theme.of(context).dividerColor.withOpacity(0.5),
-                  ),
-                ) : null,
+                border: !isLast
+                    ? Border(
+                        bottom: BorderSide(
+                          color: Theme.of(
+                            context,
+                          ).dividerColor.withOpacity(0.5),
+                        ),
+                      )
+                    : null,
               ),
               child: _CalendarTaskItem(entry: task),
             );
@@ -1902,23 +2046,35 @@ class _CalendarDayGroup extends ConsumerWidget {
       ),
     );
   }
-  
+
   String _getDateLabel(DateTime date, bool isToday, bool isYesterday) {
     if (isToday) return 'Today';
     if (isYesterday) return 'Yesterday';
-    
-    final weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+    final weekdays = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
     return weekdays[date.weekday - 1];
   }
-  
+
   bool _isToday(DateTime date) {
     final now = DateTime.now();
-    return date.year == now.year && date.month == now.month && date.day == now.day;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
-  
+
   bool _isYesterday(DateTime date) {
     final yesterday = DateTime.now().subtract(const Duration(days: 1));
-    return date.year == yesterday.year && date.month == yesterday.month && date.day == yesterday.day;
+    return date.year == yesterday.year &&
+        date.month == yesterday.month &&
+        date.day == yesterday.day;
   }
 }
 
@@ -1953,7 +2109,7 @@ class _CalendarTaskItem extends ConsumerWidget {
                 ),
               ),
               const SizedBox(width: AppTheme.space4),
-              
+
               // Task details
               Expanded(
                 child: Column(
@@ -1964,15 +2120,16 @@ class _CalendarTaskItem extends ConsumerWidget {
                         Icon(
                           entry.isBreak ? Symbols.coffee : Symbols.work,
                           size: 16,
-                          color: entry.isBreak ? AppTheme.breakBlue : project.color,
+                          color: entry.isBreak
+                              ? AppTheme.breakBlue
+                              : project.color,
                         ),
                         const SizedBox(width: AppTheme.space2),
                         Expanded(
                           child: Text(
                             entry.taskName,
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(fontWeight: FontWeight.w600),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -1993,10 +2150,11 @@ class _CalendarTaskItem extends ConsumerWidget {
                         const SizedBox(width: AppTheme.space2),
                         Text(
                           project.name,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: project.color,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: project.color,
+                                fontWeight: FontWeight.w500,
+                              ),
                         ),
                         const Spacer(),
                         Icon(
@@ -2007,16 +2165,15 @@ class _CalendarTaskItem extends ConsumerWidget {
                         const SizedBox(width: AppTheme.space1),
                         Text(
                           '${TimeFormatter.formatTime(entry.startTime)} - ${TimeFormatter.formatTime(entry.effectiveEndTime)}',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppTheme.gray600,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppTheme.gray600),
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-              
+
               // Duration badge
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -2024,7 +2181,8 @@ class _CalendarTaskItem extends ConsumerWidget {
                   vertical: AppTheme.space2,
                 ),
                 decoration: BoxDecoration(
-                  color: (entry.isBreak ? AppTheme.breakBlue : project.color).withOpacity(0.1),
+                  color: (entry.isBreak ? AppTheme.breakBlue : project.color)
+                      .withOpacity(0.1),
                   borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 ),
                 child: Text(
@@ -2047,7 +2205,9 @@ class _CalendarTaskItem extends ConsumerWidget {
       error: (_, __) => Container(
         height: 56,
         padding: const EdgeInsets.all(AppTheme.space4),
-        child: Center(child: Text(AppLocalizations.of(context).errorLoadingProject)),
+        child: Center(
+          child: Text(AppLocalizations.of(context).errorLoadingProject),
+        ),
       ),
     );
   }

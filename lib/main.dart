@@ -8,6 +8,7 @@ import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
 import 'features/settings/providers/settings_provider.dart';
 import 'presentation/screens/main_screen.dart';
+import 'presentation/screens/onboarding_screen.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'features/system_tray/system_tray_service.dart';
 import 'features/notifications/notification_service.dart';
@@ -15,10 +16,10 @@ import 'features/notifications/providers/notification_permission_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize notifications
   await NotificationService.initialize();
-  
+
   // Initialize system tray for desktop platforms
   if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
     try {
@@ -29,13 +30,9 @@ void main() async {
       debugPrint('Platform: ${Platform.operatingSystem}');
     }
   }
-  
+
   runApp(
-    const ProviderScope(
-      child: _EagerInitialization(
-        child: TrackichApp(),
-      ),
-    ),
+    const ProviderScope(child: _EagerInitialization(child: TrackichApp())),
   );
 }
 
@@ -50,13 +47,26 @@ class _EagerInitialization extends ConsumerWidget {
     // Initialize the notification permission provider by watching it
     // This ensures it's created and ready to use throughout the app
     ref.watch(notificationPermissionProvider);
-    
+
     // Trigger initial permission check after the provider is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(notificationPermissionProvider.notifier).refreshPermissionStatus();
+      ref
+          .read(notificationPermissionProvider.notifier)
+          .refreshPermissionStatus();
     });
-    
+
     return child;
+  }
+}
+
+class AppRouter extends ConsumerWidget {
+  const AppRouter({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final onboardingCompleted = ref.watch(onboardingCompletedProvider);
+
+    return onboardingCompleted ? const MainScreen() : const OnboardingScreen();
   }
 }
 
@@ -67,15 +77,15 @@ class TrackichApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
     final language = ref.watch(languageProvider);
-    
+
     return MaterialApp(
       title: AppConstants.appName,
-      
+
       // Theme Configuration
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
-      
+
       // Localization Configuration
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -88,19 +98,17 @@ class TrackichApp extends ConsumerWidget {
         Locale('ru'), // Russian
       ],
       locale: Locale(language),
-      
+
       // Remove debug banner
       debugShowCheckedModeBanner: false,
-      
-      // Home screen
-      home: const MainScreen(),
-      
+
+      // Home screen - show onboarding for new users
+      home: const AppRouter(),
+
       // Route configuration for navigation
       onGenerateRoute: (settings) {
         // TODO: Implement proper routing when needed
-        return MaterialPageRoute(
-          builder: (context) => const MainScreen(),
-        );
+        return MaterialPageRoute(builder: (context) => const MainScreen());
       },
     );
   }

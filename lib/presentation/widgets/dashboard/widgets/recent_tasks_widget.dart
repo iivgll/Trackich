@@ -15,19 +15,20 @@ part 'recent_tasks_widget.g.dart';
 
 // Provider for recent time entries with project information
 @riverpod
-Future<List<TimeEntryWithProject>> recentTimeEntries(RecentTimeEntriesRef ref) async {
+Future<List<TimeEntryWithProject>> recentTimeEntries(
+  RecentTimeEntriesRef ref,
+) async {
   final storage = ref.read(storageServiceProvider);
   final projects = await ref.watch(projectsProvider.future);
   final entries = await storage.getTimeEntries();
-  
+
   // Get last 10 entries, excluding breaks
-  final workEntries = entries
-      .where((entry) => !entry.isBreak && entry.isCompleted)
-      .toList()
-    ..sort((a, b) => b.effectiveEndTime.compareTo(a.effectiveEndTime));
-  
+  final workEntries =
+      entries.where((entry) => !entry.isBreak && entry.isCompleted).toList()
+        ..sort((a, b) => b.effectiveEndTime.compareTo(a.effectiveEndTime));
+
   final recentEntries = workEntries.take(10).toList();
-  
+
   // Combine with project data
   final result = <TimeEntryWithProject>[];
   for (final entry in recentEntries) {
@@ -38,14 +39,14 @@ Future<List<TimeEntryWithProject>> recentTimeEntries(RecentTimeEntriesRef ref) a
       // Skip entries with deleted projects
     }
   }
-  
+
   return result;
 }
 
 class TimeEntryWithProject {
   final TimeEntry timeEntry;
   final project;
-  
+
   TimeEntryWithProject(this.timeEntry, this.project);
 }
 
@@ -55,15 +56,15 @@ class RecentTasksWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final recentTasksAsync = ref.watch(recentTimeEntriesProvider);
-    final l10n = AppLocalizations.of(context);
+    AppLocalizations.of(context);
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.light 
-            ? AppTheme.calmWhite 
+        color: Theme.of(context).brightness == Brightness.light
+            ? AppTheme.calmWhite
             : AppTheme.falloutSurface,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Theme.of(context).brightness == Brightness.light 
+        border: Theme.of(context).brightness == Brightness.light
             ? Border.all(color: AppTheme.calmLightBorder, width: 1)
             : null,
       ),
@@ -75,14 +76,10 @@ class RecentTasksWidget extends ConsumerWidget {
             // Header
             Row(
               children: [
-                const Icon(
-                  Symbols.history,
-                  size: 20,
-                  color: AppTheme.calmBlue,
-                ),
+                const Icon(Symbols.history, size: 20, color: AppTheme.calmBlue),
                 const SizedBox(width: AppTheme.space2),
                 Text(
-                  'Recent Activity',
+                  AppLocalizations.of(context).recentActivity,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const Spacer(),
@@ -90,9 +87,18 @@ class RecentTasksWidget extends ConsumerWidget {
                   value: 'today',
                   underline: const SizedBox(),
                   items: [
-                    DropdownMenuItem(value: 'today', child: Text(AppLocalizations.of(context).today)),
-                    DropdownMenuItem(value: 'week', child: Text(AppLocalizations.of(context).thisWeek)),
-                    DropdownMenuItem(value: 'all', child: Text(AppLocalizations.of(context).allTime)),
+                    DropdownMenuItem(
+                      value: 'today',
+                      child: Text(AppLocalizations.of(context).today),
+                    ),
+                    DropdownMenuItem(
+                      value: 'week',
+                      child: Text(AppLocalizations.of(context).thisWeek),
+                    ),
+                    DropdownMenuItem(
+                      value: 'all',
+                      child: Text(AppLocalizations.of(context).allTime),
+                    ),
                   ],
                   onChanged: (value) {
                     // TODO: Filter tasks based on selected period
@@ -107,11 +113,12 @@ class RecentTasksWidget extends ConsumerWidget {
             SizedBox(
               height: 200, // Fixed height to prevent overflow issues
               child: recentTasksAsync.when(
-                data: (recentTasks) => recentTasks.isEmpty 
+                data: (recentTasks) => recentTasks.isEmpty
                     ? _buildEmptyState(context)
                     : ListView.separated(
                         itemCount: recentTasks.length,
-                        separatorBuilder: (context, index) => const Divider(height: 1),
+                        separatorBuilder: (context, index) =>
+                            const Divider(height: 1),
                         itemBuilder: (context, index) {
                           final entryWithProject = recentTasks[index];
                           return _TaskItem(
@@ -123,8 +130,10 @@ class RecentTasksWidget extends ConsumerWidget {
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, _) => Center(
                   child: Text(
-                    'Error loading recent tasks',
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    'Error loading recent tasks', // TODO: Add l10n.errorLoadingRecentTasks
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                   ),
                 ),
               ),
@@ -140,24 +149,20 @@ class RecentTasksWidget extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Symbols.task,
-            size: 48,
-            color: AppTheme.gray400,
-          ),
+          Icon(Symbols.task, size: 48, color: AppTheme.gray400),
           const SizedBox(height: AppTheme.space3),
           Text(
-            'No recent tasks',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: AppTheme.gray500,
-            ),
+            'No recent tasks', // TODO: Add l10n.noRecentTasks
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: AppTheme.gray500),
           ),
           const SizedBox(height: AppTheme.space1),
           Text(
-            'Start a timer to see your tasks here',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.gray400,
-            ),
+            'Start a timer to see your tasks here', // TODO: Add l10n.startTimerToSeeTasks
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppTheme.gray400),
           ),
         ],
       ),
@@ -168,7 +173,8 @@ class RecentTasksWidget extends ConsumerWidget {
     // TODO: Show task details or edit dialog
     showDialog(
       context: context,
-      builder: (context) => _TaskDetailsDialog(entryWithProject: entryWithProject),
+      builder: (context) =>
+          _TaskDetailsDialog(entryWithProject: entryWithProject),
     );
   }
 }
@@ -177,10 +183,7 @@ class _TaskItem extends StatelessWidget {
   final TimeEntryWithProject entryWithProject;
   final VoidCallback onTap;
 
-  const _TaskItem({
-    required this.entryWithProject,
-    required this.onTap,
-  });
+  const _TaskItem({required this.entryWithProject, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -203,7 +206,7 @@ class _TaskItem extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppTheme.space3),
-            
+
             // Task details
             Expanded(
               child: Column(
@@ -234,7 +237,9 @@ class _TaskItem extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        TimeFormatter.formatTimeAgo(entryWithProject.timeEntry.effectiveEndTime),
+                        TimeFormatter.formatTimeAgo(
+                          entryWithProject.timeEntry.effectiveEndTime,
+                        ),
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: AppTheme.gray500,
                         ),
@@ -244,23 +249,21 @@ class _TaskItem extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             // Duration
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  TimeFormatter.formatDurationWords(entryWithProject.timeEntry.duration),
+                  TimeFormatter.formatDurationWords(
+                    entryWithProject.timeEntry.duration,
+                  ),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppTheme.gray700,
                   ),
                 ),
-                Icon(
-                  Symbols.edit,
-                  size: 16,
-                  color: AppTheme.gray400,
-                ),
+                Icon(Symbols.edit, size: 16, color: AppTheme.gray400),
               ],
             ),
           ],
@@ -302,26 +305,30 @@ class _TaskDetailsDialog extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _DetailRow(
-            label: 'Project',
+            label: AppLocalizations.of(context).projects,
             value: entryWithProject.project.name,
             icon: Symbols.folder,
           ),
           const SizedBox(height: AppTheme.space3),
           _DetailRow(
-            label: 'Duration',
-            value: TimeFormatter.formatDurationWords(entryWithProject.timeEntry.duration),
+            label: 'Duration', // TODO: Add l10n.duration
+            value: TimeFormatter.formatDurationWords(
+              entryWithProject.timeEntry.duration,
+            ),
             icon: Symbols.timer,
           ),
           const SizedBox(height: AppTheme.space3),
           _DetailRow(
-            label: 'Completed',
-            value: TimeFormatter.formatDateTime(entryWithProject.timeEntry.effectiveEndTime),
+            label: 'Completed', // TODO: Add l10n.completed
+            value: TimeFormatter.formatDateTime(
+              entryWithProject.timeEntry.effectiveEndTime,
+            ),
             icon: Symbols.schedule,
           ),
           if (entryWithProject.timeEntry.description.isNotEmpty) ...[
             const SizedBox(height: AppTheme.space3),
             _DetailRow(
-              label: 'Description',
+              label: 'Description', // TODO: Add l10n.description
               value: entryWithProject.timeEntry.description,
               icon: Symbols.description,
             ),
@@ -345,23 +352,25 @@ class _TaskDetailsDialog extends ConsumerWidget {
   }
 
   /// Start a similar task with timer conflict handling
-  Future<void> _startSimilarTask(WidgetRef ref, TimeEntryWithProject entryWithProject) async {
+  Future<void> _startSimilarTask(
+    WidgetRef ref,
+    TimeEntryWithProject entryWithProject,
+  ) async {
     final timer = ref.read(timerProvider.notifier);
     final currentTimer = ref.read(timerProvider);
-    
+
     try {
       // Check if there's already a timer running
       if (currentTimer.isActive) {
         // Stop the current timer first
         await timer.stop();
       }
-      
+
       // Start the new timer with the same project and task name
       await timer.start(
         projectId: entryWithProject.timeEntry.projectId,
         taskName: entryWithProject.timeEntry.taskName,
       );
-      
     } catch (e) {
       // Handle any errors that might occur
       debugPrint('Error starting similar task: $e');
@@ -384,11 +393,7 @@ class _DetailRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(
-          icon,
-          size: 16,
-          color: AppTheme.gray600,
-        ),
+        Icon(icon, size: 16, color: AppTheme.gray600),
         const SizedBox(width: AppTheme.space2),
         Text(
           '$label: ',
@@ -398,10 +403,7 @@ class _DetailRow extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: Text(
-            value,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          child: Text(value, style: Theme.of(context).textTheme.bodyMedium),
         ),
       ],
     );

@@ -66,9 +66,9 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                 const SizedBox(width: AppTheme.space2),
                 Text(
                   'Focus Timer',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const Spacer(),
                 if (timer.isActive)
@@ -103,22 +103,25 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                         ),
                         const SizedBox(width: AppTheme.space1),
                         Text(
-                          timer.state == TimerState.running ? 'Running' : 'Paused',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: timer.state == TimerState.running
-                                ? AppTheme.successGreen
-                                : AppTheme.getWarningColor(context),
-                            fontWeight: FontWeight.w600,
-                          ),
+                          timer.state == TimerState.running
+                              ? 'Running'
+                              : 'Paused',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: timer.state == TimerState.running
+                                    ? AppTheme.successGreen
+                                    : AppTheme.getWarningColor(context),
+                                fontWeight: FontWeight.w600,
+                              ),
                         ),
                       ],
                     ),
                   ),
               ],
             ),
-            
+
             const SizedBox(height: AppTheme.space6),
-            
+
             // Timer Display
             Center(
               child: Container(
@@ -130,11 +133,14 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                   borderRadius: BorderRadius.circular(AppTheme.radiusXLarge),
                   border: timer.isActive && timer.state == TimerState.running
                       ? Border.all(
-                          color: AppTheme.getPrimaryColor(context).withValues(alpha: 0.3),
+                          color: AppTheme.getPrimaryColor(
+                            context,
+                          ).withValues(alpha: 0.3),
                           width: 1.0,
                         )
                       : Border.all(
-                          color: Theme.of(context).brightness == Brightness.light
+                          color:
+                              Theme.of(context).brightness == Brightness.light
                               ? AppTheme.lightSeparator
                               : AppTheme.darkSeparator,
                           width: 0.33,
@@ -145,7 +151,8 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                     AnimatedDefaultTextStyle(
                       duration: AppTheme.animationMedium,
                       style: AppTheme.timerLarge(context).copyWith(
-                        color: timer.isActive && timer.state == TimerState.running
+                        color:
+                            timer.isActive && timer.state == TimerState.running
                             ? AppTheme.getAccentColor(context)
                             : Theme.of(context).textTheme.displayLarge?.color,
                       ),
@@ -161,18 +168,25 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                           vertical: AppTheme.space1,
                         ),
                         decoration: BoxDecoration(
-                          color: AppTheme.getAccentColor(context).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+                          color: AppTheme.getAccentColor(
+                            context,
+                          ).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.radiusFull,
+                          ),
                           border: Border.all(
-                            color: AppTheme.getAccentColor(context).withOpacity(0.3),
+                            color: AppTheme.getAccentColor(
+                              context,
+                            ).withOpacity(0.3),
                           ),
                         ),
                         child: Text(
                           'Previous: ${TimeFormatter.formatDuration(timer.totalAccumulatedTime)} + Session: ${TimeFormatter.formatDuration(timer.elapsed)}',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppTheme.getAccentColor(context),
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: AppTheme.getAccentColor(context),
+                                fontWeight: FontWeight.w500,
+                              ),
                         ),
                       ),
                     ],
@@ -180,22 +194,22 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: AppTheme.space6),
-            
+
             // Project Selector
             _buildProjectSelector(l10n, recentProjects),
-            
+
             const SizedBox(height: AppTheme.space4),
-            
+
             // Task Input
             _buildTaskInput(l10n),
-            
+
             // Task continuation indicator
             _buildTaskContinuationIndicator(),
-            
+
             const SizedBox(height: AppTheme.space6),
-            
+
             // Control Buttons
             _buildControlButtons(l10n, timer),
           ],
@@ -204,21 +218,21 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
     );
   }
 
-  Widget _buildProjectSelector(AppLocalizations l10n, AsyncValue<List<Project>> recentProjects) {
+  Widget _buildProjectSelector(
+    AppLocalizations l10n,
+    AsyncValue<List<Project>> recentProjects,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Project',
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
+        Text(l10n.projects, style: Theme.of(context).textTheme.labelLarge),
         const SizedBox(height: AppTheme.space2),
         recentProjects.when(
           data: (projects) {
             if (projects.isEmpty) {
               return _buildEmptyProjectsState(l10n);
             }
-            
+
             return Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: AppTheme.space4),
@@ -251,7 +265,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                           const SizedBox(width: AppTheme.space3),
                           Expanded(
                             child: Text(
-                              'Break',
+                              'Break', // TODO: Add l10n.breakTime
                               style: TextStyle(
                                 color: AppTheme.getSecondaryColor(context),
                                 fontWeight: FontWeight.w500,
@@ -262,28 +276,30 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                         ],
                       ),
                     ),
-                  ...projects.map((project) => DropdownMenuItem<String>(
-                    value: project.id,
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 12,
-                          height: 12,
-                          decoration: BoxDecoration(
-                            color: project.color,
-                            shape: BoxShape.circle,
+                  ...projects.map(
+                    (project) => DropdownMenuItem<String>(
+                      value: project.id,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              color: project.color,
+                              shape: BoxShape.circle,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: AppTheme.space3),
-                        Expanded(
-                          child: Text(
-                            project.name,
-                            overflow: TextOverflow.ellipsis,
+                          const SizedBox(width: AppTheme.space3),
+                          Expanded(
+                            child: Text(
+                              project.name,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  )),
+                  ),
                   DropdownMenuItem(
                     value: 'create_new',
                     child: Row(
@@ -327,7 +343,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
           },
           loading: () => const LinearProgressIndicator(),
           error: (_, __) => Text(
-            'Error loading projects',
+            'Error loading projects', // TODO: Add l10n.errorLoadingProjects
             style: TextStyle(color: Theme.of(context).colorScheme.error),
           ),
         ),
@@ -339,10 +355,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Task',
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
+        Text(l10n.task, style: Theme.of(context).textTheme.labelLarge),
         const SizedBox(height: AppTheme.space2),
         TextFormField(
           controller: _taskController,
@@ -382,7 +395,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
             ),
           ),
         ),
-        
+
         if (timer.canStop) ...[
           const SizedBox(width: AppTheme.space3),
           // Stop Button
@@ -399,7 +412,6 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
             ),
           ),
         ],
-      
       ],
     );
   }
@@ -432,7 +444,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
     } else if (timer.canPause) {
       return l10n.pauseTimer;
     } else if (timer.canResume) {
-      return 'Resume Timer';
+      return 'Resume Timer'; // TODO: Add l10n.resumeTimer
     }
     return l10n.startTimer;
   }
@@ -454,11 +466,13 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
 
   void _startTimer() {
     if (!_canStartTimer()) return;
-    
-    ref.read(timerProvider.notifier).start(
-      projectId: _selectedProjectId!,
-      taskName: _taskController.text.trim(),
-    );
+
+    ref
+        .read(timerProvider.notifier)
+        .start(
+          projectId: _selectedProjectId!,
+          taskName: _taskController.text.trim(),
+        );
   }
 
   void _pauseTimer() {
@@ -473,24 +487,22 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
     ref.read(timerProvider.notifier).stop();
   }
 
-  void _startBreak() {
-    ref.read(timerProvider.notifier).startBreak();
-  }
-
   Widget _buildTaskContinuationIndicator() {
     if (_selectedProjectId == null || _taskController.text.trim().isEmpty) {
       return const SizedBox.shrink();
     }
 
     return FutureBuilder<bool>(
-      future: ref.read(timerProvider.notifier).taskExists(_selectedProjectId!, _taskController.text.trim()),
+      future: ref
+          .read(timerProvider.notifier)
+          .taskExists(_selectedProjectId!, _taskController.text.trim()),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return const SizedBox.shrink();
-        
+
         final taskExists = snapshot.data!;
-        
+
         if (!taskExists) return const SizedBox.shrink();
-        
+
         return Container(
           margin: const EdgeInsets.only(top: AppTheme.space3),
           padding: const EdgeInsets.all(AppTheme.space3),
@@ -511,7 +523,12 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
               const SizedBox(width: AppTheme.space2),
               Expanded(
                 child: FutureBuilder<Duration>(
-                  future: ref.read(timerProvider.notifier).getTaskAccumulatedTime(_selectedProjectId!, _taskController.text.trim()),
+                  future: ref
+                      .read(timerProvider.notifier)
+                      .getTaskAccumulatedTime(
+                        _selectedProjectId!,
+                        _taskController.text.trim(),
+                      ),
                   builder: (context, timeSnapshot) {
                     if (!timeSnapshot.hasData) {
                       return Text(
@@ -522,7 +539,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                         ),
                       );
                     }
-                    
+
                     return Text(
                       'Continue task - Previous time: ${TimeFormatter.formatDurationWords(timeSnapshot.data!)}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -552,11 +569,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
       ),
       child: Column(
         children: [
-          const Icon(
-            Symbols.folder_off,
-            size: 48,
-            color: AppTheme.gray400,
-          ),
+          const Icon(Symbols.folder_off, size: 48, color: AppTheme.gray400),
           const SizedBox(height: AppTheme.space3),
           Text(
             'No Projects Yet',
@@ -568,9 +581,9 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
           const SizedBox(height: AppTheme.space2),
           Text(
             'Create your first project to start tracking time',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.gray500,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppTheme.gray500),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppTheme.space4),
@@ -597,7 +610,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
       context: context,
       builder: (context) => const CreateProjectDialog(),
     );
-    
+
     if (result == true) {
       // Refresh projects and auto-select the newly created project
       final projects = await ref.refresh(recentProjectsProvider.future);
@@ -613,7 +626,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
   /// Synchronize UI fields with current timer state
   void _syncUIWithTimerState() {
     final timer = ref.read(timerProvider);
-    
+
     // Update UI fields to match timer state
     if (mounted) {
       setState(() {
@@ -621,12 +634,12 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
         if (_selectedProjectId != timer.projectId) {
           _selectedProjectId = timer.projectId;
         }
-        
+
         // Update task name if it changed and field is not currently focused
         // Only update if the field is not focused to avoid interrupting user typing
         final focusNode = FocusScope.of(context);
         final taskFieldHasFocus = focusNode.focusedChild != null;
-        
+
         if (_taskController.text != timer.taskName && !taskFieldHasFocus) {
           _taskController.text = timer.taskName;
           // Move cursor to end of text

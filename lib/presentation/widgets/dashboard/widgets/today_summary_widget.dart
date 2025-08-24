@@ -42,12 +42,10 @@ class TodaySummaryWidget extends ConsumerWidget {
 
             todaySummaryAsync.when(
               data: (summary) => _buildSummaryContent(context, summary),
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
+              loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, stack) => Center(
                 child: Text(
-                  'Error loading today\'s activity',
+                  'Error loading today\'s activity', // TODO: Add l10n.errorLoadingTodaysActivity
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ),
@@ -58,12 +56,16 @@ class TodaySummaryWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildSummaryContent(BuildContext context, Map<String, dynamic> summary) {
+  Widget _buildSummaryContent(
+    BuildContext context,
+    Map<String, dynamic> summary,
+  ) {
+    AppLocalizations.of(context);
     final workHours = summary['workHours'] as double;
-    final totalHours = summary['totalHours'] as double;
     final breakHours = summary['breakHours'] as double;
     final completedTasks = summary['completedTasks'] as int;
-    final hoursByProject = summary['hoursByProject'] as Map<String, Map<String, dynamic>>;
+    final hoursByProject =
+        summary['hoursByProject'] as Map<String, Map<String, dynamic>>;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,16 +76,16 @@ class TodaySummaryWidget extends ConsumerWidget {
             children: [
               Text(
                 TimeFormatter.formatHours(workHours),
-                style: AppTheme.timerMedium(context).copyWith(
-                  color: AppTheme.getPrimaryColor(context),
-                ),
+                style: AppTheme.timerMedium(
+                  context,
+                ).copyWith(color: AppTheme.getPrimaryColor(context)),
               ),
               const SizedBox(height: AppTheme.space1),
               Text(
-                'Work Time Today',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.gray600,
-                ),
+                'Work Time Today', // TODO: Add l10n.workTimeToday
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: AppTheme.gray600),
               ),
             ],
           ),
@@ -93,11 +95,11 @@ class TodaySummaryWidget extends ConsumerWidget {
         // Project Breakdown
         if (hoursByProject.isNotEmpty) ...[
           Text(
-            'Project Breakdown',
+            'Project Breakdown', // TODO: Add l10n.projectBreakdown
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: AppTheme.space4),
-          
+
           for (final entry in hoursByProject.entries) ...[
             Builder(
               builder: (context) {
@@ -106,7 +108,7 @@ class TodaySummaryWidget extends ConsumerWidget {
                 final projectColor = projectData['color'] as Color;
                 final projectHours = projectData['hours'] as double;
                 final percentage = projectData['percentage'] as double;
-                
+
                 return Padding(
                   padding: const EdgeInsets.only(bottom: AppTheme.space3),
                   child: Column(
@@ -131,9 +133,8 @@ class TodaySummaryWidget extends ConsumerWidget {
                           ),
                           Text(
                             TimeFormatter.formatHours(projectHours),
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
@@ -150,7 +151,7 @@ class TodaySummaryWidget extends ConsumerWidget {
               },
             ),
           ],
-          
+
           const SizedBox(height: AppTheme.space4),
         ],
 
@@ -160,18 +161,9 @@ class TodaySummaryWidget extends ConsumerWidget {
             Expanded(
               child: _StatItem(
                 icon: Symbols.task_alt,
-                label: 'Tasks',
+                label: 'Tasks', // TODO: Add l10n.tasks
                 value: completedTasks.toString(),
                 color: AppTheme.successGreen,
-              ),
-            ),
-            const SizedBox(width: AppTheme.space4),
-            Expanded(
-              child: _StatItem(
-                icon: Symbols.coffee,
-                label: 'Breaks',
-                value: TimeFormatter.formatHours(breakHours),
-                color: AppTheme.getSecondaryColor(context),
               ),
             ),
           ],
@@ -204,11 +196,7 @@ class _StatItem extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(
-            icon,
-            size: 20,
-            color: color,
-          ),
+          Icon(icon, size: 20, color: color),
           const SizedBox(height: AppTheme.space2),
           Text(
             value,
@@ -219,9 +207,9 @@ class _StatItem extends StatelessWidget {
           ),
           Text(
             label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppTheme.gray600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppTheme.gray600),
           ),
         ],
       ),

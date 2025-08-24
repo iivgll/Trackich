@@ -132,9 +132,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get takeBreak => 'Сделайте перерыв';
 
   @override
-  String breakTime(String breakType) {
-    return 'Время для $breakType перерыва!';
-  }
+  String get breakTime => 'Время перерывов';
 
   @override
   String workCompleted(double hours) {
@@ -348,4 +346,174 @@ class AppLocalizationsRu extends AppLocalizations {
   String projectSelectedMessage(String projectName) {
     return 'Выбран проект $projectName. Введите задачу для запуска таймера.';
   }
+
+  @override
+  String get appName => 'Трэкич';
+
+  @override
+  String get noDataForPeriod => 'Нет данных за этот период';
+
+  @override
+  String get startTrackingMessage =>
+      'Начните отслеживать время, чтобы увидеть аналитику';
+
+  @override
+  String get keyMetrics => 'Ключевые метрики';
+
+  @override
+  String get totalWorkTime => 'Общее время работы';
+
+  @override
+  String get tasksCompleted => 'Задач выполнено';
+
+  @override
+  String get projectBreakdown => 'Разбивка по проектам';
+
+  @override
+  String get dailyActivity => 'Дневная активность';
+
+  @override
+  String get enableAppNotifications => 'Включить уведомления приложения';
+
+  @override
+  String get notificationPermissionsRequired =>
+      'Требуются разрешения на уведомления';
+
+  @override
+  String get notificationsEnabled => 'Уведомления включены';
+
+  @override
+  String get notificationsEnabledDescription =>
+      'Системные уведомления работают корректно';
+
+  @override
+  String get refreshStatus => 'Обновить статус';
+
+  @override
+  String get notificationsDisabled => 'Уведомления отключены';
+
+  @override
+  String get notificationsDisabledDescription =>
+      'Включите в настройках системы для получения уведомлений';
+
+  @override
+  String get permissionRequired => 'Требуется разрешение';
+
+  @override
+  String get permissionRequiredDescription =>
+      'Нажмите для запроса разрешений на уведомления';
+
+  @override
+  String get morning => 'утром';
+
+  @override
+  String get afternoon => 'днём';
+
+  @override
+  String get evening => 'вечером';
+
+  @override
+  String get yesterday => 'Вчера';
+
+  @override
+  String get errorLoadingTasks => 'Ошибка загрузки задач';
+
+  @override
+  String get recentActivity => 'Недавняя активность';
+
+  @override
+  String get noTasksToday => 'Нет задач на сегодня';
+
+  @override
+  String get startTimerToTrack => 'Запустите таймер для отслеживания работы';
+
+  @override
+  String get noTasksThisWeek => 'Нет задач на этой неделе';
+
+  @override
+  String get recentActivityWillAppear =>
+      'Ваша недавняя активность появится здесь';
+
+  @override
+  String get noTasksThisMonth => 'Нет задач в этом месяце';
+
+  @override
+  String get monthlyActivityWillAppear =>
+      'Ваша месячная активность появится здесь';
+
+  @override
+  String get noTasksFound => 'Задачи не найдены';
+
+  @override
+  String get startTrackingToSeeActivity =>
+      'Начните отслеживать время, чтобы увидеть активность';
+
+  @override
+  String get totalTime => 'Общее время';
+
+  @override
+  String get sessions => 'Сессии';
+
+  @override
+  String get lastActivity => 'Последняя активность';
+
+  @override
+  String get averagePerSession => 'Среднее за сессию';
+
+  @override
+  String get goodMorning => 'Доброе утро';
+
+  @override
+  String get goodAfternoon => 'Добрый день';
+
+  @override
+  String get goodEvening => 'Добрый вечер';
+
+  @override
+  String get timeForBreakTitle => 'Время для перерыва!';
+
+  @override
+  String breakReminderBody(String projectText, int workMinutes) {
+    return 'Вы работали$projectText уже $workMinutes мин. Рассмотрите возможность сделать короткий перерыв для поддержания продуктивности.';
+  }
+
+  @override
+  String get backToWorkTitle => 'Перерыв закончен!';
+
+  @override
+  String workReminderBody(int breakMinutes) {
+    return 'Вы на перерыве уже $breakMinutes минут. Готовы вернуться к работе?';
+  }
+
+  @override
+  String get taskCompletedTitle => 'Задача выполнена!';
+
+  @override
+  String taskCompletedBody(String taskName, String projectName, int minutes) {
+    return 'Отличная работа! Вы выполнили \"$taskName\" в $projectName за $minutes мин сосредоточенной работы.';
+  }
+
+  @override
+  String get testNotificationTitle => 'Тестовое уведомление';
+
+  @override
+  String get testNotificationBody =>
+      'Это тестовое уведомление для проверки правильности работы уведомлений.';
+
+  @override
+  String get skip => 'Пропустить';
+
+  @override
+  String get notificationPermissionTitle => 'Включить уведомления';
+
+  @override
+  String get notificationPermissionBody =>
+      'Получайте напоминания о перерывах и оставайтесь продуктивными с своевременными уведомлениями. Вы можете изменить эту настройку позже в Настройках.';
+
+  @override
+  String get notificationPermissionDenied =>
+      'Разрешение на уведомления отклонено. Вы можете включить их позже в Настройках.';
+
+  @override
+  String get errorOccurred => 'Произошла ошибка. Попробуйте еще раз.';
 }

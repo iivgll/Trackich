@@ -23,26 +23,32 @@ class FilteredResultsScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<FilteredResultsScreen> createState() => _FilteredResultsScreenState();
+  ConsumerState<FilteredResultsScreen> createState() =>
+      _FilteredResultsScreenState();
 }
 
 class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
   @override
   Widget build(BuildContext context) {
     final projectsAsync = ref.watch(projectsProvider);
-    
+
     // Group entries by date
     final entriesByDate = <DateTime, List<TimeEntry>>{};
     for (final entry in widget.filteredEntries) {
-      final date = DateTime(entry.startTime.year, entry.startTime.month, entry.startTime.day);
+      final date = DateTime(
+        entry.startTime.year,
+        entry.startTime.month,
+        entry.startTime.day,
+      );
       entriesByDate.putIfAbsent(date, () => []).add(entry);
     }
-    
-    final sortedDates = entriesByDate.keys.toList()..sort((a, b) => b.compareTo(a));
-    
+
+    final sortedDates = entriesByDate.keys.toList()
+      ..sort((a, b) => b.compareTo(a));
+
     return Scaffold(
-      backgroundColor: Theme.of(context).brightness == Brightness.light 
-          ? AppTheme.gray50 
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? AppTheme.gray50
           : AppTheme.gray900,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).filteredResults),
@@ -59,7 +65,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
         children: [
           // Summary header
           _buildSummaryHeader(),
-          
+
           // Results list
           Expanded(
             child: widget.filteredEntries.isEmpty
@@ -83,7 +89,8 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
     final totalEntries = widget.filteredEntries.length;
     final totalDuration = widget.filteredEntries.fold<Duration>(
       Duration.zero,
-      (sum, entry) => sum + (entry.endTime?.difference(entry.startTime) ?? Duration.zero),
+      (sum, entry) =>
+          sum + (entry.endTime?.difference(entry.startTime) ?? Duration.zero),
     );
 
     String filterInfo = '';
@@ -95,8 +102,8 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
           final project = projectsAsync.value!.firstWhere(
             (p) => p.id == widget.projectId,
             orElse: () => Project(
-              id: widget.projectId!, 
-              name: 'Unknown', 
+              id: widget.projectId!,
+              name: 'Unknown',
               color: const Color(0xFF007AFF),
               description: '',
               createdAt: DateTime.now(),
@@ -108,7 +115,9 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
       if (widget.dateRange != null) {
         final start = widget.dateRange!.start;
         final end = widget.dateRange!.end;
-        parts.add('${start.day}/${start.month}/${start.year} - ${end.day}/${end.month}/${end.year}');
+        parts.add(
+          '${start.day}/${start.month}/${start.year} - ${end.day}/${end.month}/${end.year}',
+        );
       }
       filterInfo = parts.join(' • ');
     }
@@ -119,10 +128,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).dividerColor,
-            width: 1,
-          ),
+          bottom: BorderSide(color: Theme.of(context).dividerColor, width: 1),
         ),
       ),
       child: Column(
@@ -160,8 +166,13 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
                 child: _SummaryCard(
                   icon: Symbols.speed,
                   label: 'Avg per Task',
-                  value: totalEntries > 0 
-                      ? TimeFormatter.formatDuration(Duration(milliseconds: totalDuration.inMilliseconds ~/ totalEntries))
+                  value: totalEntries > 0
+                      ? TimeFormatter.formatDuration(
+                          Duration(
+                            milliseconds:
+                                totalDuration.inMilliseconds ~/ totalEntries,
+                          ),
+                        )
                       : '0m',
                 ),
               ),
@@ -201,18 +212,25 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
     );
   }
 
-  Widget _buildDateGroup(DateTime date, List<TimeEntry> entries, AsyncValue<List<Project>> projectsAsync) {
+  Widget _buildDateGroup(
+    DateTime date,
+    List<TimeEntry> entries,
+    AsyncValue<List<Project>> projectsAsync,
+  ) {
     // Group entries by project + task combination
     final groupedEntries = <String, List<TimeEntry>>{};
     for (final entry in entries) {
-      final taskName = entry.taskName.trim().isNotEmpty ? entry.taskName.trim() : 'Untitled Task';
+      final taskName = entry.taskName.trim().isNotEmpty
+          ? entry.taskName.trim()
+          : 'Untitled Task';
       final key = '${entry.projectId}_$taskName';
       groupedEntries.putIfAbsent(key, () => []).add(entry);
     }
-    
+
     final dayDuration = entries.fold<Duration>(
       Duration.zero,
-      (sum, entry) => sum + (entry.endTime?.difference(entry.startTime) ?? Duration.zero),
+      (sum, entry) =>
+          sum + (entry.endTime?.difference(entry.startTime) ?? Duration.zero),
     );
 
     return Card(
@@ -253,7 +271,9 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
                     vertical: AppTheme.space1,
                   ),
                   decoration: BoxDecoration(
-                    color: AppTheme.getSuccessColor(context).withValues(alpha: 0.1),
+                    color: AppTheme.getSuccessColor(
+                      context,
+                    ).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                   ),
                   child: Text(
@@ -268,18 +288,25 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
             ),
           ),
           // Grouped entries list
-          ...groupedEntries.entries.map((group) => _buildGroupedEntryTile(group.value, projectsAsync)),
+          ...groupedEntries.entries.map(
+            (group) => _buildGroupedEntryTile(group.value, projectsAsync),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildGroupedEntryTile(List<TimeEntry> entries, AsyncValue<List<Project>> projectsAsync) {
+  Widget _buildGroupedEntryTile(
+    List<TimeEntry> entries,
+    AsyncValue<List<Project>> projectsAsync,
+  ) {
     final firstEntry = entries.first;
     Project? project;
     if (projectsAsync.hasValue) {
       try {
-        project = projectsAsync.value!.firstWhere((p) => p.id == firstEntry.projectId);
+        project = projectsAsync.value!.firstWhere(
+          (p) => p.id == firstEntry.projectId,
+        );
       } catch (e) {
         // Project not found
       }
@@ -288,19 +315,21 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
     // Calculate total duration for this task
     final totalDuration = entries.fold<Duration>(
       Duration.zero,
-      (sum, entry) => sum + (entry.endTime?.difference(entry.startTime) ?? Duration.zero),
+      (sum, entry) =>
+          sum + (entry.endTime?.difference(entry.startTime) ?? Duration.zero),
     );
-    
+
     final isLongTask = totalDuration.inMinutes > 60;
     final sessionCount = entries.length;
-    
+
     // Get time range for this task
     final allTimes = entries.where((e) => e.endTime != null).toList();
     String timeInfo = '';
     if (allTimes.isNotEmpty) {
       final startTimes = allTimes.map((e) => e.startTime).toList()..sort();
       final endTimes = allTimes.map((e) => e.endTime!).toList()..sort();
-      timeInfo = '${TimeFormatter.formatTime(startTimes.first)} - ${TimeFormatter.formatTime(endTimes.last)}';
+      timeInfo =
+          '${TimeFormatter.formatTime(startTimes.first)} - ${TimeFormatter.formatTime(endTimes.last)}';
       if (sessionCount > 1) {
         timeInfo += ' ($sessionCount sessions)';
       }
@@ -330,7 +359,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
             ),
           ),
           const SizedBox(width: AppTheme.space3),
-          
+
           // Entry details
           Expanded(
             child: Column(
@@ -347,12 +376,12 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
                 const SizedBox(height: AppTheme.space1),
                 // Task name
                 Text(
-                  firstEntry.taskName.trim().isNotEmpty 
+                  firstEntry.taskName.trim().isNotEmpty
                       ? firstEntry.taskName.trim()
                       : 'Untitled Task',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 // Show description if available
                 if (firstEntry.description.trim().isNotEmpty) ...[
@@ -376,7 +405,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
               ],
             ),
           ),
-          
+
           // Duration badge
           Container(
             padding: const EdgeInsets.symmetric(
@@ -384,7 +413,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
               vertical: AppTheme.space2,
             ),
             decoration: BoxDecoration(
-              color: isLongTask 
+              color: isLongTask
                   ? AppTheme.getSuccessColor(context).withValues(alpha: 0.15)
                   : AppTheme.getPrimaryColor(context).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppTheme.radiusFull),
@@ -394,7 +423,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
                 Text(
                   TimeFormatter.formatDuration(totalDuration),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: isLongTask 
+                    color: isLongTask
                         ? AppTheme.getSuccessColor(context)
                         : AppTheme.getPrimaryColor(context),
                     fontWeight: FontWeight.w700,
@@ -404,7 +433,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
                   Text(
                     '$sessionCount×',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: isLongTask 
+                      color: isLongTask
                           ? AppTheme.getSuccessColor(context)
                           : AppTheme.getPrimaryColor(context),
                       fontWeight: FontWeight.w500,
@@ -427,36 +456,37 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
           duration: Duration(seconds: 1),
         ),
       );
-      
+
       // Get projects map
       final projectsAsync = ref.read(projectsProvider);
       final projects = <String, Project>{};
-      
+
       if (projectsAsync.hasValue) {
         for (final project in projectsAsync.value!) {
           projects[project.id] = project;
         }
       }
-      
+
       // Export to Excel
       final result = await ExcelExportService.exportTimeEntries(
         entries: widget.filteredEntries,
         projects: projects,
         dateRange: widget.dateRange,
       );
-      
+
       // Handle result
       if (context.mounted) {
         if (result == 'cancelled') {
           // User cancelled - no message needed
           return;
         }
-        
+
         // Show success message with file path
-        final successMessage = result.isNotEmpty && result != 'File saved successfully'
+        final successMessage =
+            result.isNotEmpty && result != 'File saved successfully'
             ? 'Excel report exported to:\n$result'
             : 'Excel report exported successfully!';
-            
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(successMessage),
@@ -470,7 +500,9 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context).exportFailed(e.toString())),
+            content: Text(
+              AppLocalizations.of(context).exportFailed(e.toString()),
+            ),
             backgroundColor: Theme.of(context).colorScheme.error,
             duration: const Duration(seconds: 3),
           ),
@@ -504,23 +536,19 @@ class _SummaryCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(
-            icon,
-            size: 20,
-            color: AppTheme.getPrimaryColor(context),
-          ),
+          Icon(icon, size: 20, color: AppTheme.getPrimaryColor(context)),
           const SizedBox(height: AppTheme.space1),
           Text(
             value,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
           Text(
             label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).hintColor,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: Theme.of(context).hintColor),
           ),
         ],
       ),

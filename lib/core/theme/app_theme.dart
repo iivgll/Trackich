@@ -2,49 +2,61 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   // Light Theme Colors - Apple-inspired Clean Palette
-  static const Color lightPrimary = Color(0xFF007AFF);        // iOS Blue
-  static const Color lightPrimaryVariant = Color(0xFF5856D6);  // iOS Purple  
-  static const Color lightSecondary = Color(0xFF32D74B);      // iOS Green
-  static const Color lightAccent = Color(0xFFFF9500);         // iOS Orange
-  
+  static const Color lightPrimary = Color(0xFF007AFF); // iOS Blue
+  static const Color lightPrimaryVariant = Color(0xFF5856D6); // iOS Purple
+  static const Color lightSecondary = Color(0xFF32D74B); // iOS Green
+  static const Color lightAccent = Color(0xFFFF9500); // iOS Orange
+
   // Light Theme Backgrounds
-  static const Color lightBackground = Color(0xFFFAFAFA);     // System background
-  static const Color lightSurface = Color(0xFFFFFFFF);       // Card surface
-  static const Color lightSurfaceSecondary = Color(0xFFF2F2F7); // Secondary background
-  static const Color lightSurfaceGrouped = Color(0xFFF2F2F7);   // Grouped background
+  static const Color lightBackground = Color(0xFFFAFAFA); // System background
+  static const Color lightSurface = Color(0xFFFFFFFF); // Card surface
+  static const Color lightSurfaceSecondary = Color(
+    0xFFF2F2F7,
+  ); // Secondary background
+  static const Color lightSurfaceGrouped = Color(
+    0xFFF2F2F7,
+  ); // Grouped background
 
   // Light Theme Text
-  static const Color lightText = Color(0xFF000000);           // Primary text
-  static const Color lightTextSecondary = Color(0xFF3C3C43);  // Secondary text 
-  static const Color lightTextTertiary = Color(0xFF6D6D7A);   // Tertiary text
+  static const Color lightText = Color(0xFF000000); // Primary text
+  static const Color lightTextSecondary = Color(0xFF3C3C43); // Secondary text
+  static const Color lightTextTertiary = Color(0xFF6D6D7A); // Tertiary text
   static const Color lightTextQuaternary = Color(0xFF8E8E93); // Quaternary text
 
   // Light Theme Separators
-  static const Color lightSeparator = Color(0x3C3C4336);      // Separator
-  static const Color lightSeparatorOpaque = Color(0xFFC6C6C8); // Opaque separator
-  
+  static const Color lightSeparator = Color(0x3C3C4336); // Separator
+  static const Color lightSeparatorOpaque = Color(
+    0xFFC6C6C8,
+  ); // Opaque separator
+
   // Dark Theme Colors - Apple Dark Mode
-  static const Color darkPrimary = Color(0xFF0A84FF);         // iOS Dark Blue
-  static const Color darkPrimaryVariant = Color(0xFF5E5CE6);   // iOS Dark Purple
-  static const Color darkSecondary = Color(0xFF30D158);       // iOS Dark Green
-  static const Color darkAccent = Color(0xFFFF9F0A);          // iOS Dark Orange
-  
-  // Dark Theme Backgrounds  
-  static const Color darkBackground = Color(0xFF000000);      // System background
-  static const Color darkSurface = Color(0xFF1C1C1E);        // Card surface
-  static const Color darkSurfaceSecondary = Color(0xFF2C2C2E); // Secondary surface
-  static const Color darkSurfaceGrouped = Color(0xFF000000);    // Grouped background
+  static const Color darkPrimary = Color(0xFF0A84FF); // iOS Dark Blue
+  static const Color darkPrimaryVariant = Color(0xFF5E5CE6); // iOS Dark Purple
+  static const Color darkSecondary = Color(0xFF30D158); // iOS Dark Green
+  static const Color darkAccent = Color(0xFFFF9F0A); // iOS Dark Orange
+
+  // Dark Theme Backgrounds
+  static const Color darkBackground = Color(0xFF000000); // System background
+  static const Color darkSurface = Color(0xFF1C1C1E); // Card surface
+  static const Color darkSurfaceSecondary = Color(
+    0xFF2C2C2E,
+  ); // Secondary surface
+  static const Color darkSurfaceGrouped = Color(
+    0xFF000000,
+  ); // Grouped background
 
   // Dark Theme Text
-  static const Color darkText = Color(0xFFFFFFFF);            // Primary text
-  static const Color darkTextSecondary = Color(0xFFEBEBF5);   // Secondary text
-  static const Color darkTextTertiary = Color(0xFF9999A3);    // Tertiary text  
-  static const Color darkTextQuaternary = Color(0xFF6D6D7A);  // Quaternary text
+  static const Color darkText = Color(0xFFFFFFFF); // Primary text
+  static const Color darkTextSecondary = Color(0xFFEBEBF5); // Secondary text
+  static const Color darkTextTertiary = Color(0xFF9999A3); // Tertiary text
+  static const Color darkTextQuaternary = Color(0xFF6D6D7A); // Quaternary text
 
   // Dark Theme Separators
-  static const Color darkSeparator = Color(0x54545458);       // Separator
-  static const Color darkSeparatorOpaque = Color(0xFF38383A); // Opaque separator
-  
+  static const Color darkSeparator = Color(0x54545458); // Separator
+  static const Color darkSeparatorOpaque = Color(
+    0xFF38383A,
+  ); // Opaque separator
+
   // Legacy support - mapping old constants to new ones
   static const Color lightBorder = lightSeparatorOpaque;
   static const Color darkBorder = darkSeparatorOpaque;
@@ -53,7 +65,7 @@ class AppTheme {
   static const Color lightAccentDark = Color(0xFF7A6900);
   static const Color darkPrimaryDark = darkPrimaryVariant;
   static const Color darkForest = Color(0xFF1C1C1E);
-  
+
   // Legacy radius mapping
   static const double radiusLg = radiusLarge;
   static const double radiusMd = radiusSmall;
@@ -72,17 +84,19 @@ class AppTheme {
   static const Color gray900 = darkBackground;
 
   // Semantic Colors
-  static const Color successLight = lightAccent;             // Sage green for success
-  static const Color warningLight = Color(0xFFD4A574);       // Warm beige for warnings
-  static const Color errorLight = Color(0xFFC89B9B);         // Muted red from palette
-  static const Color focusLight = lightPrimary;              // Lavender for focus
-  
+  static const Color successLight = lightAccent; // Sage green for success
+  static const Color warningLight = Color(
+    0xFFD4A574,
+  ); // Warm beige for warnings
+  static const Color errorLight = Color(0xFFC89B9B); // Muted red from palette
+  static const Color focusLight = lightPrimary; // Lavender for focus
+
   // Dark theme semantic colors
-  static const Color successDark = darkPrimary;              // Bright green for success
-  static const Color warningDark = Color(0xFFA3B875);        // Harmonious yellow-green
-  static const Color errorDark = Color(0xFFFF453A);          // iOS Dark Red for errors
-  static const Color focusDark = darkAccent;                 // Accent green for focus
-  
+  static const Color successDark = darkPrimary; // Bright green for success
+  static const Color warningDark = Color(0xFFA3B875); // Harmonious yellow-green
+  static const Color errorDark = Color(0xFFFF453A); // iOS Dark Red for errors
+  static const Color focusDark = darkAccent; // Accent green for focus
+
   // Legacy aliases for backward compatibility
   static const Color primaryBlue = lightPrimary;
   static const Color breakBlue = lightAccent;
@@ -91,7 +105,7 @@ class AppTheme {
   static const Color focusPurple = focusLight;
   static const Color warningAmber = warningLight;
   static const Color warningOrange = warningLight;
-  
+
   // More legacy aliases
   static const Color calmLightSurface = lightSurface;
   static const Color calmLightSurfaceVariant = lightSurfaceVariant;
@@ -112,26 +126,26 @@ class AppTheme {
 
   // Project Colors - Light Theme (Harmonious pastels)
   static const List<Color> projectColorsLight = [
-    lightPrimary,        // #BBACC1 - Lavender gray
-    lightSecondary,      // #F1DEDE - Soft pink
-    lightAccent,         // #909580 - Sage green
-    Color(0xFFC8B5B5),   // Harmonious dusty rose
-    Color(0xFFA69B9B),   // Warm taupe
-    Color(0xFF8FA68F),   // Soft mint
-    Color(0xFFB5A8C8),   // Light lavender
-    Color(0xFF9FAF9F),   // Pale sage
+    lightPrimary, // #BBACC1 - Lavender gray
+    lightSecondary, // #F1DEDE - Soft pink
+    lightAccent, // #909580 - Sage green
+    Color(0xFFC8B5B5), // Harmonious dusty rose
+    Color(0xFFA69B9B), // Warm taupe
+    Color(0xFF8FA68F), // Soft mint
+    Color(0xFFB5A8C8), // Light lavender
+    Color(0xFF9FAF9F), // Pale sage
   ];
 
   // Project Colors - Dark Theme (Professional greens)
   static const List<Color> projectColorsDark = [
-    darkPrimary,         // #49E448 - Bright green
-    darkPrimaryDark,     // #68E85F - Secondary green
-    darkAccent,          // #80EB75 - Accent green
-    Color(0xFF5FE65E),   // Vibrant green
-    Color(0xFF73E772),   // Medium bright green
-    Color(0xFF8BE88A),   // Soft bright green
-    Color(0xFF9EEA9D),   // Light green
-    Color(0xFF6EE46D),   // Fresh green
+    darkPrimary, // #49E448 - Bright green
+    darkPrimaryDark, // #68E85F - Secondary green
+    darkAccent, // #80EB75 - Accent green
+    Color(0xFF5FE65E), // Vibrant green
+    Color(0xFF73E772), // Medium bright green
+    Color(0xFF8BE88A), // Soft bright green
+    Color(0xFF9EEA9D), // Light green
+    Color(0xFF6EE46D), // Fresh green
   ];
 
   // Dynamic project colors based on theme
@@ -148,15 +162,15 @@ class AppTheme {
   static const String monospaceFontFamily = 'SF Mono';
 
   // Apple Spacing System (4pt base unit)
-  static const double space1 = 2;   // Extra tight
-  static const double space2 = 4;   // Tight  
-  static const double space3 = 8;   // Small
-  static const double space4 = 12;  // Medium-small
-  static const double space5 = 16;  // Medium (standard)
-  static const double space6 = 20;  // Medium-large
-  static const double space7 = 24;  // Large
-  static const double space8 = 32;  // Extra large
-  static const double space9 = 40;  // Extra extra large
+  static const double space1 = 2; // Extra tight
+  static const double space2 = 4; // Tight
+  static const double space3 = 8; // Small
+  static const double space4 = 12; // Medium-small
+  static const double space5 = 16; // Medium (standard)
+  static const double space6 = 20; // Medium-large
+  static const double space7 = 24; // Large
+  static const double space8 = 32; // Extra large
+  static const double space9 = 40; // Extra extra large
   static const double space10 = 48; // Huge
   static const double space16 = 64; // Legacy support
 
@@ -164,7 +178,7 @@ class AppTheme {
   static const double radiusTight = 6;
   static const double radiusSmall = 8;
   static const double radiusMedium = 10;
-  static const double radiusLarge = 12; 
+  static const double radiusLarge = 12;
   static const double radiusXLarge = 16;
   static const double radiusFull = 9999;
 
@@ -203,7 +217,7 @@ class AppTheme {
       spreadRadius: 0,
     ),
   ];
-  
+
   // Legacy shadow support
   static BoxShadow get shadowMd => const BoxShadow(
     offset: Offset(0, 4),
@@ -219,7 +233,7 @@ class AppTheme {
 
   // Apple Easing Curves
   static const Curve easeInOut = Curves.easeInOut;
-  static const Curve easeOut = Curves.easeOut; 
+  static const Curve easeOut = Curves.easeOut;
   static const Curve easeInOutQuint = Cubic(0.86, 0, 0.07, 1);
   static const Curve springCurve = Curves.elasticOut;
 
@@ -242,7 +256,7 @@ class AppTheme {
       useMaterial3: false,
       colorScheme: colorScheme,
       fontFamily: primaryFontFamily,
-      
+
       // App Bar Theme
       appBarTheme: const AppBarTheme(
         backgroundColor: lightBackground,
@@ -284,7 +298,9 @@ class AppTheme {
           elevation: 0,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(radiusMedium), // Apple corner radius
+            borderRadius: BorderRadius.circular(
+              radiusMedium,
+            ), // Apple corner radius
           ),
           padding: const EdgeInsets.symmetric(
             horizontal: 20,
@@ -347,24 +363,15 @@ class AppTheme {
         fillColor: lightSurface,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMedium),
-          borderSide: BorderSide(
-            color: lightSeparatorOpaque,
-            width: 0.33,
-          ),
+          borderSide: BorderSide(color: lightSeparatorOpaque, width: 0.33),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMedium),
-          borderSide: BorderSide(
-            color: lightSeparatorOpaque,
-            width: 0.33,
-          ),
+          borderSide: BorderSide(color: lightSeparatorOpaque, width: 0.33),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMedium),
-          borderSide: BorderSide(
-            color: lightPrimary,
-            width: 1.0,
-          ),
+          borderSide: BorderSide(color: lightPrimary, width: 1.0),
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
@@ -390,8 +397,8 @@ class AppTheme {
           letterSpacing: 0.37,
           color: lightText,
         ),
-        
-        // Title 1 - 28pt Regular  
+
+        // Title 1 - 28pt Regular
         displayMedium: TextStyle(
           fontFamily: primaryFontFamily,
           fontSize: 28,
@@ -400,7 +407,7 @@ class AppTheme {
           letterSpacing: 0.36,
           color: lightText,
         ),
-        
+
         // Title 2 - 22pt Regular
         headlineMedium: TextStyle(
           fontFamily: primaryFontFamily,
@@ -410,7 +417,7 @@ class AppTheme {
           letterSpacing: 0.35,
           color: lightText,
         ),
-        
+
         // Title 3 - 20pt Regular
         headlineSmall: TextStyle(
           fontFamily: primaryFontFamily,
@@ -420,7 +427,7 @@ class AppTheme {
           letterSpacing: 0.38,
           color: lightText,
         ),
-        
+
         // Headline - 17pt Semibold
         titleLarge: TextStyle(
           fontFamily: primaryFontFamily,
@@ -430,7 +437,7 @@ class AppTheme {
           letterSpacing: -0.41,
           color: lightText,
         ),
-        
+
         // Body - 17pt Regular
         bodyLarge: TextStyle(
           fontFamily: primaryFontFamily,
@@ -440,7 +447,7 @@ class AppTheme {
           letterSpacing: -0.41,
           color: lightText,
         ),
-        
+
         // Callout - 16pt Regular
         titleMedium: TextStyle(
           fontFamily: primaryFontFamily,
@@ -450,7 +457,7 @@ class AppTheme {
           letterSpacing: -0.32,
           color: lightText,
         ),
-        
+
         // Subhead - 15pt Regular
         bodyMedium: TextStyle(
           fontFamily: primaryFontFamily,
@@ -460,7 +467,7 @@ class AppTheme {
           letterSpacing: -0.24,
           color: lightTextSecondary,
         ),
-        
+
         // Footnote - 13pt Regular
         bodySmall: TextStyle(
           fontFamily: primaryFontFamily,
@@ -470,7 +477,7 @@ class AppTheme {
           letterSpacing: -0.08,
           color: lightTextSecondary,
         ),
-        
+
         // Caption 1 - 12pt Regular
         labelMedium: TextStyle(
           fontFamily: primaryFontFamily,
@@ -480,7 +487,7 @@ class AppTheme {
           letterSpacing: 0,
           color: lightTextSecondary,
         ),
-        
+
         // Caption 2 - 11pt Regular
         labelSmall: TextStyle(
           fontFamily: primaryFontFamily,
@@ -567,7 +574,7 @@ class AppTheme {
       useMaterial3: false,
       colorScheme: colorScheme,
       fontFamily: primaryFontFamily,
-      
+
       // App Bar Theme
       appBarTheme: const AppBarTheme(
         backgroundColor: darkBackground,
@@ -609,7 +616,9 @@ class AppTheme {
           elevation: 0,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(radiusMedium), // Apple corner radius
+            borderRadius: BorderRadius.circular(
+              radiusMedium,
+            ), // Apple corner radius
           ),
           padding: const EdgeInsets.symmetric(
             horizontal: 20,
@@ -631,24 +640,15 @@ class AppTheme {
         fillColor: darkSurface,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMedium),
-          borderSide: BorderSide(
-            color: darkSeparatorOpaque,
-            width: 0.33,
-          ),
+          borderSide: BorderSide(color: darkSeparatorOpaque, width: 0.33),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMedium),
-          borderSide: BorderSide(
-            color: darkSeparatorOpaque,
-            width: 0.33,
-          ),
+          borderSide: BorderSide(color: darkSeparatorOpaque, width: 0.33),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMedium),
-          borderSide: BorderSide(
-            color: darkPrimary,
-            width: 1.0,
-          ),
+          borderSide: BorderSide(color: darkPrimary, width: 1.0),
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
@@ -674,8 +674,8 @@ class AppTheme {
           letterSpacing: 0.37,
           color: darkText,
         ),
-        
-        // Title 1 - 28pt Regular  
+
+        // Title 1 - 28pt Regular
         displayMedium: TextStyle(
           fontFamily: primaryFontFamily,
           fontSize: 28,
@@ -684,7 +684,7 @@ class AppTheme {
           letterSpacing: 0.36,
           color: darkText,
         ),
-        
+
         // Title 2 - 22pt Regular
         headlineMedium: TextStyle(
           fontFamily: primaryFontFamily,
@@ -694,7 +694,7 @@ class AppTheme {
           letterSpacing: 0.35,
           color: darkText,
         ),
-        
+
         // Title 3 - 20pt Regular
         headlineSmall: TextStyle(
           fontFamily: primaryFontFamily,
@@ -704,7 +704,7 @@ class AppTheme {
           letterSpacing: 0.38,
           color: darkText,
         ),
-        
+
         // Headline - 17pt Semibold
         titleLarge: TextStyle(
           fontFamily: primaryFontFamily,
@@ -714,7 +714,7 @@ class AppTheme {
           letterSpacing: -0.41,
           color: darkText,
         ),
-        
+
         // Body - 17pt Regular
         bodyLarge: TextStyle(
           fontFamily: primaryFontFamily,
@@ -724,7 +724,7 @@ class AppTheme {
           letterSpacing: -0.41,
           color: darkText,
         ),
-        
+
         // Callout - 16pt Regular
         titleMedium: TextStyle(
           fontFamily: primaryFontFamily,
@@ -734,7 +734,7 @@ class AppTheme {
           letterSpacing: -0.32,
           color: darkText,
         ),
-        
+
         // Subhead - 15pt Regular
         bodyMedium: TextStyle(
           fontFamily: primaryFontFamily,
@@ -744,7 +744,7 @@ class AppTheme {
           letterSpacing: -0.24,
           color: darkTextSecondary,
         ),
-        
+
         // Footnote - 13pt Regular
         bodySmall: TextStyle(
           fontFamily: primaryFontFamily,
@@ -754,7 +754,7 @@ class AppTheme {
           letterSpacing: -0.08,
           color: darkTextSecondary,
         ),
-        
+
         // Caption 1 - 12pt Regular
         labelMedium: TextStyle(
           fontFamily: primaryFontFamily,
@@ -764,7 +764,7 @@ class AppTheme {
           letterSpacing: 0,
           color: darkTextSecondary,
         ),
-        
+
         // Caption 2 - 11pt Regular
         labelSmall: TextStyle(
           fontFamily: primaryFontFamily,

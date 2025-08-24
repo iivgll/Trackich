@@ -59,9 +59,9 @@ class NotificationPermission extends _$NotificationPermission {
   Future<void> _checkPermissionStatus() async {
     try {
       state = state.copyWith(isLoading: true, error: null);
-      
+
       NotificationPermissionStatus status;
-      
+
       if (Platform.isAndroid) {
         status = await _checkAndroidPermissions();
       } else if (Platform.isIOS) {
@@ -89,15 +89,18 @@ class NotificationPermission extends _$NotificationPermission {
   /// Check Android notification permissions
   Future<NotificationPermissionStatus> _checkAndroidPermissions() async {
     final androidImplementation = _notificationsPlugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-    
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+
     if (androidImplementation == null) {
       return NotificationPermissionStatus.notDetermined;
     }
 
     // For Android 13+, we need to check if notification permission is granted
     try {
-      final bool? areNotificationsEnabled = await androidImplementation.areNotificationsEnabled();
+      final bool? areNotificationsEnabled = await androidImplementation
+          .areNotificationsEnabled();
       if (areNotificationsEnabled == true) {
         return NotificationPermissionStatus.granted;
       } else if (areNotificationsEnabled == false) {
@@ -113,8 +116,10 @@ class NotificationPermission extends _$NotificationPermission {
   /// Check iOS notification permissions
   Future<NotificationPermissionStatus> _checkIOSPermissions() async {
     final iosImplementation = _notificationsPlugin
-        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
-    
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >();
+
     if (iosImplementation == null) {
       return NotificationPermissionStatus.notDetermined;
     }
@@ -126,7 +131,7 @@ class NotificationPermission extends _$NotificationPermission {
         badge: true,
         sound: true,
       );
-      
+
       if (granted == true) {
         return NotificationPermissionStatus.granted;
       } else {
@@ -142,8 +147,10 @@ class NotificationPermission extends _$NotificationPermission {
   /// Check macOS notification permissions
   Future<NotificationPermissionStatus> _checkMacOSPermissions() async {
     final macosImplementation = _notificationsPlugin
-        .resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>();
-    
+        .resolvePlatformSpecificImplementation<
+          MacOSFlutterLocalNotificationsPlugin
+        >();
+
     if (macosImplementation == null) {
       return NotificationPermissionStatus.notDetermined;
     }
@@ -155,7 +162,7 @@ class NotificationPermission extends _$NotificationPermission {
         badge: true,
         sound: true,
       );
-      
+
       if (granted == true) {
         return NotificationPermissionStatus.granted;
       } else {
@@ -172,9 +179,9 @@ class NotificationPermission extends _$NotificationPermission {
   Future<bool> requestPermissions() async {
     try {
       state = state.copyWith(isLoading: true, error: null);
-      
+
       bool granted = false;
-      
+
       if (Platform.isAndroid) {
         granted = await _requestAndroidPermissions();
       } else if (Platform.isIOS) {
@@ -188,7 +195,7 @@ class NotificationPermission extends _$NotificationPermission {
 
       // Update status after requesting permissions
       await _checkPermissionStatus();
-      
+
       return granted;
     } catch (e) {
       state = state.copyWith(
@@ -202,14 +209,17 @@ class NotificationPermission extends _$NotificationPermission {
   /// Request Android notification permissions
   Future<bool> _requestAndroidPermissions() async {
     final androidImplementation = _notificationsPlugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-    
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+
     if (androidImplementation == null) {
       return false;
     }
 
     try {
-      final bool? granted = await androidImplementation.requestNotificationsPermission();
+      final bool? granted = await androidImplementation
+          .requestNotificationsPermission();
       return granted ?? false;
     } catch (e) {
       return false;
@@ -219,8 +229,10 @@ class NotificationPermission extends _$NotificationPermission {
   /// Request iOS notification permissions
   Future<bool> _requestIOSPermissions() async {
     final iosImplementation = _notificationsPlugin
-        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
-    
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >();
+
     if (iosImplementation == null) {
       return false;
     }
@@ -240,8 +252,10 @@ class NotificationPermission extends _$NotificationPermission {
   /// Request macOS notification permissions
   Future<bool> _requestMacOSPermissions() async {
     final macosImplementation = _notificationsPlugin
-        .resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>();
-    
+        .resolvePlatformSpecificImplementation<
+          MacOSFlutterLocalNotificationsPlugin
+        >();
+
     if (macosImplementation == null) {
       return false;
     }
@@ -269,9 +283,7 @@ class NotificationPermission extends _$NotificationPermission {
         // The app should show instructions to manually navigate to settings
       }
     } catch (e) {
-      state = state.copyWith(
-        error: 'Failed to open notification settings: $e',
-      );
+      state = state.copyWith(error: 'Failed to open notification settings: $e');
     }
   }
 
@@ -297,12 +309,12 @@ class NotificationPermission extends _$NotificationPermission {
   /// Check if notifications can be shown
   bool get canShowNotifications {
     return state.status == NotificationPermissionStatus.granted ||
-           state.status == NotificationPermissionStatus.provisional;
+        state.status == NotificationPermissionStatus.provisional;
   }
 
   /// Check if we should show permission request UI
   bool get shouldShowPermissionRequest {
     return state.status == NotificationPermissionStatus.notDetermined ||
-           state.status == NotificationPermissionStatus.denied;
+        state.status == NotificationPermissionStatus.denied;
   }
 }

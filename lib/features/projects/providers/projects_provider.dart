@@ -16,14 +16,14 @@ class Projects extends _$Projects {
   Future<List<Project>> build() async {
     final storage = ref.read(storageServiceProvider);
     final projects = await storage.getProjects();
-    
+
     // Update total time tracked for each project
     final updatedProjects = <Project>[];
     for (final project in projects) {
       final totalTime = await storage.getTotalHoursForProject(project.id);
       updatedProjects.add(project.copyWith(totalTimeTracked: totalTime));
     }
-    
+
     return updatedProjects;
   }
 
@@ -39,7 +39,7 @@ class Projects extends _$Projects {
     try {
       final storage = ref.read(storageServiceProvider);
       const uuid = Uuid();
-      
+
       final project = Project(
         id: uuid.v4(),
         name: name,
@@ -55,7 +55,7 @@ class Projects extends _$Projects {
 
       await storage.saveProject(project);
       await storage.addRecentProject(project.id);
-      
+
       // Refresh the projects list
       ref.invalidateSelf();
     } catch (error, stackTrace) {
@@ -69,7 +69,7 @@ class Projects extends _$Projects {
     try {
       final storage = ref.read(storageServiceProvider);
       await storage.saveProject(updatedProject);
-      
+
       // Refresh the projects list
       ref.invalidateSelf();
     } catch (error, stackTrace) {
@@ -83,7 +83,7 @@ class Projects extends _$Projects {
     try {
       final storage = ref.read(storageServiceProvider);
       await storage.deleteProject(projectId);
-      
+
       // Refresh the projects list
       ref.invalidateSelf();
     } catch (error, stackTrace) {
@@ -105,7 +105,7 @@ class Projects extends _$Projects {
     if (project != null) {
       await storage.saveProject(project.copyWith(lastActiveAt: DateTime.now()));
       await storage.addRecentProject(projectId);
-      
+
       // Refresh only if we have an active state
       if (state.hasValue) {
         ref.invalidateSelf();
@@ -116,16 +116,16 @@ class Projects extends _$Projects {
   /// Get next available project color
   Color getNextAvailableColor() {
     if (!state.hasValue) return AppTheme.projectColors.first;
-    
+
     final projects = state.value!;
     final usedColors = projects.map((p) => p.color.value).toSet();
-    
+
     for (final color in AppTheme.projectColors) {
       if (!usedColors.contains(color.value)) {
         return color;
       }
     }
-    
+
     // If all colors are used, return the first one
     return AppTheme.projectColors.first;
   }
@@ -151,7 +151,7 @@ Future<List<Project>> recentProjects(RecentProjectsRef ref) async {
   final storage = ref.read(storageServiceProvider);
   final recentProjectIds = await storage.getRecentProjectIds();
   final allProjects = await ref.watch(projectsProvider.future);
-  
+
   return recentProjectIds
       .map((id) {
         try {
@@ -170,17 +170,17 @@ Future<List<Project>> recentProjects(RecentProjectsRef ref) async {
 @riverpod
 Future<List<Project>> projectsByUsage(ProjectsByUsageRef ref) async {
   final projects = await ref.watch(activeProjectsProvider.future);
-  
+
   // Sort by total time tracked (descending) and then by last active time
   projects.sort((a, b) {
     final timeComparison = b.totalTimeTracked.compareTo(a.totalTimeTracked);
     if (timeComparison != 0) return timeComparison;
-    
+
     final aLastActive = a.lastActiveAt ?? a.createdAt;
     final bLastActive = b.lastActiveAt ?? b.createdAt;
     return bLastActive.compareTo(aLastActive);
   });
-  
+
   return projects;
 }
 
@@ -198,46 +198,66 @@ class ProjectStats extends _$ProjectStats {
   Future<Map<String, dynamic>> build(String projectId) async {
     final storage = ref.read(storageServiceProvider);
     final now = DateTime.now();
-    
+
     // Get time entries for this project
     final entries = await storage.getTimeEntriesByProject(projectId);
-    
+
     // Calculate statistics
-    final totalHours = entries.fold<double>(0.0, (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)));
-    
-    // This week's hours
-    final startOfWeek = DateTime(now.year, now.month, now.day - now.weekday + 1);
-    final endOfWeek = startOfWeek.add(const Duration(days: 7));
-    final thisWeekEntries = entries.where((entry) => 
-      entry.startTime.isAfter(startOfWeek) && entry.startTime.isBefore(endOfWeek)
+    final totalHours = entries.fold<double>(
+      0.0,
+      (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)),
     );
-    final thisWeekHours = thisWeekEntries.fold<double>(0.0, (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)));
-    
+
+    // This week's hours
+    final startOfWeek = DateTime(
+      now.year,
+      now.month,
+      now.day - now.weekday + 1,
+    );
+    final endOfWeek = startOfWeek.add(const Duration(days: 7));
+    final thisWeekEntries = entries.where(
+      (entry) =>
+          entry.startTime.isAfter(startOfWeek) &&
+          entry.startTime.isBefore(endOfWeek),
+    );
+    final thisWeekHours = thisWeekEntries.fold<double>(
+      0.0,
+      (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)),
+    );
+
     // This month's hours
     final startOfMonth = DateTime(now.year, now.month, 1);
     final endOfMonth = DateTime(now.year, now.month + 1, 1);
-    final thisMonthEntries = entries.where((entry) => 
-      entry.startTime.isAfter(startOfMonth) && entry.startTime.isBefore(endOfMonth)
+    final thisMonthEntries = entries.where(
+      (entry) =>
+          entry.startTime.isAfter(startOfMonth) &&
+          entry.startTime.isBefore(endOfMonth),
     );
-    final thisMonthHours = thisMonthEntries.fold<double>(0.0, (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)));
-    
+    final thisMonthHours = thisMonthEntries.fold<double>(
+      0.0,
+      (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)),
+    );
+
     // Average session length
     final avgSessionHours = entries.isEmpty ? 0.0 : totalHours / entries.length;
-    
+
     // Longest session
-    final longestSession = entries.isEmpty ? 0.0 : 
-      entries.map((e) => e.duration.inMilliseconds / (1000 * 60 * 60)).reduce((a, b) => a > b ? a : b);
-    
+    final longestSession = entries.isEmpty
+        ? 0.0
+        : entries
+              .map((e) => e.duration.inMilliseconds / (1000 * 60 * 60))
+              .reduce((a, b) => a > b ? a : b);
+
     // Total sessions
     final totalSessions = entries.length;
-    
+
     // Days worked
     final uniqueDays = entries.map((entry) {
       final date = entry.startTime;
       return DateTime(date.year, date.month, date.day);
     }).toSet();
     final daysWorked = uniqueDays.length;
-    
+
     return {
       'totalHours': totalHours,
       'thisWeekHours': thisWeekHours,
@@ -252,17 +272,20 @@ class ProjectStats extends _$ProjectStats {
 
 /// Provider for searching projects
 @riverpod
-Future<List<Project>> searchProjects(SearchProjectsRef ref, String query) async {
+Future<List<Project>> searchProjects(
+  SearchProjectsRef ref,
+  String query,
+) async {
   if (query.isEmpty) {
     return ref.watch(activeProjectsProvider.future);
   }
-  
+
   final projects = await ref.watch(activeProjectsProvider.future);
   final lowerQuery = query.toLowerCase();
-  
+
   return projects.where((project) {
     return project.name.toLowerCase().contains(lowerQuery) ||
-           project.description.toLowerCase().contains(lowerQuery) ||
-           project.tags.any((tag) => tag.toLowerCase().contains(lowerQuery));
+        project.description.toLowerCase().contains(lowerQuery) ||
+        project.tags.any((tag) => tag.toLowerCase().contains(lowerQuery));
   }).toList();
 }

@@ -43,7 +43,9 @@ class Settings extends _$Settings {
   /// Update break interval
   Future<void> updateBreakInterval(Duration breakInterval) async {
     final currentSettings = await future;
-    await updateSettings(currentSettings.copyWith(breakInterval: breakInterval));
+    await updateSettings(
+      currentSettings.copyWith(breakInterval: breakInterval),
+    );
   }
 
   /// Update notification settings
@@ -56,14 +58,22 @@ class Settings extends _$Settings {
     Duration? postureReminderInterval,
   }) async {
     final currentSettings = await future;
-    await updateSettings(currentSettings.copyWith(
-      enableNotifications: enableNotifications ?? currentSettings.enableNotifications,
-      enableSoundNotifications: enableSoundNotifications ?? currentSettings.enableSoundNotifications,
-      enableBreakReminders: enableBreakReminders ?? currentSettings.enableBreakReminders,
-      enableHealthTips: enableHealthTips ?? currentSettings.enableHealthTips,
-      enablePostureReminders: enablePostureReminders ?? currentSettings.enablePostureReminders,
-      postureReminderInterval: postureReminderInterval ?? currentSettings.postureReminderInterval,
-    ));
+    await updateSettings(
+      currentSettings.copyWith(
+        enableNotifications:
+            enableNotifications ?? currentSettings.enableNotifications,
+        enableSoundNotifications:
+            enableSoundNotifications ??
+            currentSettings.enableSoundNotifications,
+        enableBreakReminders:
+            enableBreakReminders ?? currentSettings.enableBreakReminders,
+        enableHealthTips: enableHealthTips ?? currentSettings.enableHealthTips,
+        enablePostureReminders:
+            enablePostureReminders ?? currentSettings.enablePostureReminders,
+        postureReminderInterval:
+            postureReminderInterval ?? currentSettings.postureReminderInterval,
+      ),
+    );
   }
 
   /// Update time format
@@ -87,7 +97,9 @@ class Settings extends _$Settings {
   /// Update daily work limit
   Future<void> updateDailyWorkLimit(Duration dailyWorkLimit) async {
     final currentSettings = await future;
-    await updateSettings(currentSettings.copyWith(dailyWorkLimit: dailyWorkLimit));
+    await updateSettings(
+      currentSettings.copyWith(dailyWorkLimit: dailyWorkLimit),
+    );
   }
 
   /// Reset to default settings
@@ -99,45 +111,91 @@ class Settings extends _$Settings {
 /// Provider for watching specific setting values
 @riverpod
 ThemeMode themeMode(ThemeModeRef ref) {
-  return ref.watch(settingsProvider).when(
-    data: (settings) => settings.themeMode,
-    loading: () => ThemeMode.system,
-    error: (_, __) => ThemeMode.system,
-  );
+  return ref
+      .watch(settingsProvider)
+      .when(
+        data: (settings) => settings.themeMode,
+        loading: () => ThemeMode.system,
+        error: (_, __) => ThemeMode.system,
+      );
 }
 
 @riverpod
 String language(LanguageRef ref) {
-  return ref.watch(settingsProvider).when(
-    data: (settings) => settings.language,
-    loading: () => 'en',
-    error: (_, __) => 'en',
-  );
+  return ref
+      .watch(settingsProvider)
+      .when(
+        data: (settings) => settings.language,
+        loading: () => 'en',
+        error: (_, __) => 'en',
+      );
 }
 
 @riverpod
 bool notificationsEnabled(NotificationsEnabledRef ref) {
-  return ref.watch(settingsProvider).when(
-    data: (settings) => settings.enableNotifications,
-    loading: () => true,
-    error: (_, __) => true,
-  );
+  return ref
+      .watch(settingsProvider)
+      .when(
+        data: (settings) => settings.enableNotifications,
+        loading: () => true,
+        error: (_, __) => true,
+      );
 }
 
 @riverpod
 TimeFormat timeFormat(TimeFormatRef ref) {
-  return ref.watch(settingsProvider).when(
-    data: (settings) => settings.timeFormat,
-    loading: () => TimeFormat.format24h,
-    error: (_, __) => TimeFormat.format24h,
-  );
+  return ref
+      .watch(settingsProvider)
+      .when(
+        data: (settings) => settings.timeFormat,
+        loading: () => TimeFormat.format24h,
+        error: (_, __) => TimeFormat.format24h,
+      );
 }
 
 @riverpod
 WeekStartDay weekStartDay(WeekStartDayRef ref) {
-  return ref.watch(settingsProvider).when(
-    data: (settings) => settings.weekStartDay,
-    loading: () => WeekStartDay.monday,
-    error: (_, __) => WeekStartDay.monday,
-  );
+  return ref
+      .watch(settingsProvider)
+      .when(
+        data: (settings) => settings.weekStartDay,
+        loading: () => WeekStartDay.monday,
+        error: (_, __) => WeekStartDay.monday,
+      );
+}
+
+final onboardingCompletedProvider =
+    StateNotifierProvider<OnboardingCompletedNotifier, bool>((ref) {
+      return OnboardingCompletedNotifier(ref);
+    });
+
+class OnboardingCompletedNotifier extends StateNotifier<bool> {
+  final Ref ref;
+
+  OnboardingCompletedNotifier(this.ref) : super(false) {
+    _loadOnboardingStatus();
+  }
+
+  void _loadOnboardingStatus() {
+    try {
+      final storage = ref.read(storageServiceProvider);
+      storage.init().then((_) {
+        state = storage.prefs.getBool('onboarding_completed') ?? false;
+      });
+    } catch (e) {
+      debugPrint('Failed to get onboarding status: $e');
+      state = false;
+    }
+  }
+
+  Future<void> setCompleted(bool completed) async {
+    try {
+      final storage = ref.read(storageServiceProvider);
+      await storage.init();
+      await storage.prefs.setBool('onboarding_completed', completed);
+      state = completed;
+    } catch (e) {
+      debugPrint('Failed to set onboarding status: $e');
+    }
+  }
 }

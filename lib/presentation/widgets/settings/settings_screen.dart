@@ -15,28 +15,35 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final settingsAsync = ref.watch(settingsProvider);
-    
+
     return Scaffold(
-      backgroundColor: Theme.of(context).brightness == Brightness.light 
-          ? AppTheme.gray50 
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? AppTheme.gray50
           : AppTheme.gray900,
       body: Column(
         children: [
           // Header
           _buildHeader(context, l10n),
-          
+
           // Settings content
           Expanded(
             child: settingsAsync.when(
-              data: (settings) => _buildSettingsContent(context, l10n, ref, settings),
+              data: (settings) =>
+                  _buildSettingsContent(context, l10n, ref, settings),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) => Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Symbols.error, size: 64, color: AppTheme.getErrorColor(context)),
+                    Icon(
+                      Symbols.error,
+                      size: 64,
+                      color: AppTheme.getErrorColor(context),
+                    ),
                     const SizedBox(height: AppTheme.space4),
-                    Text('${AppLocalizations.of(context).error} loading settings: $error'),
+                    Text(
+                      '${AppLocalizations.of(context).error} loading settings: $error',
+                    ),
                     const SizedBox(height: AppTheme.space4),
                     ElevatedButton(
                       onPressed: () => ref.invalidate(settingsProvider),
@@ -58,26 +65,28 @@ class SettingsScreen extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).dividerColor,
-            width: 1,
-          ),
+          bottom: BorderSide(color: Theme.of(context).dividerColor, width: 1),
         ),
       ),
       child: Row(
         children: [
           Text(
             l10n.settings,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSettingsContent(BuildContext context, AppLocalizations l10n, WidgetRef ref, settings) {
+  Widget _buildSettingsContent(
+    BuildContext context,
+    AppLocalizations l10n,
+    WidgetRef ref,
+    settings,
+  ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppTheme.space6),
       child: Column(
@@ -87,12 +96,12 @@ class SettingsScreen extends ConsumerWidget {
           _buildSectionTitle(context, l10n.general),
           _buildGeneralSettings(context, l10n, ref, settings),
           const SizedBox(height: AppTheme.space8),
-          
+
           // Timer & Breaks
           _buildSectionTitle(context, l10n.timerAndBreaks),
           _buildTimerSettings(context, l10n, ref, settings),
           const SizedBox(height: AppTheme.space8),
-          
+
           // Notifications
           _buildSectionTitle(context, l10n.notifications),
           _buildNotificationSettings(context, l10n, ref, settings),
@@ -104,13 +113,18 @@ class SettingsScreen extends ConsumerWidget {
   Widget _buildSectionTitle(BuildContext context, String title) {
     return Text(
       title,
-      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-        fontWeight: FontWeight.w600,
-      ),
+      style: Theme.of(
+        context,
+      ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
     );
   }
 
-  Widget _buildGeneralSettings(BuildContext context, AppLocalizations l10n, WidgetRef ref, settings) {
+  Widget _buildGeneralSettings(
+    BuildContext context,
+    AppLocalizations l10n,
+    WidgetRef ref,
+    settings,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.space6),
@@ -145,9 +159,9 @@ class SettingsScreen extends ConsumerWidget {
                 },
               ),
             ),
-            
+
             const Divider(),
-            
+
             // Language setting
             ListTile(
               leading: const Icon(Symbols.language),
@@ -156,7 +170,7 @@ class SettingsScreen extends ConsumerWidget {
               trailing: DropdownButton<String>(
                 value: settings.language,
                 underline: const SizedBox(),
-                items:  [
+                items: [
                   DropdownMenuItem(
                     value: 'en',
                     child: Text(AppLocalizations.of(context).english),
@@ -168,7 +182,9 @@ class SettingsScreen extends ConsumerWidget {
                 ],
                 onChanged: (language) {
                   if (language != null) {
-                    ref.read(settingsProvider.notifier).updateLanguage(language);
+                    ref
+                        .read(settingsProvider.notifier)
+                        .updateLanguage(language);
                   }
                 },
               ),
@@ -179,7 +195,12 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildTimerSettings(BuildContext context, AppLocalizations l10n, WidgetRef ref, settings) {
+  Widget _buildTimerSettings(
+    BuildContext context,
+    AppLocalizations l10n,
+    WidgetRef ref,
+    settings,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.space6),
@@ -189,7 +210,9 @@ class SettingsScreen extends ConsumerWidget {
             ListTile(
               leading: const Icon(Symbols.schedule),
               title: Text(l10n.breakInterval),
-              subtitle: Text(l10n.breakReminderDescription(settings.breakInterval.inMinutes)),
+              subtitle: Text(
+                l10n.breakReminderDescription(settings.breakInterval.inMinutes),
+              ),
               trailing: SizedBox(
                 width: 120,
                 child: Row(
@@ -198,19 +221,27 @@ class SettingsScreen extends ConsumerWidget {
                     SizedBox(
                       width: 60,
                       child: TextFormField(
-                        initialValue: settings.breakInterval.inMinutes.toString(),
+                        initialValue: settings.breakInterval.inMinutes
+                            .toString(),
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 8,
+                          ),
                           border: OutlineInputBorder(),
                         ),
                         onChanged: (value) {
                           final minutes = int.tryParse(value);
-                          if (minutes != null && minutes > 0 && minutes <= 120) {
-                            ref.read(settingsProvider.notifier).updateBreakInterval(
-                              Duration(minutes: minutes),
-                            );
+                          if (minutes != null &&
+                              minutes > 0 &&
+                              minutes <= 120) {
+                            ref
+                                .read(settingsProvider.notifier)
+                                .updateBreakInterval(
+                                  Duration(minutes: minutes),
+                                );
                           }
                         },
                       ),
@@ -221,9 +252,9 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            
+
             const Divider(),
-            
+
             // Break reminders toggle
             SwitchListTile(
               secondary: const Icon(Symbols.alarm),
@@ -231,9 +262,9 @@ class SettingsScreen extends ConsumerWidget {
               subtitle: Text(l10n.breakRemindersDescription),
               value: settings.enableBreakReminders,
               onChanged: (enabled) {
-                ref.read(settingsProvider.notifier).updateNotificationSettings(
-                  enableBreakReminders: enabled,
-                );
+                ref
+                    .read(settingsProvider.notifier)
+                    .updateNotificationSettings(enableBreakReminders: enabled);
               },
             ),
           ],
@@ -242,9 +273,14 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildNotificationSettings(BuildContext context, AppLocalizations l10n, WidgetRef ref, settings) {
+  Widget _buildNotificationSettings(
+    BuildContext context,
+    AppLocalizations l10n,
+    WidgetRef ref,
+    settings,
+  ) {
     final permissionState = ref.watch(notificationPermissionProvider);
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.space6),
@@ -252,51 +288,69 @@ class SettingsScreen extends ConsumerWidget {
           children: [
             // Permission status indicator
             _buildPermissionStatusTile(context, l10n, ref, permissionState),
-            
+
             const Divider(),
-            
+
             SwitchListTile(
               secondary: const Icon(Symbols.notifications),
               title: Text(l10n.enableNotifications),
-              subtitle: Text(permissionState.status == NotificationPermissionStatus.granted 
-                  ? 'Enable app notifications'
-                  : 'Notification permissions required'),
-              value: settings.enableNotifications && permissionState.status == NotificationPermissionStatus.granted,
-              onChanged: permissionState.status == NotificationPermissionStatus.granted 
+              subtitle: Text(
+                permissionState.status == NotificationPermissionStatus.granted
+                    ? l10n.enableAppNotifications
+                    : l10n.notificationPermissionsRequired,
+              ),
+              value:
+                  settings.enableNotifications &&
+                  permissionState.status ==
+                      NotificationPermissionStatus.granted,
+              onChanged:
+                  permissionState.status == NotificationPermissionStatus.granted
                   ? (enabled) {
-                      ref.read(settingsProvider.notifier).updateNotificationSettings(
-                        enableNotifications: enabled,
-                      );
+                      ref
+                          .read(settingsProvider.notifier)
+                          .updateNotificationSettings(
+                            enableNotifications: enabled,
+                          );
                     }
                   : null,
             ),
-            
+
             const Divider(),
-            
+
             // Test notification button
             ListTile(
               leading: const Icon(Symbols.notification_add),
               title: Text(AppLocalizations.of(context).testNotifications),
-              subtitle: Text(AppLocalizations.of(context).testNotificationsSubtitle),
+              subtitle: Text(
+                AppLocalizations.of(context).testNotificationsSubtitle,
+              ),
               trailing: ElevatedButton.icon(
-                onPressed: (permissionState.status == NotificationPermissionStatus.granted && 
-                           settings.enableNotifications && 
-                           !permissionState.isLoading) 
+                onPressed:
+                    (permissionState.status ==
+                            NotificationPermissionStatus.granted &&
+                        settings.enableNotifications &&
+                        !permissionState.isLoading)
                     ? () async {
-                        final notificationService = ref.read(notificationServiceProvider);
-                        await notificationService.showTestNotification();
-                        
+                        final notificationService = ref.read(
+                          notificationServiceProvider,
+                        );
+                        await notificationService.showTestNotification(l10n);
+
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                             SnackBar(
-                              content: Text(AppLocalizations.of(context).testNotificationSent),
+                            SnackBar(
+                              content: Text(
+                                AppLocalizations.of(
+                                  context,
+                                ).testNotificationSent,
+                              ),
                               duration: Duration(seconds: 3),
                             ),
                           );
                         }
                       }
                     : null,
-                icon: permissionState.isLoading 
+                icon: permissionState.isLoading
                     ? const SizedBox(
                         width: 16,
                         height: 16,
@@ -317,9 +371,9 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Widget _buildPermissionStatusTile(
-    BuildContext context, 
-    AppLocalizations l10n, 
-    WidgetRef ref, 
+    BuildContext context,
+    AppLocalizations l10n,
+    WidgetRef ref,
     NotificationPermissionState permissionState,
   ) {
     IconData statusIcon;
@@ -332,19 +386,21 @@ class SettingsScreen extends ConsumerWidget {
       case NotificationPermissionStatus.granted:
         statusIcon = Symbols.check_circle;
         statusColor = AppTheme.successGreen;
-        statusText = 'Notifications Enabled';
-        statusSubtitle = 'System notifications are working properly';
+        statusText = l10n.notificationsEnabled;
+        statusSubtitle = l10n.notificationsEnabledDescription;
         trailing = IconButton(
           icon: const Icon(Symbols.refresh),
-          onPressed: () => ref.read(notificationPermissionProvider.notifier).refreshPermissionStatus(),
-          tooltip: 'Refresh status',
+          onPressed: () => ref
+              .read(notificationPermissionProvider.notifier)
+              .refreshPermissionStatus(),
+          tooltip: l10n.refreshStatus,
         );
         break;
       case NotificationPermissionStatus.denied:
         statusIcon = Symbols.block;
         statusColor = AppTheme.getErrorColor(context);
-        statusText = 'Notifications Disabled';
-        statusSubtitle = 'Enable in system settings to receive notifications';
+        statusText = l10n.notificationsDisabled;
+        statusSubtitle = l10n.notificationsDisabledDescription;
         trailing = ElevatedButton.icon(
           icon: const Icon(Symbols.settings),
           label: Text(l10n.settings),
@@ -358,19 +414,25 @@ class SettingsScreen extends ConsumerWidget {
       case NotificationPermissionStatus.notDetermined:
         statusIcon = Symbols.help;
         statusColor = AppTheme.warningOrange;
-        statusText = 'Permission Required';
-        statusSubtitle = 'Tap to request notification permissions';
+        statusText = l10n.permissionRequired;
+        statusSubtitle = l10n.permissionRequiredDescription;
         trailing = ElevatedButton.icon(
           icon: const Icon(Symbols.notification_add),
           label: Text(AppLocalizations.of(context).request),
-          onPressed: permissionState.isLoading 
-              ? null 
+          onPressed: permissionState.isLoading
+              ? null
               : () async {
-                  final granted = await ref.read(notificationPermissionProvider.notifier).requestPermissions();
+                  final granted = await ref
+                      .read(notificationPermissionProvider.notifier)
+                      .requestPermissions();
                   if (context.mounted && granted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                       SnackBar(
-                        content: Text(AppLocalizations.of(context).notificationPermissionsGranted),
+                      SnackBar(
+                        content: Text(
+                          AppLocalizations.of(
+                            context,
+                          ).notificationPermissionsGranted,
+                        ),
                         backgroundColor: AppTheme.successGreen,
                       ),
                     );
@@ -389,8 +451,10 @@ class SettingsScreen extends ConsumerWidget {
         statusSubtitle = 'Notifications delivered quietly';
         trailing = IconButton(
           icon: const Icon(Symbols.refresh),
-          onPressed: () => ref.read(notificationPermissionProvider.notifier).refreshPermissionStatus(),
-          tooltip: 'Refresh status',
+          onPressed: () => ref
+              .read(notificationPermissionProvider.notifier)
+              .refreshPermissionStatus(),
+          tooltip: l10n.refreshStatus,
         );
         break;
     }
@@ -402,7 +466,9 @@ class SettingsScreen extends ConsumerWidget {
       statusSubtitle = permissionState.error!;
       trailing = IconButton(
         icon: const Icon(Symbols.refresh),
-        onPressed: () => ref.read(notificationPermissionProvider.notifier).refreshPermissionStatus(),
+        onPressed: () => ref
+            .read(notificationPermissionProvider.notifier)
+            .refreshPermissionStatus(),
         tooltip: 'Retry',
       );
     }
@@ -410,10 +476,7 @@ class SettingsScreen extends ConsumerWidget {
     return ListTile(
       leading: permissionState.isLoading
           ? const CircularProgressIndicator()
-          : Icon(
-              statusIcon,
-              color: statusColor,
-            ),
+          : Icon(statusIcon, color: statusColor),
       title: Text(statusText),
       subtitle: Text(statusSubtitle),
       trailing: trailing,
@@ -425,7 +488,7 @@ class SettingsScreen extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(AppLocalizations.of(context).enableNotificationsTitle),
-        content:  Column(
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -19,10 +19,13 @@ class AppSettings with _$AppSettings {
     @Default(true) bool enableBreakReminders,
     @Default(true) bool enableHealthTips,
     @Default(false) bool enablePostureReminders,
-    @DurationConverter() @Default(Duration(minutes: 30)) Duration postureReminderInterval,
+    @DurationConverter()
+    @Default(Duration(minutes: 30))
+    Duration postureReminderInterval,
   }) = _AppSettings;
 
-  factory AppSettings.fromJson(Map<String, dynamic> json) => _$AppSettingsFromJson(json);
+  factory AppSettings.fromJson(Map<String, dynamic> json) =>
+      _$AppSettingsFromJson(json);
 }
 
 @freezed
@@ -34,7 +37,8 @@ class WorkingHours with _$WorkingHours {
     @Default(true) bool isEnabled,
   }) = _WorkingHours;
 
-  factory WorkingHours.fromJson(Map<String, dynamic> json) => _$WorkingHoursFromJson(json);
+  factory WorkingHours.fromJson(Map<String, dynamic> json) =>
+      _$WorkingHoursFromJson(json);
 }
 
 enum TimeFormat {
@@ -79,7 +83,8 @@ class DurationConverter implements JsonConverter<Duration, int> {
   int toJson(Duration duration) => duration.inMilliseconds;
 }
 
-class TimeOfDayConverter implements JsonConverter<TimeOfDay, Map<String, dynamic>> {
+class TimeOfDayConverter
+    implements JsonConverter<TimeOfDay, Map<String, dynamic>> {
   const TimeOfDayConverter();
 
   @override

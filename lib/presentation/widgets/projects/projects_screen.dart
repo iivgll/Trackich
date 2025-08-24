@@ -10,10 +10,15 @@ import '../../../l10n/generated/app_localizations.dart';
 
 // UI state providers
 final searchQueryProvider = StateProvider<String>((ref) => '');
-final projectsViewModeProvider = StateProvider<ProjectsViewMode>((ref) => ProjectsViewMode.grid);
-final selectedProjectFilterProvider = StateProvider<ProjectFilter>((ref) => ProjectFilter.active);
+final projectsViewModeProvider = StateProvider<ProjectsViewMode>(
+  (ref) => ProjectsViewMode.grid,
+);
+final selectedProjectFilterProvider = StateProvider<ProjectFilter>(
+  (ref) => ProjectFilter.active,
+);
 
 enum ProjectsViewMode { grid, list }
+
 enum ProjectFilter { all, active, archived }
 
 class ProjectsScreen extends ConsumerStatefulWidget {
@@ -38,19 +43,25 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
     final searchQuery = ref.watch(searchQueryProvider);
     final viewMode = ref.watch(projectsViewModeProvider);
     final filter = ref.watch(selectedProjectFilterProvider);
-    
+
     return Scaffold(
-      backgroundColor: Theme.of(context).brightness == Brightness.light 
-          ? AppTheme.lightBackground 
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? AppTheme.lightBackground
           : AppTheme.darkBackground,
       body: Column(
         children: [
           // Toolbar
           _buildToolbar(context, l10n, ref, viewMode, filter),
-          
+
           // Projects Content
           Expanded(
-            child: _buildProjectsContent(context, ref, searchQuery, viewMode, filter),
+            child: _buildProjectsContent(
+              context,
+              ref,
+              searchQuery,
+              viewMode,
+              filter,
+            ),
           ),
         ],
       ),
@@ -63,18 +74,23 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
     );
   }
 
-  Widget _buildToolbar(BuildContext context, AppLocalizations l10n, WidgetRef ref, 
-                      ProjectsViewMode viewMode, ProjectFilter filter) {
+  Widget _buildToolbar(
+    BuildContext context,
+    AppLocalizations l10n,
+    WidgetRef ref,
+    ProjectsViewMode viewMode,
+    ProjectFilter filter,
+  ) {
     return Container(
       padding: const EdgeInsets.all(AppTheme.space6),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.light 
-            ? AppTheme.lightSurface 
+        color: Theme.of(context).brightness == Brightness.light
+            ? AppTheme.lightSurface
             : AppTheme.darkSurface,
         border: Border(
           bottom: BorderSide(
-            color: Theme.of(context).brightness == Brightness.light 
-                ? AppTheme.lightSeparator 
+            color: Theme.of(context).brightness == Brightness.light
+                ? AppTheme.lightSeparator
                 : AppTheme.darkSeparator,
             width: 0.33,
           ),
@@ -111,7 +127,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
             ),
           ),
           const SizedBox(width: AppTheme.space4),
-          
+
           // Filter Dropdown
           DropdownButton<ProjectFilter>(
             value: filter,
@@ -137,7 +153,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
             },
           ),
           const SizedBox(width: AppTheme.space4),
-          
+
           // View Mode Toggle
           ToggleButtons(
             isSelected: [
@@ -145,13 +161,11 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
               viewMode == ProjectsViewMode.list,
             ],
             onPressed: (index) {
-              ref.read(projectsViewModeProvider.notifier).state = 
-                  index == 0 ? ProjectsViewMode.grid : ProjectsViewMode.list;
+              ref.read(projectsViewModeProvider.notifier).state = index == 0
+                  ? ProjectsViewMode.grid
+                  : ProjectsViewMode.list;
             },
-            constraints: const BoxConstraints(
-              minWidth: 40,
-              minHeight: 40,
-            ),
+            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
             children: const [
               Icon(Symbols.grid_view, size: 18),
               Icon(Symbols.list, size: 18),
@@ -162,20 +176,32 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
     );
   }
 
-  Widget _buildProjectsContent(BuildContext context, WidgetRef ref, String searchQuery,
-                              ProjectsViewMode viewMode, ProjectFilter filter) {
+  Widget _buildProjectsContent(
+    BuildContext context,
+    WidgetRef ref,
+    String searchQuery,
+    ProjectsViewMode viewMode,
+    ProjectFilter filter,
+  ) {
     final l10n = AppLocalizations.of(context);
     final projectsAsync = _getFilteredProjects(ref, filter);
-    
+
     return projectsAsync.when(
       data: (projects) {
         // Apply search filter
         final filteredProjects = searchQuery.isEmpty
             ? projects
             : projects.where((project) {
-                return project.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
-                       project.description.toLowerCase().contains(searchQuery.toLowerCase()) ||
-                       project.tags.any((tag) => tag.toLowerCase().contains(searchQuery.toLowerCase()));
+                return project.name.toLowerCase().contains(
+                      searchQuery.toLowerCase(),
+                    ) ||
+                    project.description.toLowerCase().contains(
+                      searchQuery.toLowerCase(),
+                    ) ||
+                    project.tags.any(
+                      (tag) =>
+                          tag.toLowerCase().contains(searchQuery.toLowerCase()),
+                    );
               }).toList();
 
         if (filteredProjects.isEmpty) {
@@ -207,9 +233,9 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
             const SizedBox(height: AppTheme.space2),
             Text(
               error.toString(),
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppTheme.gray600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppTheme.gray600),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppTheme.space4),
@@ -223,7 +249,10 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
     );
   }
 
-  AsyncValue<List<Project>> _getFilteredProjects(WidgetRef ref, ProjectFilter filter) {
+  AsyncValue<List<Project>> _getFilteredProjects(
+    WidgetRef ref,
+    ProjectFilter filter,
+  ) {
     try {
       switch (filter) {
         case ProjectFilter.all:
@@ -235,25 +264,27 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
       }
     } catch (e) {
       // If there's an error with filtered providers, fall back to all projects and filter manually
-      return ref.watch(projectsProvider).when(
-        data: (projects) {
-          List<Project> filtered;
-          switch (filter) {
-            case ProjectFilter.all:
-              filtered = projects;
-              break;
-            case ProjectFilter.active:
-              filtered = projects.where((p) => p.isActive).toList();
-              break;
-            case ProjectFilter.archived:
-              filtered = projects.where((p) => !p.isActive).toList();
-              break;
-          }
-          return AsyncValue.data(filtered);
-        },
-        loading: () => const AsyncValue.loading(),
-        error: (error, stack) => AsyncValue.error(error, stack),
-      );
+      return ref
+          .watch(projectsProvider)
+          .when(
+            data: (projects) {
+              List<Project> filtered;
+              switch (filter) {
+                case ProjectFilter.all:
+                  filtered = projects;
+                  break;
+                case ProjectFilter.active:
+                  filtered = projects.where((p) => p.isActive).toList();
+                  break;
+                case ProjectFilter.archived:
+                  filtered = projects.where((p) => !p.isActive).toList();
+                  break;
+              }
+              return AsyncValue.data(filtered);
+            },
+            loading: () => const AsyncValue.loading(),
+            error: (error, stack) => AsyncValue.error(error, stack),
+          );
     }
   }
 
@@ -271,18 +302,18 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
           const SizedBox(height: AppTheme.space4),
           Text(
             isSearchResult ? 'No projects found' : 'No projects yet',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: AppTheme.gray600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(color: AppTheme.gray600),
           ),
           const SizedBox(height: AppTheme.space2),
           Text(
-            isSearchResult 
+            isSearchResult
                 ? 'Try adjusting your search terms'
                 : 'Create your first project to get started',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: AppTheme.gray500,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: AppTheme.gray500),
             textAlign: TextAlign.center,
           ),
           if (!isSearchResult) ...[
@@ -302,7 +333,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final columns = AppTheme.getGridColumns(context).clamp(2, 4);
-        
+
         return GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: columns,
@@ -314,9 +345,12 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
           itemBuilder: (context, index) {
             return _ProjectCard(
               project: projects[index],
-              onTap: () => _showProjectDetailsDialog(context, ref, projects[index]),
-              onEdit: () => _showEditProjectDialog(context, ref, projects[index]),
-              onDelete: () => _showDeleteConfirmation(context, ref, projects[index]),
+              onTap: () =>
+                  _showProjectDetailsDialog(context, ref, projects[index]),
+              onEdit: () =>
+                  _showEditProjectDialog(context, ref, projects[index]),
+              onDelete: () =>
+                  _showDeleteConfirmation(context, ref, projects[index]),
             );
           },
         );
@@ -332,7 +366,8 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
           project: projects[index],
           onTap: () => _showProjectDetailsDialog(context, ref, projects[index]),
           onEdit: () => _showEditProjectDialog(context, ref, projects[index]),
-          onDelete: () => _showDeleteConfirmation(context, ref, projects[index]),
+          onDelete: () =>
+              _showDeleteConfirmation(context, ref, projects[index]),
         );
       },
     );
@@ -345,19 +380,25 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
       builder: (context) => _ProjectFormDialog(
         title: l10n.createProject,
         onSave: (name, description, color, tags, targetHours) {
-          ref.read(projectsProvider.notifier).createProject(
-            name: name,
-            description: description,
-            color: color,
-            tags: tags,
-            targetHoursPerWeek: targetHours,
-          );
+          ref
+              .read(projectsProvider.notifier)
+              .createProject(
+                name: name,
+                description: description,
+                color: color,
+                tags: tags,
+                targetHoursPerWeek: targetHours,
+              );
         },
       ),
     );
   }
 
-  void _showEditProjectDialog(BuildContext context, WidgetRef ref, Project project) {
+  void _showEditProjectDialog(
+    BuildContext context,
+    WidgetRef ref,
+    Project project,
+  ) {
     final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
@@ -365,28 +406,38 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
         title: l10n.edit,
         project: project,
         onSave: (name, description, color, tags, targetHours) {
-          ref.read(projectsProvider.notifier).updateProject(
-            project.copyWith(
-              name: name,
-              description: description,
-              color: color,
-              tags: tags,
-              targetHoursPerWeek: targetHours,
-            ),
-          );
+          ref
+              .read(projectsProvider.notifier)
+              .updateProject(
+                project.copyWith(
+                  name: name,
+                  description: description,
+                  color: color,
+                  tags: tags,
+                  targetHoursPerWeek: targetHours,
+                ),
+              );
         },
       ),
     );
   }
 
-  void _showProjectDetailsDialog(BuildContext context, WidgetRef ref, Project project) {
+  void _showProjectDetailsDialog(
+    BuildContext context,
+    WidgetRef ref,
+    Project project,
+  ) {
     showDialog(
       context: context,
       builder: (context) => _ProjectDetailsDialog(project: project),
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context, WidgetRef ref, Project project) {
+  void _showDeleteConfirmation(
+    BuildContext context,
+    WidgetRef ref,
+    Project project,
+  ) {
     final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
@@ -406,7 +457,9 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
                 SnackBar(content: Text(l10n.projectDeleted(project.name))),
               );
             },
-            style: FilledButton.styleFrom(backgroundColor: AppTheme.getErrorColor(context)),
+            style: FilledButton.styleFrom(
+              backgroundColor: AppTheme.getErrorColor(context),
+            ),
             child: Text(l10n.delete),
           ),
         ],
@@ -480,7 +533,9 @@ class _ProjectCard extends StatelessWidget {
                         child: Row(
                           children: [
                             Icon(
-                              project.isActive ? Symbols.archive : Symbols.unarchive,
+                              project.isActive
+                                  ? Symbols.archive
+                                  : Symbols.unarchive,
                               size: 16,
                             ),
                             const SizedBox(width: AppTheme.space2),
@@ -492,9 +547,18 @@ class _ProjectCard extends StatelessWidget {
                         value: 'delete',
                         child: Row(
                           children: [
-                            Icon(Symbols.delete, size: 16, color: AppTheme.getErrorColor(context)),
+                            Icon(
+                              Symbols.delete,
+                              size: 16,
+                              color: AppTheme.getErrorColor(context),
+                            ),
                             const SizedBox(width: AppTheme.space2),
-                            Text('Delete', style: TextStyle(color: AppTheme.getErrorColor(context))),
+                            Text(
+                              'Delete',
+                              style: TextStyle(
+                                color: AppTheme.getErrorColor(context),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -516,26 +580,26 @@ class _ProjectCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: AppTheme.space3),
-              
+
               // Project name
               Text(
                 project.name,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: AppTheme.space2),
-              
+
               // Description
               if (project.description.isNotEmpty) ...[
                 Expanded(
                   child: Text(
                     project.description,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.gray600,
-                    ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: AppTheme.gray600),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -543,7 +607,7 @@ class _ProjectCard extends StatelessWidget {
               ] else ...[
                 Expanded(child: Container()),
               ],
-              
+
               // Footer with time tracked and last active
               const SizedBox(height: AppTheme.space3),
               Row(
@@ -554,16 +618,16 @@ class _ProjectCard extends StatelessWidget {
                       children: [
                         Text(
                           TimeFormatter.formatHours(project.totalTimeTracked),
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: project.color,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(
+                                color: project.color,
+                                fontWeight: FontWeight.w600,
+                              ),
                         ),
                         Text(
                           'Total time',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppTheme.gray500,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppTheme.gray500),
                         ),
                       ],
                     ),
@@ -631,9 +695,9 @@ class _ProjectListTile extends StatelessWidget {
             Expanded(
               child: Text(
                 project.name,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
               ),
             ),
             if (!project.isActive)
@@ -704,9 +768,16 @@ class _ProjectListTile extends StatelessWidget {
               value: 'delete',
               child: Row(
                 children: [
-                  Icon(Symbols.delete, size: 16, color: AppTheme.getErrorColor(context)),
+                  Icon(
+                    Symbols.delete,
+                    size: 16,
+                    color: AppTheme.getErrorColor(context),
+                  ),
                   const SizedBox(width: AppTheme.space2),
-                  Text(l10n.delete, style: TextStyle(color: AppTheme.getErrorColor(context))),
+                  Text(
+                    l10n.delete,
+                    style: TextStyle(color: AppTheme.getErrorColor(context)),
+                  ),
                 ],
               ),
             ),
@@ -731,7 +802,14 @@ class _ProjectListTile extends StatelessWidget {
 class _ProjectFormDialog extends StatefulWidget {
   final String title;
   final Project? project;
-  final Function(String name, String description, Color color, List<String> tags, double targetHours) onSave;
+  final Function(
+    String name,
+    String description,
+    Color color,
+    List<String> tags,
+    double targetHours,
+  )
+  onSave;
 
   const _ProjectFormDialog({
     required this.title,
@@ -749,7 +827,7 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
   final _descriptionController = TextEditingController();
   final _targetHoursController = TextEditingController();
   final _tagsController = TextEditingController();
-  
+
   Color? _selectedColor;
   bool _isLoading = false;
 
@@ -760,7 +838,8 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
       _nameController.text = widget.project!.name;
       _descriptionController.text = widget.project!.description;
       _selectedColor = widget.project!.color;
-      _targetHoursController.text = widget.project!.targetHoursPerWeek.toString();
+      _targetHoursController.text = widget.project!.targetHoursPerWeek
+          .toString();
       _tagsController.text = widget.project!.tags.join(', ');
     } else {
       // Initialize with first project color for new projects
@@ -810,7 +889,7 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
                   },
                 ),
                 const SizedBox(height: AppTheme.space4),
-                
+
                 // Description
                 TextFormField(
                   controller: _descriptionController,
@@ -821,7 +900,7 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
                   maxLines: 3,
                 ),
                 const SizedBox(height: AppTheme.space4),
-                
+
                 // Color selection
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -834,7 +913,8 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
                     Wrap(
                       spacing: AppTheme.space3,
                       children: AppTheme.getProjectColors(context).map((color) {
-                        final isSelected = _selectedColor != null && _selectedColor == color;
+                        final isSelected =
+                            _selectedColor != null && _selectedColor == color;
                         return GestureDetector(
                           onTap: () => setState(() => _selectedColor = color),
                           child: Container(
@@ -845,7 +925,9 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
                               shape: BoxShape.circle,
                               border: isSelected
                                   ? Border.all(
-                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                      color: Theme.of(
+                                        context,
+                                      ).scaffoldBackgroundColor,
                                       width: 3,
                                     )
                                   : null,
@@ -866,7 +948,7 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
                   ],
                 ),
                 const SizedBox(height: AppTheme.space4),
-                
+
                 // Tags
                 TextFormField(
                   controller: _tagsController,
@@ -876,7 +958,7 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
                   ),
                 ),
                 const SizedBox(height: AppTheme.space4),
-                
+
                 // Target hours
                 TextFormField(
                   controller: _targetHoursController,
@@ -944,7 +1026,9 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
       final l10n = AppLocalizations.of(context);
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(widget.project == null ? l10n.created : l10n.updated)),
+        SnackBar(
+          content: Text(widget.project == null ? l10n.created : l10n.updated),
+        ),
       );
     } catch (e) {
       final l10n = AppLocalizations.of(context);
@@ -1001,14 +1085,11 @@ class _ProjectDetailsDialog extends StatelessWidget {
               Text(project.description),
               const SizedBox(height: AppTheme.space4),
             ],
-            
+
             // Statistics
-            Text(
-              'Statistics',
-              style: Theme.of(context).textTheme.labelLarge,
-            ),
+            Text('Statistics', style: Theme.of(context).textTheme.labelLarge),
             const SizedBox(height: AppTheme.space2),
-            
+
             _DetailRow(
               icon: Symbols.timer,
               label: 'Total Time',
@@ -1031,13 +1112,10 @@ class _ProjectDetailsDialog extends StatelessWidget {
                 label: 'Weekly Target',
                 value: '${project.targetHoursPerWeek}h',
               ),
-            
+
             if (project.tags.isNotEmpty) ...[
               const SizedBox(height: AppTheme.space4),
-              Text(
-                'Tags',
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
+              Text('Tags', style: Theme.of(context).textTheme.labelLarge),
               const SizedBox(height: AppTheme.space2),
               Wrap(
                 spacing: AppTheme.space2,
@@ -1084,16 +1162,16 @@ class _DetailRow extends StatelessWidget {
           const SizedBox(width: AppTheme.space2),
           Text(
             '$label: ',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.gray600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppTheme.gray600),
           ),
           Expanded(
             child: Text(
               value,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
             ),
           ),
         ],

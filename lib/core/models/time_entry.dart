@@ -21,29 +21,35 @@ class TimeEntry with _$TimeEntry {
     @Default(false) bool isCompleted,
   }) = _TimeEntry;
 
-  factory TimeEntry.fromJson(Map<String, dynamic> json) => _$TimeEntryFromJson(json);
+  factory TimeEntry.fromJson(Map<String, dynamic> json) =>
+      _$TimeEntryFromJson(json);
 }
 
 @freezed
 class BreakType with _$BreakType {
   const factory BreakType.short() = ShortBreak;
   const factory BreakType.long() = LongBreak;
-  const factory BreakType.custom({required String name, @DurationConverter() required Duration duration}) = CustomBreak;
+  const factory BreakType.custom({
+    required String name,
+    @DurationConverter() required Duration duration,
+  }) = CustomBreak;
 
-  factory BreakType.fromJson(Map<String, dynamic> json) => _$BreakTypeFromJson(json);
+  factory BreakType.fromJson(Map<String, dynamic> json) =>
+      _$BreakTypeFromJson(json);
 }
 
 extension TimeEntryExtension on TimeEntry {
   double get durationInHours => duration.inMilliseconds / (1000 * 60 * 60);
-  double get totalAccumulatedHours => totalAccumulatedTime.inMilliseconds / (1000 * 60 * 60);
-  
+  double get totalAccumulatedHours =>
+      totalAccumulatedTime.inMilliseconds / (1000 * 60 * 60);
+
   bool get isRunning => endTime == null && !isCompleted;
-  
+
   DateTime get effectiveEndTime => endTime ?? DateTime.now();
-  
+
   /// Get the display duration (accumulated + current session)
   Duration get displayDuration => totalAccumulatedTime + duration;
-  
+
   /// Get a unique key for grouping tasks (project + task name)
   String get taskGroupKey => '${projectId}_${taskName.trim().toLowerCase()}';
 }

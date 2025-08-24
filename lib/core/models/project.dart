@@ -19,7 +19,8 @@ class Project with _$Project {
     DateTime? lastActiveAt,
   }) = _Project;
 
-  factory Project.fromJson(Map<String, dynamic> json) => _$ProjectFromJson(json);
+  factory Project.fromJson(Map<String, dynamic> json) =>
+      _$ProjectFromJson(json);
 }
 
 // Custom converter for Color to/from JSON

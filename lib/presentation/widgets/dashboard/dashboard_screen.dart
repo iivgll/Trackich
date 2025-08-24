@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
-
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/time_formatter.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -16,10 +14,10 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    
+
     return Scaffold(
-      backgroundColor: Theme.of(context).brightness == Brightness.light 
-          ? AppTheme.lightBackground 
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? AppTheme.lightBackground
           : AppTheme.darkBackground,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppTheme.space5), // 16px
@@ -29,7 +27,7 @@ class DashboardScreen extends ConsumerWidget {
             // Header Section
             _buildHeader(context, l10n),
             const SizedBox(height: AppTheme.space8),
-            
+
             // Main Content Grid
             _buildMainContent(context),
           ],
@@ -40,18 +38,18 @@ class DashboardScreen extends ConsumerWidget {
 
   Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
     final now = DateTime.now();
-    
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppTheme.space8),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.light 
-            ? AppTheme.lightSurface 
+        color: Theme.of(context).brightness == Brightness.light
+            ? AppTheme.lightSurface
             : AppTheme.darkSurface,
         borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
         border: Border.all(
-          color: Theme.of(context).brightness == Brightness.light 
-              ? AppTheme.lightSeparator 
+          color: Theme.of(context).brightness == Brightness.light
+              ? AppTheme.lightSeparator
               : AppTheme.darkSeparator,
           width: 0.33,
         ),
@@ -63,10 +61,10 @@ class DashboardScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Good ${_getTimeOfDayGreeting()}',
+                  _getTimeOfDayGreeting(l10n),
                   style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                    color: Theme.of(context).brightness == Brightness.light 
-                        ? AppTheme.lightText 
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? AppTheme.lightText
                         : AppTheme.darkText,
                   ),
                 ),
@@ -74,29 +72,28 @@ class DashboardScreen extends ConsumerWidget {
                 Text(
                   TimeFormatter.formatDate(now),
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).brightness == Brightness.light 
-                        ? AppTheme.lightTextSecondary 
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? AppTheme.lightTextSecondary
                         : AppTheme.darkTextSecondary,
                   ),
                 ),
               ],
             ),
           ),
-          
         ],
       ),
     );
   }
 
-
-
   Widget _buildMainContent(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isLargeScreen = constraints.maxWidth >= AppTheme.desktopBreakpoint;
-        final isTablet = constraints.maxWidth >= AppTheme.tabletBreakpoint && 
-                        constraints.maxWidth < AppTheme.desktopBreakpoint;
-        
+        final isLargeScreen =
+            constraints.maxWidth >= AppTheme.desktopBreakpoint;
+        final isTablet =
+            constraints.maxWidth >= AppTheme.tabletBreakpoint &&
+            constraints.maxWidth < AppTheme.desktopBreakpoint;
+
         if (isLargeScreen) {
           return _buildDesktopLayout();
         } else if (isTablet) {
@@ -117,37 +114,25 @@ class DashboardScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Timer Section (8 columns)
-              Expanded(
-                flex: 8,
-                child: const TimerWidget(),
-              ),
+              Expanded(flex: 8, child: const TimerWidget()),
               const SizedBox(width: AppTheme.space6),
               // Summary Section (4 columns)
-              Expanded(
-                flex: 4,
-                child: const TodaySummaryWidget(),
-              ),
+              Expanded(flex: 4, child: const TodaySummaryWidget()),
             ],
           ),
         ),
         const SizedBox(height: AppTheme.space8),
-        
+
         // Quick Actions and Recent Tasks Row
         IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Quick Actions (6 columns)
-              Expanded(
-                flex: 6,
-                child: const QuickStartWidget(),
-              ),
+              Expanded(flex: 6, child: const QuickStartWidget()),
               const SizedBox(width: AppTheme.space6),
               // Recent Tasks (6 columns)
-              Expanded(
-                flex: 6,
-                child: const EnhancedRecentTasksWidget(),
-              ),
+              Expanded(flex: 6, child: const EnhancedRecentTasksWidget()),
             ],
           ),
         ),
@@ -161,7 +146,7 @@ class DashboardScreen extends ConsumerWidget {
         // Timer Section
         const TimerWidget(),
         const SizedBox(height: AppTheme.space6),
-        
+
         // Summary and Quick Actions Row
         IntrinsicHeight(
           child: Row(
@@ -174,7 +159,7 @@ class DashboardScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppTheme.space6),
-        
+
         // Recent Tasks Section
         const EnhancedRecentTasksWidget(),
       ],
@@ -188,21 +173,19 @@ class DashboardScreen extends ConsumerWidget {
         const SizedBox(height: AppTheme.space6),
         const TodaySummaryWidget(),
         const SizedBox(height: AppTheme.space6),
-        const QuickStartWidget(),
-        const SizedBox(height: AppTheme.space6),
         const EnhancedRecentTasksWidget(),
       ],
     );
   }
 
-  String _getTimeOfDayGreeting() {
+  String _getTimeOfDayGreeting(AppLocalizations l10n) {
     final hour = DateTime.now().hour;
     if (hour < 12) {
-      return 'morning';
+      return l10n.goodMorning;
     } else if (hour < 17) {
-      return 'afternoon';
+      return l10n.goodAfternoon;
     } else {
-      return 'evening';
+      return l10n.goodEvening;
     }
   }
 }

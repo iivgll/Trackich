@@ -10,7 +10,8 @@ class CreateProjectDialog extends ConsumerStatefulWidget {
   const CreateProjectDialog({super.key});
 
   @override
-  ConsumerState<CreateProjectDialog> createState() => _CreateProjectDialogState();
+  ConsumerState<CreateProjectDialog> createState() =>
+      _CreateProjectDialogState();
 }
 
 class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
@@ -91,9 +92,9 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
                   },
                   textInputAction: TextInputAction.next,
                 ),
-                
+
                 const SizedBox(height: AppTheme.space4),
-                
+
                 // Project Description
                 Text(
                   'Description (Optional)',
@@ -112,9 +113,9 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
                   maxLines: 2,
                   textInputAction: TextInputAction.next,
                 ),
-                
+
                 const SizedBox(height: AppTheme.space4),
-                
+
                 // Color Selection
                 Text(
                   'Project Color',
@@ -131,7 +132,8 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
                     spacing: AppTheme.space2,
                     runSpacing: AppTheme.space2,
                     children: AppTheme.getProjectColors(context).map((color) {
-                      final isSelected = _selectedColor != null && color == _selectedColor;
+                      final isSelected =
+                          _selectedColor != null && color == _selectedColor;
                       return GestureDetector(
                         onTap: () => setState(() => _selectedColor = color),
                         child: Container(
@@ -141,8 +143,8 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
                             color: color,
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: isSelected 
-                                  ? Theme.of(context).colorScheme.primary 
+                              color: isSelected
+                                  ? Theme.of(context).colorScheme.primary
                                   : Colors.transparent,
                               width: 3,
                             ),
@@ -159,9 +161,9 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
                     }).toList(),
                   ),
                 ),
-                
+
                 const SizedBox(height: AppTheme.space4),
-                
+
                 // Tags (Optional)
                 Text(
                   'Tags (Optional)',
@@ -179,9 +181,9 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
                   ),
                   textInputAction: TextInputAction.next,
                 ),
-                
+
                 const SizedBox(height: AppTheme.space4),
-                
+
                 // Target Hours Per Week
                 Text(
                   'Target Hours Per Week (Optional)',
@@ -197,7 +199,9 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
                   ),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   onChanged: (value) {
                     _targetHoursPerWeek = double.tryParse(value) ?? 0.0;
                   },
@@ -214,7 +218,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
         ),
         ElevatedButton.icon(
           onPressed: _isLoading ? null : _createProject,
-          icon: _isLoading 
+          icon: _isLoading
               ? const SizedBox(
                   width: 16,
                   height: 16,
@@ -243,19 +247,25 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
           .where((tag) => tag.isNotEmpty)
           .toList();
 
-      await ref.read(projectsProvider.notifier).createProject(
-        name: _nameController.text.trim(),
-        description: _descriptionController.text.trim(),
-        color: _selectedColor ?? AppTheme.getProjectColors(context).first,
-        tags: tags,
-        targetHoursPerWeek: _targetHoursPerWeek,
-      );
+      await ref
+          .read(projectsProvider.notifier)
+          .createProject(
+            name: _nameController.text.trim(),
+            description: _descriptionController.text.trim(),
+            color: _selectedColor ?? AppTheme.getProjectColors(context).first,
+            tags: tags,
+            targetHoursPerWeek: _targetHoursPerWeek,
+          );
 
       if (mounted) {
         Navigator.of(context).pop(true); // Return true to indicate success
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context).projectCreated(_nameController.text.trim())),
+            content: Text(
+              AppLocalizations.of(
+                context,
+              ).projectCreated(_nameController.text.trim()),
+            ),
             backgroundColor: AppTheme.successGreen,
           ),
         );
@@ -265,7 +275,11 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context).errorCreatingProject(error.toString())),
+            content: Text(
+              AppLocalizations.of(
+                context,
+              ).errorCreatingProject(error.toString()),
+            ),
             backgroundColor: AppTheme.getErrorColor(context),
           ),
         );

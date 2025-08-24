@@ -308,7 +308,7 @@ abstract class AppLocalizations {
   /// **'System'**
   String get systemTheme;
 
-  /// Enable notifications setting
+  /// Enable notifications button text
   ///
   /// In en, this message translates to:
   /// **'Enable Notifications'**
@@ -344,11 +344,11 @@ abstract class AppLocalizations {
   /// **'Take a Break'**
   String get takeBreak;
 
-  /// Break time notification message
+  /// Break time metric
   ///
   /// In en, this message translates to:
-  /// **'It\'s time for a {breakType} break!'**
-  String breakTime(String breakType);
+  /// **'Break Time'**
+  String get breakTime;
 
   /// Work completion message
   ///
@@ -721,6 +721,312 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Selected {projectName}. Enter a task to start the timer.'**
   String projectSelectedMessage(String projectName);
+
+  /// Application name
+  ///
+  /// In en, this message translates to:
+  /// **'Trackich'**
+  String get appName;
+
+  /// No data message for analytics
+  ///
+  /// In en, this message translates to:
+  /// **'No data for this period'**
+  String get noDataForPeriod;
+
+  /// Message to start tracking time
+  ///
+  /// In en, this message translates to:
+  /// **'Start tracking time to see analytics'**
+  String get startTrackingMessage;
+
+  /// Key metrics section title
+  ///
+  /// In en, this message translates to:
+  /// **'Key Metrics'**
+  String get keyMetrics;
+
+  /// Total work time metric
+  ///
+  /// In en, this message translates to:
+  /// **'Total Work Time'**
+  String get totalWorkTime;
+
+  /// Tasks completed metric
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks Completed'**
+  String get tasksCompleted;
+
+  /// Project breakdown chart title
+  ///
+  /// In en, this message translates to:
+  /// **'Project Breakdown'**
+  String get projectBreakdown;
+
+  /// Daily activity chart title
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Activity'**
+  String get dailyActivity;
+
+  /// Enable notifications button text
+  ///
+  /// In en, this message translates to:
+  /// **'Enable app notifications'**
+  String get enableAppNotifications;
+
+  /// Permissions required message
+  ///
+  /// In en, this message translates to:
+  /// **'Notification permissions required'**
+  String get notificationPermissionsRequired;
+
+  /// Notifications enabled status
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications Enabled'**
+  String get notificationsEnabled;
+
+  /// Notifications enabled description
+  ///
+  /// In en, this message translates to:
+  /// **'System notifications are working properly'**
+  String get notificationsEnabledDescription;
+
+  /// Refresh status tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh status'**
+  String get refreshStatus;
+
+  /// Notifications disabled status
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications Disabled'**
+  String get notificationsDisabled;
+
+  /// Notifications disabled description
+  ///
+  /// In en, this message translates to:
+  /// **'Enable in system settings to receive notifications'**
+  String get notificationsDisabledDescription;
+
+  /// Permission required status
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Required'**
+  String get permissionRequired;
+
+  /// Permission required description
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to request notification permissions'**
+  String get permissionRequiredDescription;
+
+  /// Morning time period
+  ///
+  /// In en, this message translates to:
+  /// **'morning'**
+  String get morning;
+
+  /// Afternoon time period
+  ///
+  /// In en, this message translates to:
+  /// **'afternoon'**
+  String get afternoon;
+
+  /// Evening time period
+  ///
+  /// In en, this message translates to:
+  /// **'evening'**
+  String get evening;
+
+  /// Yesterday label
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// Error loading tasks message
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading tasks'**
+  String get errorLoadingTasks;
+
+  /// Recent activity section title
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Activity'**
+  String get recentActivity;
+
+  /// No tasks today message
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks today'**
+  String get noTasksToday;
+
+  /// Start timer instruction
+  ///
+  /// In en, this message translates to:
+  /// **'Start a timer to track your work'**
+  String get startTimerToTrack;
+
+  /// No tasks this week message
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks this week'**
+  String get noTasksThisWeek;
+
+  /// Recent activity placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Your recent activity will appear here'**
+  String get recentActivityWillAppear;
+
+  /// No tasks this month message
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks this month'**
+  String get noTasksThisMonth;
+
+  /// Monthly activity placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Your monthly activity will appear here'**
+  String get monthlyActivityWillAppear;
+
+  /// No tasks found message
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks found'**
+  String get noTasksFound;
+
+  /// Start tracking instruction
+  ///
+  /// In en, this message translates to:
+  /// **'Start tracking time to see your activity'**
+  String get startTrackingToSeeActivity;
+
+  /// Total time column header
+  ///
+  /// In en, this message translates to:
+  /// **'Total Time'**
+  String get totalTime;
+
+  /// Sessions column header
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions'**
+  String get sessions;
+
+  /// Last activity column header
+  ///
+  /// In en, this message translates to:
+  /// **'Last Activity'**
+  String get lastActivity;
+
+  /// Average per session column header
+  ///
+  /// In en, this message translates to:
+  /// **'Average per Session'**
+  String get averagePerSession;
+
+  /// Good morning greeting
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get goodMorning;
+
+  /// Good afternoon greeting
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon'**
+  String get goodAfternoon;
+
+  /// Good evening greeting
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get goodEvening;
+
+  /// Break reminder notification title
+  ///
+  /// In en, this message translates to:
+  /// **'Time for a Break!'**
+  String get timeForBreakTitle;
+
+  /// Break reminder notification body
+  ///
+  /// In en, this message translates to:
+  /// **'You have been working{projectText} for {workMinutes}m. Consider taking a short break to stay productive.'**
+  String breakReminderBody(String projectText, int workMinutes);
+
+  /// Work reminder notification title
+  ///
+  /// In en, this message translates to:
+  /// **'Break Time Over!'**
+  String get backToWorkTitle;
+
+  /// Work reminder notification body
+  ///
+  /// In en, this message translates to:
+  /// **'You have been on break for {breakMinutes} minutes. Ready to get back to work?'**
+  String workReminderBody(int breakMinutes);
+
+  /// Task completed notification title
+  ///
+  /// In en, this message translates to:
+  /// **'Task Completed!'**
+  String get taskCompletedTitle;
+
+  /// Task completed notification body
+  ///
+  /// In en, this message translates to:
+  /// **'Great job! You completed \"{taskName}\" in {projectName} after {minutes}m of focused work.'**
+  String taskCompletedBody(String taskName, String projectName, int minutes);
+
+  /// Test notification title
+  ///
+  /// In en, this message translates to:
+  /// **'Test Notification'**
+  String get testNotificationTitle;
+
+  /// Test notification body
+  ///
+  /// In en, this message translates to:
+  /// **'This is a test notification to verify that notifications are working properly.'**
+  String get testNotificationBody;
+
+  /// Skip button text
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
+
+  /// Notification permission dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Notifications'**
+  String get notificationPermissionTitle;
+
+  /// Notification permission dialog body
+  ///
+  /// In en, this message translates to:
+  /// **'Get break reminders and stay productive with timely notifications. You can change this setting later in Settings.'**
+  String get notificationPermissionBody;
+
+  /// Message when notification permission is denied
+  ///
+  /// In en, this message translates to:
+  /// **'Notification permission denied. You can enable it later in Settings.'**
+  String get notificationPermissionDenied;
+
+  /// Generic error message
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred. Please try again.'**
+  String get errorOccurred;
 }
 
 class _AppLocalizationsDelegate

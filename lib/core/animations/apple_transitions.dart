@@ -14,14 +14,12 @@ class AppleTransitions {
         Tween<Offset>(
           begin: const Offset(1.0, 0.0),
           end: Offset.zero,
-        ).chain(
-          CurveTween(curve: AppTheme.easeInOutQuint),
-        ),
+        ).chain(CurveTween(curve: AppTheme.easeInOutQuint)),
       ),
       child: child,
     );
   }
-  
+
   // Apple-style fade transition
   static Widget fadeTransition(
     BuildContext context,
@@ -30,13 +28,11 @@ class AppleTransitions {
     Widget child,
   ) {
     return FadeTransition(
-      opacity: animation.drive(
-        CurveTween(curve: AppTheme.easeOut),
-      ),
+      opacity: animation.drive(CurveTween(curve: AppTheme.easeOut)),
       child: child,
     );
   }
-  
+
   // Apple-style scale transition for dialogs
   static Widget scaleTransition(
     BuildContext context,
@@ -46,14 +42,12 @@ class AppleTransitions {
   ) {
     return ScaleTransition(
       scale: animation.drive(
-        Tween<double>(begin: 0.8, end: 1.0).chain(
-          CurveTween(curve: AppTheme.easeInOutQuint),
-        ),
+        Tween<double>(
+          begin: 0.8,
+          end: 1.0,
+        ).chain(CurveTween(curve: AppTheme.easeInOutQuint)),
       ),
-      child: FadeTransition(
-        opacity: animation,
-        child: child,
-      ),
+      child: FadeTransition(opacity: animation, child: child),
     );
   }
 
@@ -69,9 +63,7 @@ class AppleTransitions {
         Tween<Offset>(
           begin: const Offset(0.0, 1.0),
           end: Offset.zero,
-        ).chain(
-          CurveTween(curve: AppTheme.easeInOutQuint),
-        ),
+        ).chain(CurveTween(curve: AppTheme.easeInOutQuint)),
       ),
       child: child,
     );
@@ -85,15 +77,16 @@ class AppleTransitions {
     Widget child,
   ) {
     return Transform.scale(
-      scale: animation.drive(
-        Tween<double>(begin: 0.95, end: 1.0).chain(
-          CurveTween(curve: AppTheme.easeInOutQuint),
-        ),
-      ).value,
+      scale: animation
+          .drive(
+            Tween<double>(
+              begin: 0.95,
+              end: 1.0,
+            ).chain(CurveTween(curve: AppTheme.easeInOutQuint)),
+          )
+          .value,
       child: FadeTransition(
-        opacity: animation.drive(
-          CurveTween(curve: AppTheme.easeOut),
-        ),
+        opacity: animation.drive(CurveTween(curve: AppTheme.easeOut)),
         child: child,
       ),
     );
@@ -127,19 +120,11 @@ class _AppleAnimatedButtonState extends State<AppleAnimatedButton>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: widget.scaleDown,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: AppTheme.easeInOut,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: AppTheme.easeInOut));
   }
 
   @override

@@ -22,7 +22,7 @@ class MainScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentPage = ref.watch(currentPageProvider);
-    final l10n = AppLocalizations.of(context);
+    AppLocalizations.of(context);
 
     // Initialize system tray context
     if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
@@ -116,7 +116,7 @@ class _AdaptiveSidebar extends StatelessWidget {
                       ),
                       const SizedBox(width: AppTheme.space3),
                       Text(
-                        'Trackich',
+                        AppLocalizations.of(context).appName,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: AppTheme.getPrimaryColor(context),

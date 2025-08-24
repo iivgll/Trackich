@@ -28,14 +28,10 @@ class QuickStartWidget extends ConsumerWidget {
             // Header
             Row(
               children: [
-                const Icon(
-                  Symbols.bolt,
-                  size: 20,
-                  color: AppTheme.primaryBlue,
-                ),
+                const Icon(Symbols.bolt, size: 20, color: AppTheme.primaryBlue),
                 const SizedBox(width: AppTheme.space2),
                 Text(
-                  'Quick Start',
+                  'Quick Start', // TODO: Add l10n.quickStart
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const Spacer(),
@@ -72,14 +68,14 @@ class QuickStartWidget extends ConsumerWidget {
                             ),
                             const SizedBox(height: AppTheme.space2),
                             Text(
-                              'No recent projects',
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: AppTheme.gray500,
-                              ),
+                              'No recent projects', // TODO: Add l10n.noRecentProjects
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(color: AppTheme.gray500),
                             ),
                             const SizedBox(height: AppTheme.space3),
                             ElevatedButton.icon(
-                              onPressed: () => _showCreateProjectDialog(context),
+                              onPressed: () =>
+                                  _showCreateProjectDialog(context),
                               icon: const Icon(Symbols.add, size: 16),
                               label: Text(l10n.createProject),
                               style: ElevatedButton.styleFrom(
@@ -96,30 +92,44 @@ class QuickStartWidget extends ConsumerWidget {
                       ),
                     );
                   }
-                  
+
                   // Calculate optimal grid layout based on available width
                   final cardWidth = 120.0;
                   final spacing = AppTheme.space3;
-                  final columns = ((constraints.maxWidth + spacing) / (cardWidth + spacing)).floor().clamp(2, 4);
-                  final rows = (projects.length / columns).ceil().clamp(1, 2); // Max 2 rows
-                  final gridHeight = rows * (cardWidth / 0.9) + (rows - 1) * spacing; // Calculate height based on aspect ratio
-                  
+                  final columns =
+                      ((constraints.maxWidth + spacing) / (cardWidth + spacing))
+                          .floor()
+                          .clamp(2, 4);
+                  final rows = (projects.length / columns).ceil().clamp(
+                    1,
+                    2,
+                  ); // Max 2 rows
+                  final gridHeight =
+                      rows * (cardWidth / 0.9) +
+                      (rows - 1) *
+                          spacing; // Calculate height based on aspect ratio
+
                   return SizedBox(
                     height: gridHeight,
                     child: GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(), // Disable scrolling
+                      physics:
+                          const NeverScrollableScrollPhysics(), // Disable scrolling
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: columns,
                         crossAxisSpacing: spacing,
                         mainAxisSpacing: spacing,
                         childAspectRatio: 0.9, // Slightly taller than wide
                       ),
-                      itemCount: projects.length.clamp(0, columns * 2), // Max 2 rows
+                      itemCount: projects.length.clamp(
+                        0,
+                        columns * 2,
+                      ), // Max 2 rows
                       itemBuilder: (context, index) {
                         final project = projects[index];
                         return _ProjectCard(
                           project: project,
-                          onTap: () => _startTimerWithProject(context, ref, project),
+                          onTap: () =>
+                              _startTimerWithProject(context, ref, project),
                         );
                       },
                     ),
@@ -134,8 +144,10 @@ class QuickStartWidget extends ConsumerWidget {
                 height: 120,
                 child: Center(
                   child: Text(
-                    'Error loading projects',
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    'Error loading projects', // TODO: Add l10n.errorLoadingProjects
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                   ),
                 ),
               ),
@@ -150,11 +162,13 @@ class QuickStartWidget extends ConsumerWidget {
     // Navigate to main timer and pre-select the project
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(AppLocalizations.of(context).projectSelectedMessage(project.name)),
+        content: Text(
+          AppLocalizations.of(context).projectSelectedMessage(project.name),
+        ),
         duration: const Duration(seconds: 2),
       ),
     );
-    
+
     // Update the timer with the selected project
     ref.read(timerProvider.notifier).updateProject(project.id);
   }
@@ -171,10 +185,7 @@ class _ProjectCard extends StatelessWidget {
   final project;
   final VoidCallback onTap;
 
-  const _ProjectCard({
-    required this.project,
-    required this.onTap,
-  });
+  const _ProjectCard({required this.project, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -184,8 +195,8 @@ class _ProjectCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            color: Theme.of(context).brightness == Brightness.light 
-                ? AppTheme.gray200 
+            color: Theme.of(context).brightness == Brightness.light
+                ? AppTheme.gray200
                 : AppTheme.gray600,
           ),
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -203,7 +214,7 @@ class _ProjectCard extends StatelessWidget {
                 ),
               ),
             ),
-            
+
             // Content
             Expanded(
               child: Padding(
@@ -226,7 +237,7 @@ class _ProjectCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: AppTheme.space2),
-                    
+
                     // Project name
                     Text(
                       project.name,
@@ -238,15 +249,15 @@ class _ProjectCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: AppTheme.space1),
-                    
+
                     // Last used
                     Text(
-                      project.lastActiveAt != null 
+                      project.lastActiveAt != null
                           ? TimeFormatter.formatTimeAgo(project.lastActiveAt!)
-                          : 'Never used',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppTheme.gray500,
-                      ),
+                          : 'Never used', // TODO: Add l10n.neverUsed
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(color: AppTheme.gray500),
                       textAlign: TextAlign.center,
                     ),
                   ],

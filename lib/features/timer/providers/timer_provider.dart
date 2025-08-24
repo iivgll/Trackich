@@ -14,12 +14,7 @@ import '../../system_tray/system_tray_service.dart';
 part 'timer_provider.g.dart';
 
 /// Timer state
-enum TimerState {
-  idle,
-  running,
-  paused,
-  breakTime,
-}
+enum TimerState { idle, running, paused, breakTime }
 
 /// Current timer information
 class CurrentTimer {
@@ -65,12 +60,14 @@ class CurrentTimer {
     );
   }
 
-  bool get canStart => state == TimerState.idle && projectId != null && taskName.isNotEmpty;
+  bool get canStart =>
+      state == TimerState.idle && projectId != null && taskName.isNotEmpty;
   bool get canPause => state == TimerState.running;
   bool get canResume => state == TimerState.paused;
   bool get canStop => state == TimerState.running || state == TimerState.paused;
-  bool get isActive => state == TimerState.running || state == TimerState.paused;
-  
+  bool get isActive =>
+      state == TimerState.running || state == TimerState.paused;
+
   /// Get the total display time (accumulated + current session)
   Duration get displayDuration => totalAccumulatedTime + elapsed;
 }
@@ -79,7 +76,8 @@ class CurrentTimer {
 @riverpod
 class Timer extends _$Timer {
   dart.Timer? _ticker;
-  int _lastBreakNotificationMinutes = -1; // Track last notification to prevent duplicates
+  int _lastBreakNotificationMinutes =
+      -1; // Track last notification to prevent duplicates
 
   @override
   CurrentTimer build() {
@@ -89,7 +87,7 @@ class Timer extends _$Timer {
 
     // Load any existing timer state
     _loadSavedTimer();
-    
+
     return const CurrentTimer();
   }
 
@@ -98,12 +96,12 @@ class Timer extends _$Timer {
     try {
       final storage = ref.read(storageServiceProvider);
       final savedTimer = await storage.getCurrentTimer();
-      
+
       if (savedTimer != null && savedTimer.isRunning) {
         // Calculate total elapsed time from start time to now
         final now = DateTime.now();
         final totalElapsed = now.difference(savedTimer.startTime);
-        
+
         state = CurrentTimer(
           projectId: savedTimer.projectId,
           taskName: savedTimer.taskName,
@@ -114,7 +112,7 @@ class Timer extends _$Timer {
           isBreak: savedTimer.isBreak,
           breakType: savedTimer.breakType,
         );
-        
+
         _startTicker();
       }
     } catch (e) {
@@ -139,15 +137,18 @@ class Timer extends _$Timer {
     if (!isBreak) {
       final storage = ref.read(storageServiceProvider);
       final existingTask = await storage.findExistingTask(projectId, taskName);
-      
+
       if (existingTask != null) {
         // Task exists - calculate total accumulated time from all sessions
-        totalAccumulatedTime = await storage.getTotalAccumulatedTimeForTask(projectId, taskName);
+        totalAccumulatedTime = await storage.getTotalAccumulatedTimeForTask(
+          projectId,
+          taskName,
+        );
       }
-      
+
       // Update project last active time
       ref.read(projectsProvider.notifier).updateLastActive(projectId);
-      
+
       // Add to recent tasks
       await storage.addRecentTask(taskName);
     }
@@ -168,7 +169,7 @@ class Timer extends _$Timer {
 
     _startTicker();
     await _saveCurrentTimer();
-    
+
     // Update system tray
     SystemTrayService.instance.updateTimerStatus();
   }
@@ -178,14 +179,14 @@ class Timer extends _$Timer {
     if (!state.canPause) return;
 
     _ticker?.cancel();
-    
+
     // Stop notification timers when pausing
     final notificationService = ref.read(notificationServiceProvider);
     notificationService.stopAllTimers();
-    
+
     state = state.copyWith(state: TimerState.paused);
     await _saveCurrentTimer();
-    
+
     // Update system tray
     SystemTrayService.instance.updateTimerStatus();
   }
@@ -198,7 +199,7 @@ class Timer extends _$Timer {
     state = state.copyWith(state: TimerState.running);
     _startTicker();
     await _saveCurrentTimer();
-    
+
     // Update system tray
     SystemTrayService.instance.updateTimerStatus();
   }
@@ -208,24 +209,24 @@ class Timer extends _$Timer {
     if (!state.canStop) return null;
 
     _ticker?.cancel();
-    
+
     // Stop notification timers and cancel pending notifications
     final notificationService = ref.read(notificationServiceProvider);
     notificationService.stopAllTimers();
-    
+
     final timeEntry = await _createTimeEntry();
-    
+
     // Reset timer state and notification tracking
     state = const CurrentTimer();
     _lastBreakNotificationMinutes = -1;
-    
+
     // Clear saved timer
     final storage = ref.read(storageServiceProvider);
     await storage.clearCurrentTimer();
-    
+
     // Update system tray
     SystemTrayService.instance.updateTimerStatus();
-    
+
     return timeEntry;
   }
 
@@ -243,10 +244,10 @@ class Timer extends _$Timer {
   Future<TimeEntry> _createTimeEntry() async {
     const uuid = Uuid();
     final storage = ref.read(storageServiceProvider);
-    
+
     // Calculate the new total accumulated time
     final newTotalAccumulatedTime = state.totalAccumulatedTime + state.elapsed;
-    
+
     final entry = TimeEntry(
       id: uuid.v4(),
       projectId: state.projectId!,
@@ -261,10 +262,10 @@ class Timer extends _$Timer {
     );
 
     await storage.saveTimeEntry(entry);
-    
+
     // Refresh projects to update total time
     ref.invalidate(projectsProvider);
-    
+
     return entry;
   }
 
@@ -273,17 +274,17 @@ class Timer extends _$Timer {
     _ticker?.cancel();
     _ticker = dart.Timer.periodic(const Duration(seconds: 1), (timer) {
       if (state.startTime == null) return;
-      
+
       final now = DateTime.now();
       final totalElapsed = now.difference(state.startTime!);
-      
+
       state = state.copyWith(elapsed: totalElapsed);
-      
+
       // Auto-save every 30 seconds
       if (totalElapsed.inSeconds % 30 == 0) {
         _saveCurrentTimer();
       }
-      
+
       // Check for break reminders
       _checkBreakReminder();
     });
@@ -292,7 +293,7 @@ class Timer extends _$Timer {
   /// Save current timer to storage
   Future<void> _saveCurrentTimer() async {
     if (!state.isActive) return;
-    
+
     try {
       final storage = ref.read(storageServiceProvider);
       final entry = TimeEntry(
@@ -305,7 +306,7 @@ class Timer extends _$Timer {
         isBreak: state.isBreak,
         breakType: state.breakType,
       );
-      
+
       await storage.saveCurrentTimer(entry);
     } catch (e) {
       // Ignore save errors to prevent disrupting the timer
@@ -315,27 +316,30 @@ class Timer extends _$Timer {
   /// Check if a break reminder should be shown
   void _checkBreakReminder() {
     if (state.isBreak) return;
-    
+
     ref.read(settingsProvider).whenData((settings) async {
-      if (!settings.enableBreakReminders || !settings.enableNotifications) return;
-      
-      // Check for break reminder based on user-defined interval  
+      if (!settings.enableBreakReminders || !settings.enableNotifications)
+        return;
+
+      // Check for break reminder based on user-defined interval
       // Use only the current session time for break reminders, not accumulated time
       final workMinutes = state.elapsed.inMinutes;
       final workSeconds = state.elapsed.inSeconds;
       final breakIntervalMinutes = settings.breakInterval.inMinutes;
-      
+
       // Only trigger at exact intervals and prevent duplicates
-      if (workMinutes > 0 && 
-          workMinutes % breakIntervalMinutes == 0 && 
-          workSeconds % 60 == 0 && // Only trigger at exact minute boundaries (0 seconds)
-          workMinutes != _lastBreakNotificationMinutes) { // Prevent duplicate notifications
-        
+      if (workMinutes > 0 &&
+          workMinutes % breakIntervalMinutes == 0 &&
+          workSeconds % 60 ==
+              0 && // Only trigger at exact minute boundaries (0 seconds)
+          workMinutes != _lastBreakNotificationMinutes) {
+        // Prevent duplicate notifications
+
         // Mark this minute as having sent a notification
         _lastBreakNotificationMinutes = workMinutes;
-        
+
         final notificationService = ref.read(notificationServiceProvider);
-        
+
         // Get project name for notification
         String? projectName;
         if (state.projectId != null) {
@@ -347,13 +351,15 @@ class Timer extends _$Timer {
             debugPrint('Failed to get project name for notification: $e');
           }
         }
-        
+
         await notificationService.showBreakReminder(
           workDuration: state.elapsed,
           projectName: projectName,
         );
-        
-        debugPrint('Break reminder notification scheduled for ${workMinutes}m (interval: ${breakIntervalMinutes}m)');
+
+        debugPrint(
+          'Break reminder notification scheduled for ${workMinutes}m (interval: ${breakIntervalMinutes}m)',
+        );
       }
     });
   }
@@ -371,7 +377,10 @@ class Timer extends _$Timer {
   }
 
   /// Find existing task and return its accumulated time
-  Future<Duration> getTaskAccumulatedTime(String projectId, String taskName) async {
+  Future<Duration> getTaskAccumulatedTime(
+    String projectId,
+    String taskName,
+  ) async {
     final storage = ref.read(storageServiceProvider);
     return await storage.getTotalAccumulatedTimeForTask(projectId, taskName);
   }
@@ -389,26 +398,38 @@ class Timer extends _$Timer {
 Future<Map<String, dynamic>> todayTimeSummary(TodayTimeSummaryRef ref) async {
   final storage = ref.read(storageServiceProvider);
   final entries = await storage.getTodaysTimeEntries();
-  
+
   // For today's summary, we need to use the actual duration from today's entries, not accumulated time
   // because we want to show what was done today specifically
-  final totalHours = entries.fold<double>(0.0, (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)));
+  final totalHours = entries.fold<double>(
+    0.0,
+    (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)),
+  );
   final workEntries = entries.where((e) => !e.isBreak);
   final breakEntries = entries.where((e) => e.isBreak);
-  
-  final workHours = workEntries.fold<double>(0.0, (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)));
-  final breakHours = breakEntries.fold<double>(0.0, (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)));
-  
+
+  final workHours = workEntries.fold<double>(
+    0.0,
+    (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)),
+  );
+  final breakHours = breakEntries.fold<double>(
+    0.0,
+    (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)),
+  );
+
   final completedTasks = workEntries.where((e) => e.isCompleted).length;
-  
+
   // Hours by project for today
   final projects = await ref.read(projectsProvider.future);
   final hoursByProject = <String, Map<String, dynamic>>{};
-  
+
   for (final project in projects) {
     final projectEntries = workEntries.where((e) => e.projectId == project.id);
-    final projectHours = projectEntries.fold<double>(0.0, (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)));
-    
+    final projectHours = projectEntries.fold<double>(
+      0.0,
+      (sum, entry) => sum + (entry.duration.inMilliseconds / (1000 * 60 * 60)),
+    );
+
     if (projectHours > 0) {
       hoursByProject[project.id] = {
         'name': project.name,
@@ -418,7 +439,7 @@ Future<Map<String, dynamic>> todayTimeSummary(TodayTimeSummaryRef ref) async {
       };
     }
   }
-  
+
   return {
     'totalHours': totalHours,
     'workHours': workHours,
@@ -434,4 +455,3 @@ Future<List<String>> recentTaskNames(RecentTaskNamesRef ref) async {
   final storage = ref.read(storageServiceProvider);
   return await storage.getRecentTaskNames();
 }
-
