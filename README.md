@@ -1,10 +1,33 @@
 # Trackich
 
-A beautiful time tracking application built with Flutter.
+> 🎯 **Personal Time Tracking Made Simple**  
+> A beautiful, cross-platform productivity companion designed specifically for remote workers and freelancers.
 
 <p align="center">
   <img src="assets/images/logo_500x500.png" alt="Trackich Logo" width="128" height="128">
 </p>
+
+## ✨ What Makes Trackich Special
+
+**🔥 Core Features**
+- **⏰ Smart Time Tracking** - Track work sessions with one-click start/stop
+- **📊 Advanced Analytics** - Focus score based on Attention Residue algorithm
+- **🎨 Project Management** - Organize tasks by colorful projects with archive support
+- **📅 Calendar Integration** - Visual timeline of your productivity
+- **🌙 Health-Conscious** - Smart break reminders to prevent burnout
+
+**📈 Professional Tools**
+- **📑 Excel Export** - Generate detailed XLSX reports for clients or accounting
+- **🎯 Focus Optimization** - Context-switch analysis and deep work tracking
+- **📱 Cross-Platform** - Works seamlessly on macOS, Windows, Linux, iOS & Android
+- **🌐 Multi-Language** - Full support for English and Russian
+- **🔔 Smart Notifications** - Customizable break reminders and work alerts
+
+**💎 Why Choose Trackich?**
+- **No Subscriptions** - Buy once, use forever
+- **Privacy First** - All data stays on your device
+- **Remote Work Optimized** - Built by remote workers, for remote workers
+- **Beautiful Design** - Native look and feel on every platform
 
 ## 🚀 Quick Start
 
