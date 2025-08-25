@@ -14,7 +14,7 @@ jobs:
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.32.1'
           channel: 'stable'
           
       - name: Configure Flutter
@@ -46,7 +46,7 @@ jobs:
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.32.1'
           channel: 'stable'
           
       - name: Configure Flutter
@@ -83,7 +83,7 @@ jobs:
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.32.1'
           channel: 'stable'
           
       - name: Configure Flutter
