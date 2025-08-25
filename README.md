@@ -135,7 +135,7 @@ sudo apt-get install -y \
   libayatana-appindicator3-dev \
   libappindicator3-dev \
   libsecret-1-dev \
-  jsoncpp-dev
+  libjsoncpp-dev
 
 flutter build linux --release
 ```
