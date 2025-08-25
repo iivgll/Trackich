@@ -86,7 +86,7 @@
    ```bash
    # Create clean temp directory
    mkdir -p /tmp/trackich_clean
-   cp -R "build/macos/Build/Products/Release/trackich.app" /tmp/trackich_clean/
+   cp -R "build/macos/Build/Products/Release/Trackich.app" /tmp/trackich_clean/
    
    # Create DMG
    create-dmg \
@@ -94,8 +94,8 @@
      --window-pos 200 120 \
      --window-size 600 400 \
      --icon-size 100 \
-     --icon "trackich.app" 150 200 \
-     --hide-extension "trackich.app" \
+     --icon "Trackich.app" 150 200 \
+     --hide-extension "Trackich.app" \
      --app-drop-link 450 200 \
      "Trackich.dmg" \
      "/tmp/trackich_clean/"
@@ -108,44 +108,43 @@
 
 ### 🪟 Windows
 
-1. **Build the application**
-   ```bash
-   flutter build windows --release
-   ```
+**Native (Windows host only):**
+```bash
+flutter build windows --release
+```
 
-2. **Create installer (Optional)**
-   
-   Using [Inno Setup](https://jrsoftware.org/isdl.php):
-   ```bash
-   # Install Inno Setup, then create installer script
-   # Output will be in build/windows/x64/runner/Release/
-   ```
+**Cross-platform (macOS/Linux with Docker):**
+```bash
+./build-windows.sh
+```
 
-**Output:** `build/windows/x64/runner/Release/` folder contains the executable and dependencies
+**Output:** `build/windows/x64/runner/Release/` or `dist/windows/`
 
 ### 🐧 Linux
 
-1. **Install build dependencies**
-   ```bash
-   sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev
-   ```
+**Native (Linux host only):**
+```bash
+# Install dependencies first
+sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev
+flutter build linux --release
+```
 
-2. **Build the application**
-   ```bash
-   flutter build linux --release
-   ```
+**Cross-platform (macOS/Windows with Docker):**
+```bash
+./build-linux.sh
+```
 
-3. **Create AppImage (Optional)**
-   ```bash
-   # Download appimagetool
-   wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
-   chmod +x appimagetool-x86_64.AppImage
-   
-   # Create AppImage structure and build
-   # (Additional setup required)
-   ```
+**Output:** `build/linux/x64/release/bundle/` or `dist/linux/`
 
-**Output:** `build/linux/x64/release/bundle/` folder contains the executable and dependencies
+### ☁️ GitHub Actions (All Platforms)
+
+Push a tag to automatically build for all platforms:
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+This will create releases for macOS, Windows, and Linux automatically.
 
 ### 📱 Mobile Builds
 
