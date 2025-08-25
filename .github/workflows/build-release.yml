@@ -6,6 +6,9 @@ on:
       - 'v*'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-windows:
     runs-on: windows-latest
@@ -81,7 +84,7 @@ jobs:
         uses: actions/download-artifact@v4
         
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             windows-release/trackich-windows.tar.gz
@@ -99,5 +102,4 @@ jobs:
             
             ### Note:
             Linux build is available via Docker - see README.md for instructions.
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
