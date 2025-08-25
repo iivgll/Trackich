@@ -39,52 +39,6 @@ jobs:
           name: windows-release
           path: trackich-windows.tar.gz
 
-  build-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.32.1'
-          channel: 'stable'
-          
-      - name: Configure Flutter
-        run: |
-          flutter config --no-analytics
-          flutter --version
-          
-      - name: Install Linux dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            clang \
-            cmake \
-            ninja-build \
-            pkg-config \
-            libgtk-3-dev \
-            libayatana-appindicator3-dev \
-            libappindicator3-dev \
-            libsecret-1-dev \
-            libjsoncpp-dev
-          
-      - name: Install dependencies
-        run: flutter pub get
-        
-      - name: Build Linux
-        run: flutter build linux --release
-        
-      - name: Create Linux archive
-        run: |
-          cd build/linux/x64/release/bundle
-          tar -czf ../../../../../trackich-linux.tar.gz *
-        
-      - name: Archive Linux artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-release
-          path: trackich-linux.tar.gz
-
   build-macos:
     runs-on: macos-latest
     steps:
@@ -119,7 +73,7 @@ jobs:
           path: Trackich.dmg
 
   create-release:
-    needs: [build-windows, build-linux, build-macos]
+    needs: [build-windows, build-macos]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
@@ -131,19 +85,19 @@ jobs:
         with:
           files: |
             windows-release/trackich-windows.tar.gz
-            linux-release/trackich-linux.tar.gz
             macos-release/Trackich.dmg
           body: |
             ## Trackich v${{ github.ref_name }}
             
             ### Downloads:
             - **Windows**: trackich-windows.tar.gz
-            - **Linux**: trackich-linux.tar.gz  
             - **macOS**: Trackich.dmg
             
             ### Installation:
             - **Windows**: Extract archive and run Trackich.exe
-            - **Linux**: Extract archive and run ./trackich
             - **macOS**: Open DMG and drag Trackich.app to Applications
+            
+            ### Note:
+            Linux build is available via Docker - see README.md for instructions.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

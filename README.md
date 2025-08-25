@@ -147,15 +147,15 @@ flutter build linux --release
 
 **Output:** `build/linux/x64/release/bundle/` or `dist/linux/`
 
-### ☁️ GitHub Actions (All Platforms)
+### ☁️ GitHub Actions (Windows & macOS)
 
-Push a tag to automatically build for all platforms:
+Push a tag to automatically build for Windows and macOS:
 ```bash
 git tag v1.0.0
 git push origin v1.0.0
 ```
 
-This will create releases for macOS, Windows, and Linux automatically.
+This will create releases for macOS and Windows automatically.
 
 ### 📱 Mobile Builds
 
@@ -239,6 +239,14 @@ To add a new language:
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### MIT License Summary
+- ✅ Commercial use
+- ✅ Modification  
+- ✅ Distribution
+- ✅ Private use
+- ❌ Liability
+- ❌ Warranty
 
 ## 🤝 Contributing
 
