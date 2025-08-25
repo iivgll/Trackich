@@ -14,8 +14,13 @@ jobs:
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.24.5'
           channel: 'stable'
+          
+      - name: Configure Flutter
+        run: |
+          flutter config --no-analytics
+          flutter --version
           
       - name: Install dependencies
         run: flutter pub get
@@ -23,11 +28,16 @@ jobs:
       - name: Build Windows
         run: flutter build windows --release
         
+      - name: Create Windows archive
+        run: |
+          cd build/windows/x64/runner/Release
+          tar -czf ../../../../../trackich-windows.tar.gz *
+        
       - name: Archive Windows artifacts
         uses: actions/upload-artifact@v4
         with:
           name: windows-release
-          path: build/windows/x64/runner/Release/
+          path: trackich-windows.tar.gz
 
   build-linux:
     runs-on: ubuntu-latest
@@ -36,8 +46,13 @@ jobs:
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.24.5'
           channel: 'stable'
+          
+      - name: Configure Flutter
+        run: |
+          flutter config --no-analytics
+          flutter --version
           
       - name: Install Linux dependencies
         run: |
@@ -50,11 +65,16 @@ jobs:
       - name: Build Linux
         run: flutter build linux --release
         
+      - name: Create Linux archive
+        run: |
+          cd build/linux/x64/release/bundle
+          tar -czf ../../../../../trackich-linux.tar.gz *
+        
       - name: Archive Linux artifacts
         uses: actions/upload-artifact@v4
         with:
           name: linux-release
-          path: build/linux/x64/release/bundle/
+          path: trackich-linux.tar.gz
 
   build-macos:
     runs-on: macos-latest
@@ -63,8 +83,13 @@ jobs:
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.24.5'
           channel: 'stable'
+          
+      - name: Configure Flutter
+        run: |
+          flutter config --no-analytics
+          flutter --version
           
       - name: Install dependencies
         run: flutter pub get
@@ -82,9 +107,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: macos-release
-          path: |
-            build/macos/Build/Products/Release/Trackich.app
-            Trackich.dmg
+          path: Trackich.dmg
 
   create-release:
     needs: [build-windows, build-linux, build-macos]
@@ -98,8 +121,20 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            windows-release/*
-            linux-release/*
+            windows-release/trackich-windows.tar.gz
+            linux-release/trackich-linux.tar.gz
             macos-release/Trackich.dmg
+          body: |
+            ## Trackich v${{ github.ref_name }}
+            
+            ### Downloads:
+            - **Windows**: trackich-windows.tar.gz
+            - **Linux**: trackich-linux.tar.gz  
+            - **macOS**: Trackich.dmg
+            
+            ### Installation:
+            - **Windows**: Extract archive and run Trackich.exe
+            - **Linux**: Extract archive and run ./trackich
+            - **macOS**: Open DMG and drag Trackich.app to Applications
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
