@@ -30,7 +30,7 @@ Future<AnalyticsData> analyticsData(Ref ref) async {
     final allEntries = await storage.getTimeEntries();
     final rangeEntries = allEntries.where((entry) {
       return entry.isCompleted &&
-          entry.startTime.isAfter(startDate) &&
+          !entry.startTime.isBefore(startDate) &&
           entry.startTime.isBefore(now.add(const Duration(days: 1)));
     }).toList();
 
@@ -70,7 +70,10 @@ Future<AnalyticsData> analyticsData(Ref ref) async {
 DateTime _getStartDateForRange(DateTime now, AnalyticsTimeRange range) {
   switch (range) {
     case AnalyticsTimeRange.week:
-      return now.subtract(Duration(days: now.weekday - 1));
+      // Начало текущей недели (понедельник в 00:00:00)
+      final daysFromMonday = now.weekday - 1;
+      final startOfWeek = now.subtract(Duration(days: daysFromMonday));
+      return DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
     case AnalyticsTimeRange.month:
       return DateTime(now.year, now.month, 1);
     case AnalyticsTimeRange.quarter:
