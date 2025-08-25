@@ -125,7 +125,18 @@ flutter build windows --release
 **Native (Linux host only):**
 ```bash
 # Install dependencies first
-sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev
+sudo apt-get update
+sudo apt-get install -y \
+  clang \
+  cmake \
+  ninja-build \
+  pkg-config \
+  libgtk-3-dev \
+  libayatana-appindicator3-dev \
+  libappindicator3-dev \
+  libsecret-1-dev \
+  jsoncpp-dev
+
 flutter build linux --release
 ```
 
