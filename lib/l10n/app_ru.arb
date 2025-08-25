@@ -206,5 +206,7 @@
   "created": "Создан",
   "lastActive": "Последняя активность",
   "weeklyTarget": "Недельная цель",
-  "tags": "Теги"
+  "tags": "Теги",
+
+  "todayWorkTime": "Сегодня: {time}"
 }

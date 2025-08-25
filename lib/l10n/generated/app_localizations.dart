@@ -1213,6 +1213,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tags'**
   String get tags;
+
+  /// Work time for today in dashboard header
+  ///
+  /// In en, this message translates to:
+  /// **'Today: {time}'**
+  String todayWorkTime(String time);
 }
 
 class _AppLocalizationsDelegate

@@ -618,4 +618,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get tags => 'Теги';
+
+  @override
+  String todayWorkTime(String time) {
+    return 'Сегодня: $time';
+  }
 }

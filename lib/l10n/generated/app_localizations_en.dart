@@ -615,4 +615,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tags => 'Tags';
+
+  @override
+  String todayWorkTime(String time) {
+    return 'Today: $time';
+  }
 }

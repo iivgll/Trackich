@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/time_formatter.dart';
 import '../../../../l10n/generated/app_localizations.dart';
+import '../providers/daily_time_provider.dart';
 import '../widgets/enhanced_recent_tasks_widget.dart';
 import '../widgets/quick_start_widget.dart';
 import '../widgets/timer_widget.dart';
@@ -25,7 +26,7 @@ class DashboardScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header Section
-            _buildHeader(context, l10n),
+            _buildHeader(context, l10n, ref),
             const SizedBox(height: AppTheme.space8),
 
             // Main Content Grid
@@ -36,8 +37,9 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
+  Widget _buildHeader(BuildContext context, AppLocalizations l10n, WidgetRef ref) {
     final now = DateTime.now();
+    final dailyTimeAsync = ref.watch(currentDailyWorkTimeProvider);
 
     return Container(
       width: double.infinity,
@@ -76,6 +78,34 @@ class DashboardScreen extends ConsumerWidget {
                         ? AppTheme.lightTextSecondary
                         : AppTheme.darkTextSecondary,
                   ),
+                ),
+                const SizedBox(height: AppTheme.space3),
+                // Время работы за сегодня
+                dailyTimeAsync.when(
+                  data: (duration) {
+                    if (duration.inMinutes > 0) {
+                      return Row(
+                        children: [
+                          Icon(
+                            Icons.schedule,
+                            size: 16,
+                            color: AppTheme.primaryBlue,
+                          ),
+                          const SizedBox(width: AppTheme.space2),
+                          Text(
+                            l10n.todayWorkTime(TimeFormatter.formatDuration(duration)),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: AppTheme.primaryBlue,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                  loading: () => const SizedBox.shrink(),
+                  error: (error, _) => const SizedBox.shrink(),
                 ),
               ],
             ),
