@@ -3,12 +3,12 @@ import 'dart:async' as dart;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:trackich/features/projects/presentation/providers/projects_provider.dart';
+import 'package:trackich/features/projects/presentation/widgets/create_project_dialog.dart';
+import 'package:trackich/features/timer/presentation/providers/timer_provider.dart';
 import 'package:tray_manager/tray_manager.dart';
 
 import '../../core/theme/app_theme.dart';
-import '../timer/providers/timer_provider.dart';
-import '../projects/providers/projects_provider.dart';
-import '../../presentation/widgets/projects/create_project_dialog.dart';
 
 class SystemTrayService with TrayListener {
   static SystemTrayService? _instance;

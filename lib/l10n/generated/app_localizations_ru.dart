@@ -337,7 +337,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get edit => 'Редактировать';
 
   @override
-  String get created => 'создан';
+  String get created => 'Создан';
 
   @override
   String get updated => 'обновлен';
@@ -511,9 +511,111 @@ class AppLocalizationsRu extends AppLocalizations {
       'Получайте напоминания о перерывах и оставайтесь продуктивными с своевременными уведомлениями. Вы можете изменить эту настройку позже в Настройках.';
 
   @override
+  String get archiveProject => 'Архивировать проект';
+
+  @override
+  String get unarchiveProject => 'Восстановить проект';
+
+  @override
+  String get archiveProjectConfirmTitle => 'Архивировать проект?';
+
+  @override
+  String get archiveProjectConfirmMessage =>
+      'Вы уверены, что хотите архивировать этот проект? Все активные таймеры для этого проекта будут остановлены.';
+
+  @override
+  String get unarchiveProjectConfirmTitle => 'Восстановить проект?';
+
+  @override
+  String get unarchiveProjectConfirmMessage =>
+      'Этот проект будет восстановлен в список активных проектов.';
+
+  @override
+  String get activeTimerWillBeStopped =>
+      'Внимание: Для этого проекта работает активный таймер. Он будет автоматически остановлен при архивировании проекта.';
+
+  @override
   String get notificationPermissionDenied =>
       'Разрешение на уведомления отклонено. Вы можете включить их позже в Настройках.';
 
   @override
   String get errorOccurred => 'Произошла ошибка. Попробуйте еще раз.';
+
+  @override
+  String get focusTimer => 'Таймер фокуса';
+
+  @override
+  String get running => 'Запущен';
+
+  @override
+  String get paused => 'Приостановлен';
+
+  @override
+  String previousSession(String previousTime, String sessionTime) {
+    return 'Ранее: $previousTime + Сессия: $sessionTime';
+  }
+
+  @override
+  String get resumeTimer => 'Возобновить таймер';
+
+  @override
+  String get errorLoadingProjects => 'Ошибка загрузки проектов';
+
+  @override
+  String get createNewProject => 'Создать новый проект';
+
+  @override
+  String get noProjectsYet => 'Проектов пока нет';
+
+  @override
+  String get createFirstProject =>
+      'Создайте свой первый проект, чтобы начать отслеживать время';
+
+  @override
+  String get taskWillBeContinued => 'Эта задача будет продолжена';
+
+  @override
+  String continueTaskPreviousTime(String previousTime) {
+    return 'Продолжить задачу - Предыдущее время: $previousTime';
+  }
+
+  @override
+  String get noProjectsFound => 'Проекты не найдены';
+
+  @override
+  String get tryAdjustingSearch => 'Попробуйте изменить условия поиска';
+
+  @override
+  String get createFirstProjectToStart =>
+      'Создайте свой первый проект, чтобы начать';
+
+  @override
+  String get enterProjectName => 'Введите название проекта';
+
+  @override
+  String get projectNameRequired => 'Название проекта обязательно';
+
+  @override
+  String get enterProjectDescription => 'Введите описание проекта';
+
+  @override
+  String get enterTagsCommaSeparated => 'Введите теги через запятую';
+
+  @override
+  String get pleaseEnterValidNumber => 'Пожалуйста, введите корректное число';
+
+  @override
+  String get description => 'Описание';
+
+  @override
+  String get statistics => 'Статистика';
+
+  @override
+  String get lastActive => 'Последняя активность';
+
+  @override
+  String get weeklyTarget => 'Недельная цель';
+
+  @override
+  String get tags => 'Теги';
 }

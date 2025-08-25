@@ -335,7 +335,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit => 'Edit';
 
   @override
-  String get created => 'created';
+  String get created => 'Created';
 
   @override
   String get updated => 'updated';
@@ -508,9 +508,111 @@ class AppLocalizationsEn extends AppLocalizations {
       'Get break reminders and stay productive with timely notifications. You can change this setting later in Settings.';
 
   @override
+  String get archiveProject => 'Archive Project';
+
+  @override
+  String get unarchiveProject => 'Unarchive Project';
+
+  @override
+  String get archiveProjectConfirmTitle => 'Archive Project?';
+
+  @override
+  String get archiveProjectConfirmMessage =>
+      'Are you sure you want to archive this project? Any active timers for this project will be stopped.';
+
+  @override
+  String get unarchiveProjectConfirmTitle => 'Unarchive Project?';
+
+  @override
+  String get unarchiveProjectConfirmMessage =>
+      'This project will be restored to your active projects list.';
+
+  @override
+  String get activeTimerWillBeStopped =>
+      'Warning: There is an active timer running for this project. It will be automatically stopped if you archive the project.';
+
+  @override
   String get notificationPermissionDenied =>
       'Notification permission denied. You can enable it later in Settings.';
 
   @override
   String get errorOccurred => 'An error occurred. Please try again.';
+
+  @override
+  String get focusTimer => 'Focus Timer';
+
+  @override
+  String get running => 'Running';
+
+  @override
+  String get paused => 'Paused';
+
+  @override
+  String previousSession(String previousTime, String sessionTime) {
+    return 'Previous: $previousTime + Session: $sessionTime';
+  }
+
+  @override
+  String get resumeTimer => 'Resume Timer';
+
+  @override
+  String get errorLoadingProjects => 'Error loading projects';
+
+  @override
+  String get createNewProject => 'Create New Project';
+
+  @override
+  String get noProjectsYet => 'No Projects Yet';
+
+  @override
+  String get createFirstProject =>
+      'Create your first project to start tracking time';
+
+  @override
+  String get taskWillBeContinued => 'This task will be continued';
+
+  @override
+  String continueTaskPreviousTime(String previousTime) {
+    return 'Continue task - Previous time: $previousTime';
+  }
+
+  @override
+  String get noProjectsFound => 'No projects found';
+
+  @override
+  String get tryAdjustingSearch => 'Try adjusting your search terms';
+
+  @override
+  String get createFirstProjectToStart =>
+      'Create your first project to get started';
+
+  @override
+  String get enterProjectName => 'Enter project name';
+
+  @override
+  String get projectNameRequired => 'Project name is required';
+
+  @override
+  String get enterProjectDescription => 'Enter project description';
+
+  @override
+  String get enterTagsCommaSeparated => 'Enter tags separated by commas';
+
+  @override
+  String get pleaseEnterValidNumber => 'Please enter a valid number';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get statistics => 'Statistics';
+
+  @override
+  String get lastActive => 'Last Active';
+
+  @override
+  String get weeklyTarget => 'Weekly Target';
+
+  @override
+  String get tags => 'Tags';
 }

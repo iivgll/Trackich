@@ -164,6 +164,47 @@
   "notificationPermissionTitle": "Включить уведомления",
   "notificationPermissionBody": "Получайте напоминания о перерывах и оставайтесь продуктивными с своевременными уведомлениями. Вы можете изменить эту настройку позже в Настройках.",
 
+  "archiveProject": "Архивировать проект",
+  "unarchiveProject": "Восстановить проект",
+
+  "archiveProjectConfirmTitle": "Архивировать проект?",
+  "archiveProjectConfirmMessage": "Вы уверены, что хотите архивировать этот проект? Все активные таймеры для этого проекта будут остановлены.",
+
+  "unarchiveProjectConfirmTitle": "Восстановить проект?", 
+  "unarchiveProjectConfirmMessage": "Этот проект будет восстановлен в список активных проектов.",
+
+  "activeTimerWillBeStopped": "Внимание: Для этого проекта работает активный таймер. Он будет автоматически остановлен при архивировании проекта.",
+
   "notificationPermissionDenied": "Разрешение на уведомления отклонено. Вы можете включить их позже в Настройках.",
-  "errorOccurred": "Произошла ошибка. Попробуйте еще раз."
+  "errorOccurred": "Произошла ошибка. Попробуйте еще раз.",
+
+  "focusTimer": "Таймер фокуса",
+  "running": "Запущен", 
+  "paused": "Приостановлен",
+  "previousSession": "Ранее: {previousTime} + Сессия: {sessionTime}",
+  "resumeTimer": "Возобновить таймер",
+  "errorLoadingProjects": "Ошибка загрузки проектов",
+  "createNewProject": "Создать новый проект",
+  "noProjectsYet": "Проектов пока нет",
+  "createFirstProject": "Создайте свой первый проект, чтобы начать отслеживать время",
+  "taskWillBeContinued": "Эта задача будет продолжена",
+  "continueTaskPreviousTime": "Продолжить задачу - Предыдущее время: {previousTime}",
+
+  "noProjectsFound": "Проекты не найдены",
+  "tryAdjustingSearch": "Попробуйте изменить условия поиска",
+  "createFirstProjectToStart": "Создайте свой первый проект, чтобы начать",
+  "projectName": "Название проекта",
+  "enterProjectName": "Введите название проекта",
+  "projectNameRequired": "Название проекта обязательно",
+  "enterProjectDescription": "Введите описание проекта",
+  "projectColor": "Цвет проекта",
+  "enterTagsCommaSeparated": "Введите теги через запятую",
+  "pleaseEnterValidNumber": "Пожалуйста, введите корректное число",
+  "description": "Описание",
+  "statistics": "Статистика",
+  "totalTime": "Общее время",
+  "created": "Создан",
+  "lastActive": "Последняя активность",
+  "weeklyTarget": "Недельная цель",
+  "tags": "Теги"
 }

@@ -6,7 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
-import 'features/settings/providers/settings_provider.dart';
+import 'features/settings/presentation/providers/settings_provider.dart';
 import 'presentation/screens/main_screen.dart';
 import 'presentation/screens/onboarding_screen.dart';
 import 'l10n/generated/app_localizations.dart';
@@ -107,7 +107,6 @@ class TrackichApp extends ConsumerWidget {
 
       // Route configuration for navigation
       onGenerateRoute: (settings) {
-        // TODO: Implement proper routing when needed
         return MaterialPageRoute(builder: (context) => const MainScreen());
       },
     );

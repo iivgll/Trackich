@@ -6,11 +6,11 @@ import 'package:material_symbols_icons/symbols.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../l10n/generated/app_localizations.dart';
-import '../widgets/dashboard/dashboard_screen.dart';
-import '../widgets/projects/projects_screen.dart';
-import '../widgets/calendar/calendar_screen.dart';
-import '../widgets/analytics/analytics_screen.dart';
-import '../widgets/settings/settings_screen.dart';
+import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
+import '../../features/projects/presentation/screens/projects_screen.dart';
+import '../../features/calendar/presentation/screens/calendar_screen.dart';
+import '../../features/analytics/presentation/screens/analytics_screen.dart';
+import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/system_tray/system_tray_service.dart';
 
 // Navigation provider

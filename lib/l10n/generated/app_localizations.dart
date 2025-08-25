@@ -176,7 +176,7 @@ abstract class AppLocalizations {
   /// **'Create Project'**
   String get createProject;
 
-  /// Project name field label
+  /// Project name label
   ///
   /// In en, this message translates to:
   /// **'Project Name'**
@@ -704,10 +704,10 @@ abstract class AppLocalizations {
   /// **'Edit'**
   String get edit;
 
-  /// Created action text
+  /// Created date label
   ///
   /// In en, this message translates to:
-  /// **'created'**
+  /// **'Created'**
   String get created;
 
   /// Updated action text
@@ -908,7 +908,7 @@ abstract class AppLocalizations {
   /// **'Start tracking time to see your activity'**
   String get startTrackingToSeeActivity;
 
-  /// Total time column header
+  /// Total time label
   ///
   /// In en, this message translates to:
   /// **'Total Time'**
@@ -1016,6 +1016,48 @@ abstract class AppLocalizations {
   /// **'Get break reminders and stay productive with timely notifications. You can change this setting later in Settings.'**
   String get notificationPermissionBody;
 
+  /// Archive project button text
+  ///
+  /// In en, this message translates to:
+  /// **'Archive Project'**
+  String get archiveProject;
+
+  /// Unarchive project button text
+  ///
+  /// In en, this message translates to:
+  /// **'Unarchive Project'**
+  String get unarchiveProject;
+
+  /// Archive project confirmation dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Archive Project?'**
+  String get archiveProjectConfirmTitle;
+
+  /// Archive project confirmation dialog message
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to archive this project? Any active timers for this project will be stopped.'**
+  String get archiveProjectConfirmMessage;
+
+  /// Unarchive project confirmation dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Unarchive Project?'**
+  String get unarchiveProjectConfirmTitle;
+
+  /// Unarchive project confirmation dialog message
+  ///
+  /// In en, this message translates to:
+  /// **'This project will be restored to your active projects list.'**
+  String get unarchiveProjectConfirmMessage;
+
+  /// Warning message about active timer being stopped
+  ///
+  /// In en, this message translates to:
+  /// **'Warning: There is an active timer running for this project. It will be automatically stopped if you archive the project.'**
+  String get activeTimerWillBeStopped;
+
   /// Message when notification permission is denied
   ///
   /// In en, this message translates to:
@@ -1027,6 +1069,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An error occurred. Please try again.'**
   String get errorOccurred;
+
+  /// Timer widget title
+  ///
+  /// In en, this message translates to:
+  /// **'Focus Timer'**
+  String get focusTimer;
+
+  /// Timer running status
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get running;
+
+  /// Timer paused status
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get paused;
+
+  /// Shows previous accumulated time and current session time
+  ///
+  /// In en, this message translates to:
+  /// **'Previous: {previousTime} + Session: {sessionTime}'**
+  String previousSession(String previousTime, String sessionTime);
+
+  /// Resume timer button text
+  ///
+  /// In en, this message translates to:
+  /// **'Resume Timer'**
+  String get resumeTimer;
+
+  /// Error message when projects fail to load
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading projects'**
+  String get errorLoadingProjects;
+
+  /// Create new project option in dropdown
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Project'**
+  String get createNewProject;
+
+  /// Empty state title when no projects exist
+  ///
+  /// In en, this message translates to:
+  /// **'No Projects Yet'**
+  String get noProjectsYet;
+
+  /// Empty state description when no projects exist
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first project to start tracking time'**
+  String get createFirstProject;
+
+  /// Indicates task will continue with previous time
+  ///
+  /// In en, this message translates to:
+  /// **'This task will be continued'**
+  String get taskWillBeContinued;
+
+  /// Shows previous time for continued task
+  ///
+  /// In en, this message translates to:
+  /// **'Continue task - Previous time: {previousTime}'**
+  String continueTaskPreviousTime(String previousTime);
+
+  /// Message when no projects found in search
+  ///
+  /// In en, this message translates to:
+  /// **'No projects found'**
+  String get noProjectsFound;
+
+  /// Suggestion when no search results found
+  ///
+  /// In en, this message translates to:
+  /// **'Try adjusting your search terms'**
+  String get tryAdjustingSearch;
+
+  /// Message when no projects exist yet
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first project to get started'**
+  String get createFirstProjectToStart;
+
+  /// Project name input hint
+  ///
+  /// In en, this message translates to:
+  /// **'Enter project name'**
+  String get enterProjectName;
+
+  /// Validation message for empty project name
+  ///
+  /// In en, this message translates to:
+  /// **'Project name is required'**
+  String get projectNameRequired;
+
+  /// Project description input hint
+  ///
+  /// In en, this message translates to:
+  /// **'Enter project description'**
+  String get enterProjectDescription;
+
+  /// Tags input hint
+  ///
+  /// In en, this message translates to:
+  /// **'Enter tags separated by commas'**
+  String get enterTagsCommaSeparated;
+
+  /// Validation message for invalid number input
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid number'**
+  String get pleaseEnterValidNumber;
+
+  /// Description label
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// Statistics section label
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get statistics;
+
+  /// Last active date label
+  ///
+  /// In en, this message translates to:
+  /// **'Last Active'**
+  String get lastActive;
+
+  /// Weekly target label
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Target'**
+  String get weeklyTarget;
+
+  /// Tags label
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get tags;
 }
 
 class _AppLocalizationsDelegate

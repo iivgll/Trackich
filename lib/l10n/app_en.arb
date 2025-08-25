@@ -871,6 +871,41 @@
     "description": "Notification permission dialog body"
   },
 
+  "archiveProject": "Archive Project",
+  "@archiveProject": {
+    "description": "Archive project button text"
+  },
+
+  "unarchiveProject": "Unarchive Project", 
+  "@unarchiveProject": {
+    "description": "Unarchive project button text"
+  },
+
+  "archiveProjectConfirmTitle": "Archive Project?",
+  "@archiveProjectConfirmTitle": {
+    "description": "Archive project confirmation dialog title"
+  },
+
+  "archiveProjectConfirmMessage": "Are you sure you want to archive this project? Any active timers for this project will be stopped.",
+  "@archiveProjectConfirmMessage": {
+    "description": "Archive project confirmation dialog message"
+  },
+
+  "unarchiveProjectConfirmTitle": "Unarchive Project?",
+  "@unarchiveProjectConfirmTitle": {
+    "description": "Unarchive project confirmation dialog title"
+  },
+
+  "unarchiveProjectConfirmMessage": "This project will be restored to your active projects list.",
+  "@unarchiveProjectConfirmMessage": {
+    "description": "Unarchive project confirmation dialog message"
+  },
+
+  "activeTimerWillBeStopped": "Warning: There is an active timer running for this project. It will be automatically stopped if you archive the project.",
+  "@activeTimerWillBeStopped": {
+    "description": "Warning message about active timer being stopped"
+  },
+
   "notificationPermissionDenied": "Notification permission denied. You can enable it later in Settings.",
   "@notificationPermissionDenied": {
     "description": "Message when notification permission is denied"
@@ -879,5 +914,158 @@
   "errorOccurred": "An error occurred. Please try again.",
   "@errorOccurred": {
     "description": "Generic error message"
+  },
+
+  "focusTimer": "Focus Timer",
+  "@focusTimer": {
+    "description": "Timer widget title"
+  },
+
+  "running": "Running", 
+  "@running": {
+    "description": "Timer running status"
+  },
+
+  "paused": "Paused",
+  "@paused": {
+    "description": "Timer paused status"
+  },
+
+  "previousSession": "Previous: {previousTime} + Session: {sessionTime}",
+  "@previousSession": {
+    "description": "Shows previous accumulated time and current session time",
+    "placeholders": {
+      "previousTime": {
+        "type": "String"
+      },
+      "sessionTime": {
+        "type": "String"
+      }
+    }
+  },
+
+  "resumeTimer": "Resume Timer",
+  "@resumeTimer": {
+    "description": "Resume timer button text"
+  },
+
+  "errorLoadingProjects": "Error loading projects",
+  "@errorLoadingProjects": {
+    "description": "Error message when projects fail to load"
+  },
+
+  "createNewProject": "Create New Project",
+  "@createNewProject": {
+    "description": "Create new project option in dropdown"
+  },
+
+  "noProjectsYet": "No Projects Yet",
+  "@noProjectsYet": {
+    "description": "Empty state title when no projects exist"
+  },
+
+  "createFirstProject": "Create your first project to start tracking time",
+  "@createFirstProject": {
+    "description": "Empty state description when no projects exist"
+  },
+
+  "taskWillBeContinued": "This task will be continued",
+  "@taskWillBeContinued": {
+    "description": "Indicates task will continue with previous time"
+  },
+
+  "continueTaskPreviousTime": "Continue task - Previous time: {previousTime}",
+  "@continueTaskPreviousTime": {
+    "description": "Shows previous time for continued task",
+    "placeholders": {
+      "previousTime": {
+        "type": "String"
+      }
+    }
+  },
+
+  "noProjectsFound": "No projects found",
+  "@noProjectsFound": {
+    "description": "Message when no projects found in search"
+  },
+
+  "tryAdjustingSearch": "Try adjusting your search terms",
+  "@tryAdjustingSearch": {
+    "description": "Suggestion when no search results found"
+  },
+
+  "createFirstProjectToStart": "Create your first project to get started",
+  "@createFirstProjectToStart": {
+    "description": "Message when no projects exist yet"
+  },
+
+  "projectName": "Project Name",
+  "@projectName": {
+    "description": "Project name label"
+  },
+
+  "enterProjectName": "Enter project name",
+  "@enterProjectName": {
+    "description": "Project name input hint"
+  },
+
+  "projectNameRequired": "Project name is required",
+  "@projectNameRequired": {
+    "description": "Validation message for empty project name"
+  },
+
+  "enterProjectDescription": "Enter project description",
+  "@enterProjectDescription": {
+    "description": "Project description input hint"
+  },
+
+  "projectColor": "Project Color",
+  "@projectColor": {
+    "description": "Project color selection label"
+  },
+
+  "enterTagsCommaSeparated": "Enter tags separated by commas",
+  "@enterTagsCommaSeparated": {
+    "description": "Tags input hint"
+  },
+
+  "pleaseEnterValidNumber": "Please enter a valid number",
+  "@pleaseEnterValidNumber": {
+    "description": "Validation message for invalid number input"
+  },
+
+  "description": "Description",
+  "@description": {
+    "description": "Description label"
+  },
+
+  "statistics": "Statistics",
+  "@statistics": {
+    "description": "Statistics section label"
+  },
+
+  "totalTime": "Total Time",
+  "@totalTime": {
+    "description": "Total time label"
+  },
+
+  "created": "Created",
+  "@created": {
+    "description": "Created date label"
+  },
+
+  "lastActive": "Last Active",
+  "@lastActive": {
+    "description": "Last active date label"
+  },
+
+  "weeklyTarget": "Weekly Target",
+  "@weeklyTarget": {
+    "description": "Weekly target label"
+  },
+
+  "tags": "Tags",
+  "@tags": {
+    "description": "Tags label"
   }
 }

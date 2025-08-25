@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trackich/features/projects/domain/models/project.dart';
 
 import '../constants/app_constants.dart';
-import '../models/project.dart';
 import '../models/time_entry.dart';
 import '../models/settings.dart';
 
@@ -461,7 +461,7 @@ class StorageService {
             totalTime: Duration.zero,
             sessionCount: 0,
             lastActivity: entry.startTime,
-            projectColor: project.color.value,
+            projectColor: project.color.toARGB32(),
           );
         }
       }

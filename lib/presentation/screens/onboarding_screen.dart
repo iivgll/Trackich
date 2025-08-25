@@ -5,7 +5,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../core/theme/app_theme.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../features/notifications/notification_service.dart';
-import '../../features/settings/providers/settings_provider.dart';
+import '../../features/settings/presentation/providers/settings_provider.dart';
 import '../screens/main_screen.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {

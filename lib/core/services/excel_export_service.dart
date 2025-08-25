@@ -4,9 +4,9 @@ import 'package:excel/excel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:file_saver/file_saver.dart';
+import 'package:trackich/features/projects/domain/models/project.dart';
 
 import '../models/time_entry.dart';
-import '../models/project.dart';
 import '../utils/time_formatter.dart';
 
 class ExcelExportService {
