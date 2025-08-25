@@ -34,13 +34,13 @@ jobs:
       - name: Create Windows archive
         run: |
           cd build/windows/x64/runner/Release
-          tar -czf ../../../../../trackich-windows.tar.gz *
+          powershell Compress-Archive -Path * -DestinationPath ../../../../../trackich-windows.zip
         
       - name: Archive Windows artifacts
         uses: actions/upload-artifact@v4
         with:
           name: windows-release
-          path: trackich-windows.tar.gz
+          path: trackich-windows.zip
 
   build-macos:
     runs-on: macos-latest
@@ -87,17 +87,17 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            windows-release/trackich-windows.tar.gz
+            windows-release/trackich-windows.zip
             macos-release/Trackich.dmg
           body: |
             ## Trackich v${{ github.ref_name }}
             
             ### Downloads:
-            - **Windows**: trackich-windows.tar.gz
+            - **Windows**: trackich-windows.zip
             - **macOS**: Trackich.dmg
             
             ### Installation:
-            - **Windows**: Extract archive and run Trackich.exe
+            - **Windows**: Extract ZIP archive and run Trackich.exe
             - **macOS**: Open DMG and drag Trackich.app to Applications
             
             ### Note:

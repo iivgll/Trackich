@@ -12,4 +12,10 @@ mkdir -p dist/windows
 # Run container and copy output
 docker run --rm -v $(pwd)/dist/windows:/output trackich-windows-builder
 
-echo "Windows build completed! Output in: dist/windows/"
+# Create ZIP archive
+echo "Creating Windows ZIP archive..."
+cd dist/windows
+zip -r trackich-windows.zip *
+cd ../..
+
+echo "Windows build completed! Output: trackich-windows.zip"

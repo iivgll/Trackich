@@ -118,7 +118,7 @@ flutter build windows --release
 ./build-windows.sh
 ```
 
-**Output:** `build/windows/x64/runner/Release/` or `dist/windows/`
+**Output:** `build/windows/x64/runner/Release/` or `trackich-windows.zip`
 
 ### 🐧 Linux
 
