@@ -6,7 +6,7 @@ part of 'timer_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$todayTimeSummaryHash() => r'0fa01162a445e8f0909c778581feed689ea7bf52';
+String _$todayTimeSummaryHash() => r'9d456f88c5357bac69f2d3ae801558eaa0a3aba5';
 
 /// Provider for today's time summary
 ///
@@ -47,7 +47,7 @@ final recentTaskNamesProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef RecentTaskNamesRef = AutoDisposeFutureProviderRef<List<String>>;
-String _$timerHash() => r'0be2404ff81e2f7f9a1ba162bb0108d273e32145';
+String _$timerHash() => r'1b7c402af5a61f5ebf25dc686f88446f00b8fc8d';
 
 /// Provider for the current timer
 ///

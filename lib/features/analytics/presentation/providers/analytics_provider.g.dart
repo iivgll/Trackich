@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'analytics_screen.dart';
+part of 'analytics_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$analyticsDataHash() => r'08cad18d53f8e0b7f041d32ddd78cae90a708a05';
+String _$analyticsDataHash() => r'7875e3870207ac59ebda577c815d999391817aa2';
 
 /// See also [analyticsData].
 @ProviderFor(analyticsData)

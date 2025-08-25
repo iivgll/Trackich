@@ -367,7 +367,7 @@ class _SearchProjectsProviderElement
   String get query => (origin as SearchProjectsProvider).query;
 }
 
-String _$projectsHash() => r'7a568538f759268d57b64822a56f1508573343da';
+String _$projectsHash() => r'45271734f40d9d6b17475569d41bbd8dc6f9e04a';
 
 /// Provider for managing projects
 ///

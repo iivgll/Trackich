@@ -7,7 +7,7 @@ part of 'enhanced_recent_tasks_widget.dart';
 // **************************************************************************
 
 String _$filteredTimeEntriesHash() =>
-    r'1d1e034e1ff8eb18d7df3d73ab11b915b497173d';
+    r'd05691d5b8db34d998191375be7391245ab83630';
 
 /// Copied from Dart SDK
 class _SystemHash {

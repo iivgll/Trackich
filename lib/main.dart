@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
@@ -15,13 +17,25 @@ import 'features/notifications/notification_service.dart';
 import 'features/notifications/providers/notification_permission_provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize notifications
-  await NotificationService.initialize();
-
-  // Initialize system tray for desktop platforms
+  // Desktop-specific initialization
   if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
+    // Initialize window manager for desktop platforms to avoid black screen
+    await windowManager.ensureInitialized();
+
+    WindowOptions windowOptions = const WindowOptions(
+      size: Size(1200, 800),
+      center: true,
+      backgroundColor: Colors.transparent,
+    );
+
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+
+    // Initialize system tray
     try {
       SystemTrayService.initialize();
       debugPrint('System tray service started for ${Platform.operatingSystem}');
@@ -29,7 +43,13 @@ void main() async {
       debugPrint('System tray initialization failed: $e');
       debugPrint('Platform: ${Platform.operatingSystem}');
     }
+  } else {
+    // Mobile platforms - preserve native splash screen
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   }
+
+  // Initialize notifications
+  await NotificationService.initialize();
 
   runApp(
     const ProviderScope(child: _EagerInitialization(child: TrackichApp())),
@@ -56,6 +76,102 @@ class _EagerInitialization extends ConsumerWidget {
     });
 
     return child;
+  }
+}
+
+class SplashScreen extends ConsumerStatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _initializeApp();
+  }
+
+  _initializeApp() async {
+    // Wait for a minimum splash duration for better UX
+    await Future.delayed(const Duration(milliseconds: 1500));
+
+    if (mounted) {
+      // Remove native splash screen on mobile platforms
+      if (!Platform.isMacOS && !Platform.isWindows && !Platform.isLinux) {
+        FlutterNativeSplash.remove();
+      }
+
+      // Navigate to main app
+      Navigator.of(context).pushReplacement(
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const AppRouter(),
+          transitionDuration: const Duration(milliseconds: 300),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final themeMode = ref.watch(themeModeProvider);
+    final isDarkMode =
+        themeMode == ThemeMode.dark ||
+        (themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
+
+    return Scaffold(
+      backgroundColor: isDarkMode ? AppTheme.darkSurface : Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // App Logo
+            Image.asset(
+              'assets/images/logo_500x500.png',
+              width: 120,
+              height: 120,
+            ),
+            const SizedBox(height: 32),
+            // App Name
+            Text(
+              'Trackich',
+              style: TextStyle(
+                fontSize: 36,
+                fontWeight: FontWeight.w700,
+                color: AppTheme.primaryBlue,
+                letterSpacing: -0.5,
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Tagline
+            Text(
+              'Personal Time Tracking',
+              style: TextStyle(
+                fontSize: 16,
+                color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 48),
+            // Loading indicator
+            SizedBox(
+              width: 28,
+              height: 28,
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                color: AppTheme.primaryBlue,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -102,8 +218,8 @@ class TrackichApp extends ConsumerWidget {
       // Remove debug banner
       debugShowCheckedModeBanner: false,
 
-      // Home screen - show onboarding for new users
-      home: const AppRouter(),
+      // Home screen - show splash screen first
+      home: const SplashScreen(),
 
       // Route configuration for navigation
       onGenerateRoute: (settings) {
