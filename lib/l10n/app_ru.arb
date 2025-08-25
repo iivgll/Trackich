@@ -208,5 +208,13 @@
   "weeklyTarget": "Недельная цель",
   "tags": "Теги",
 
-  "todayWorkTime": "Сегодня: {time}"
+  "todayWorkTime": "Время работы сегодня: {time}",
+
+  "timerRecoveryTitle": "Восстановление таймера",
+  "timerRecoveryMessage": "Таймер не был корректно остановлен при закрытии приложения. Вы работали над:",
+  "addTimeToTask": "Добавить время к задаче",
+  "discardTime": "Отменить время",
+  "timerRecoveryTask": "Задача: {taskName}",
+  "timerRecoveryProject": "Проект: {projectName}",
+  "timerRecoveryDuration": "Продолжительность: {duration}"
 }

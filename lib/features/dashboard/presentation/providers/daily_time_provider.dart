@@ -13,24 +13,24 @@ Future<Duration> dailyWorkTime(Ref ref) async {
   final now = DateTime.now();
   final todayStart = DateTime(now.year, now.month, now.day);
   final todayEnd = todayStart.add(const Duration(days: 1));
-  
+
   try {
     final entries = await storage.getTimeEntries();
-    
+
     // Фильтруем записи за сегодня (только завершенные и не перерывы)
     final todayEntries = entries.where((entry) {
       return entry.isCompleted &&
-             !entry.isBreak &&
-             entry.startTime.isAfter(todayStart) &&
-             entry.startTime.isBefore(todayEnd);
+          !entry.isBreak &&
+          entry.startTime.isAfter(todayStart) &&
+          entry.startTime.isBefore(todayEnd);
     }).toList();
-    
+
     // Суммируем время
     final totalDuration = todayEntries.fold<Duration>(
       Duration.zero,
       (sum, entry) => sum + entry.duration,
     );
-    
+
     return totalDuration;
   } catch (e) {
     return Duration.zero;
@@ -45,7 +45,7 @@ final dailyTimeRefreshProvider = StateProvider<int>((ref) => 0);
 Future<Duration> currentDailyWorkTime(Ref ref) async {
   // Следим за провайдером обновления
   ref.watch(dailyTimeRefreshProvider);
-  
+
   // Автоматически обновляем каждую минуту
   final timer = Timer.periodic(const Duration(minutes: 1), (timer) {
     if (ref.exists(dailyTimeRefreshProvider)) {
@@ -54,9 +54,9 @@ Future<Duration> currentDailyWorkTime(Ref ref) async {
       timer.cancel();
     }
   });
-  
+
   // Отменяем таймер при dispose
   ref.onDispose(() => timer.cancel());
-  
+
   return ref.watch(dailyWorkTimeProvider.future);
 }

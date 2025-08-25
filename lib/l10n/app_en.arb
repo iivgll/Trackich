@@ -1069,13 +1069,66 @@
     "description": "Tags label"
   },
 
-  "todayWorkTime": "Today: {time}",
+  "todayWorkTime": "Work time today: {time}",
   "@todayWorkTime": {
-    "description": "Work time for today in dashboard header",
+    "description": "Total work time completed for today in dashboard header",
     "placeholders": {
       "time": {
         "type": "String",
         "example": "2h 30m"
+      }
+    }
+  },
+
+  "timerRecoveryTitle": "Timer Recovery",
+  "@timerRecoveryTitle": {
+    "description": "Timer recovery dialog title"
+  },
+
+  "timerRecoveryMessage": "The timer was not stopped properly when the app was closed. You were working on:",
+  "@timerRecoveryMessage": {
+    "description": "Timer recovery dialog message"
+  },
+
+  "addTimeToTask": "Add Time to Task",
+  "@addTimeToTask": {
+    "description": "Button to add recovered time to task"
+  },
+
+  "discardTime": "Discard Time",
+  "@discardTime": {
+    "description": "Button to discard recovered time"
+  },
+
+  "timerRecoveryTask": "Task: {taskName}",
+  "@timerRecoveryTask": {
+    "description": "Shows the task name in recovery dialog",
+    "placeholders": {
+      "taskName": {
+        "type": "String",
+        "example": "Feature development"
+      }
+    }
+  },
+
+  "timerRecoveryProject": "Project: {projectName}",
+  "@timerRecoveryProject": {
+    "description": "Shows the project name in recovery dialog",
+    "placeholders": {
+      "projectName": {
+        "type": "String",
+        "example": "My Project"
+      }
+    }
+  },
+
+  "timerRecoveryDuration": "Duration: {duration}",
+  "@timerRecoveryDuration": {
+    "description": "Shows the recovered duration in dialog",
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "1h 30m"
       }
     }
   }

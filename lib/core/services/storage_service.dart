@@ -480,6 +480,43 @@ class StorageService {
 
     return groups;
   }
+
+  // Timer Recovery Management
+
+  /// Save recovery data for timer restoration dialog
+  Future<bool> saveRecoveryData(Map<String, dynamic> recoveryData) async {
+    await init();
+    final recoveryJson = jsonEncode(recoveryData);
+    return prefs.setString('timer_recovery_data', recoveryJson);
+  }
+
+  /// Get recovery data if available
+  Future<Map<String, dynamic>?> getRecoveryData() async {
+    await init();
+    final recoveryJson = prefs.getString('timer_recovery_data');
+    if (recoveryJson != null) {
+      try {
+        return jsonDecode(recoveryJson);
+      } catch (e) {
+        // If parsing fails, clear corrupted data
+        await clearRecoveryData();
+        return null;
+      }
+    }
+    return null;
+  }
+
+  /// Clear recovery data
+  Future<bool> clearRecoveryData() async {
+    await init();
+    return prefs.remove('timer_recovery_data');
+  }
+
+  /// Check if recovery data exists
+  Future<bool> hasRecoveryData() async {
+    await init();
+    return prefs.containsKey('timer_recovery_data');
+  }
 }
 
 /// Summary of a task group (same project + task name)

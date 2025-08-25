@@ -101,6 +101,17 @@ class Timer extends _$Timer {
         final now = DateTime.now();
         final totalElapsed = now.difference(savedTimer.startTime);
 
+        // If the timer has been running for more than 5 minutes without the app,
+        // we should show recovery dialog instead of auto-continuing
+        if (totalElapsed.inMinutes >= 5) {
+          // Store recovery data and clear the saved timer
+          await _storeRecoveryData(savedTimer, totalElapsed);
+          await storage.clearCurrentTimer();
+          state = const CurrentTimer();
+          return;
+        }
+
+        // Auto-continue if less than 5 minutes
         state = CurrentTimer(
           projectId: savedTimer.projectId,
           taskName: savedTimer.taskName,
@@ -118,6 +129,24 @@ class Timer extends _$Timer {
       // If loading fails, start with idle state
       state = const CurrentTimer();
     }
+  }
+
+  /// Store recovery data for later dialog display
+  Future<void> _storeRecoveryData(
+    TimeEntry savedTimer,
+    Duration totalElapsed,
+  ) async {
+    final storage = ref.read(storageServiceProvider);
+    final recoveryData = {
+      'projectId': savedTimer.projectId,
+      'taskName': savedTimer.taskName,
+      'startTime': savedTimer.startTime.toIso8601String(),
+      'duration': totalElapsed.inMilliseconds,
+      'totalAccumulatedTime': savedTimer.totalAccumulatedTime.inMilliseconds,
+      'isBreak': savedTimer.isBreak,
+    };
+
+    await storage.saveRecoveryData(recoveryData);
   }
 
   /// Start the timer with task continuation logic
@@ -167,7 +196,7 @@ class Timer extends _$Timer {
     _lastBreakNotificationMinutes = -1;
 
     _startTicker();
-    await _saveCurrentTimer();
+    await saveCurrentTimer();
 
     // Update system tray
     SystemTrayService.instance.updateTimerStatus();
@@ -184,7 +213,7 @@ class Timer extends _$Timer {
     notificationService.stopAllTimers();
 
     state = state.copyWith(state: TimerState.paused);
-    await _saveCurrentTimer();
+    await saveCurrentTimer();
 
     // Update system tray
     SystemTrayService.instance.updateTimerStatus();
@@ -197,7 +226,7 @@ class Timer extends _$Timer {
     // Keep the original start time but update state to running
     state = state.copyWith(state: TimerState.running);
     _startTicker();
-    await _saveCurrentTimer();
+    await saveCurrentTimer();
 
     // Update system tray
     SystemTrayService.instance.updateTimerStatus();
@@ -281,7 +310,7 @@ class Timer extends _$Timer {
 
       // Auto-save every 30 seconds
       if (totalElapsed.inSeconds % 30 == 0) {
-        _saveCurrentTimer();
+        saveCurrentTimer();
       }
 
       // Check for break reminders
@@ -290,7 +319,7 @@ class Timer extends _$Timer {
   }
 
   /// Save current timer to storage
-  Future<void> _saveCurrentTimer() async {
+  Future<void> saveCurrentTimer() async {
     if (!state.isActive) return;
 
     try {
@@ -396,6 +425,42 @@ class Timer extends _$Timer {
     final storage = ref.read(storageServiceProvider);
     final existingTask = await storage.findExistingTask(projectId, taskName);
     return existingTask != null;
+  }
+
+  /// Add recovered time to task
+  Future<void> addRecoveredTime(Map<String, dynamic> recoveryData) async {
+    const uuid = Uuid();
+    final storage = ref.read(storageServiceProvider);
+
+    final startTime = DateTime.parse(recoveryData['startTime']);
+    final duration = Duration(milliseconds: recoveryData['duration']);
+    final totalAccumulatedTime = Duration(
+      milliseconds: recoveryData['totalAccumulatedTime'],
+    );
+
+    final entry = TimeEntry(
+      id: uuid.v4(),
+      projectId: recoveryData['projectId'],
+      taskName: recoveryData['taskName'],
+      startTime: startTime,
+      endTime: startTime.add(duration),
+      duration: duration,
+      totalAccumulatedTime: totalAccumulatedTime + duration,
+      isBreak: recoveryData['isBreak'] ?? false,
+      isCompleted: true,
+    );
+
+    await storage.saveTimeEntry(entry);
+    await storage.clearRecoveryData();
+
+    // Refresh projects to update total time
+    ref.invalidate(projectsProvider);
+  }
+
+  /// Discard recovered time
+  Future<void> discardRecoveredTime() async {
+    final storage = ref.read(storageServiceProvider);
+    await storage.clearRecoveryData();
   }
 }
 

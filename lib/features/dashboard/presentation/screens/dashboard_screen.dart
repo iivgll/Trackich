@@ -37,7 +37,11 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, AppLocalizations l10n, WidgetRef ref) {
+  Widget _buildHeader(
+    BuildContext context,
+    AppLocalizations l10n,
+    WidgetRef ref,
+  ) {
     final now = DateTime.now();
     final dailyTimeAsync = ref.watch(currentDailyWorkTimeProvider);
 
@@ -93,11 +97,14 @@ class DashboardScreen extends ConsumerWidget {
                           ),
                           const SizedBox(width: AppTheme.space2),
                           Text(
-                            l10n.todayWorkTime(TimeFormatter.formatDuration(duration)),
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: AppTheme.primaryBlue,
-                              fontWeight: FontWeight.w600,
+                            l10n.todayWorkTime(
+                              TimeFormatter.formatDuration(duration),
                             ),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: AppTheme.primaryBlue,
+                                  fontWeight: FontWeight.w600,
+                                ),
                           ),
                         ],
                       );

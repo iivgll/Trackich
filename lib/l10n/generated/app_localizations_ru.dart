@@ -621,6 +621,34 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String todayWorkTime(String time) {
-    return 'Сегодня: $time';
+    return 'Время работы сегодня: $time';
+  }
+
+  @override
+  String get timerRecoveryTitle => 'Восстановление таймера';
+
+  @override
+  String get timerRecoveryMessage =>
+      'Таймер не был корректно остановлен при закрытии приложения. Вы работали над:';
+
+  @override
+  String get addTimeToTask => 'Добавить время к задаче';
+
+  @override
+  String get discardTime => 'Отменить время';
+
+  @override
+  String timerRecoveryTask(String taskName) {
+    return 'Задача: $taskName';
+  }
+
+  @override
+  String timerRecoveryProject(String projectName) {
+    return 'Проект: $projectName';
+  }
+
+  @override
+  String timerRecoveryDuration(String duration) {
+    return 'Продолжительность: $duration';
   }
 }

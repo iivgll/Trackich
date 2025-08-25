@@ -15,6 +15,9 @@ import 'l10n/generated/app_localizations.dart';
 import 'features/system_tray/system_tray_service.dart';
 import 'features/notifications/notification_service.dart';
 import 'features/notifications/providers/notification_permission_provider.dart';
+import 'features/timer/presentation/providers/timer_recovery_provider.dart';
+import 'features/timer/presentation/providers/timer_provider.dart';
+import 'features/timer/presentation/widgets/timer_recovery_dialog.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -182,15 +185,91 @@ class AppRouter extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final onboardingCompleted = ref.watch(onboardingCompletedProvider);
 
+    // Check for timer recovery data on app start
+    ref.listen(timerRecoveryProvider, (previous, next) {
+      next.whenData((recoveryData) {
+        if (recoveryData != null) {
+          // Show recovery dialog
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showRecoveryDialog(context, ref, recoveryData);
+          });
+        }
+      });
+    });
+
     return onboardingCompleted ? const MainScreen() : const OnboardingScreen();
+  }
+
+  void _showRecoveryDialog(
+    BuildContext context,
+    WidgetRef ref,
+    TimerRecoveryData recoveryData,
+  ) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => TimerRecoveryDialog(
+        taskName: recoveryData.taskName,
+        project: recoveryData.project,
+        recoveredDuration: recoveryData.duration,
+        onAddTime: () async {
+          await ref
+              .read(timerProvider.notifier)
+              .addRecoveredTime(recoveryData.recoveryDataMap);
+        },
+        onDiscardTime: () async {
+          await ref.read(timerProvider.notifier).discardRecoveredTime();
+        },
+      ),
+    );
   }
 }
 
-class TrackichApp extends ConsumerWidget {
+class TrackichApp extends ConsumerStatefulWidget {
   const TrackichApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TrackichApp> createState() => _TrackichAppState();
+}
+
+class _TrackichAppState extends ConsumerState<TrackichApp>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    // Save timer state when app is going to background or being terminated
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached ||
+        state == AppLifecycleState.inactive) {
+      _handleAppPausing();
+    }
+  }
+
+  void _handleAppPausing() {
+    // Force save current timer state if running
+    final timerState = ref.read(timerProvider);
+    if (timerState.isActive) {
+      // The timer provider already auto-saves every 30 seconds and on state changes
+      // This ensures we save immediately when the app is closing
+      ref.read(timerProvider.notifier).saveCurrentTimer();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final themeMode = ref.watch(themeModeProvider);
     final language = ref.watch(languageProvider);
 

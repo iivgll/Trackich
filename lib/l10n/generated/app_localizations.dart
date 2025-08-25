@@ -1214,11 +1214,53 @@ abstract class AppLocalizations {
   /// **'Tags'**
   String get tags;
 
-  /// Work time for today in dashboard header
+  /// Total work time completed for today in dashboard header
   ///
   /// In en, this message translates to:
-  /// **'Today: {time}'**
+  /// **'Work time today: {time}'**
   String todayWorkTime(String time);
+
+  /// Timer recovery dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Timer Recovery'**
+  String get timerRecoveryTitle;
+
+  /// Timer recovery dialog message
+  ///
+  /// In en, this message translates to:
+  /// **'The timer was not stopped properly when the app was closed. You were working on:'**
+  String get timerRecoveryMessage;
+
+  /// Button to add recovered time to task
+  ///
+  /// In en, this message translates to:
+  /// **'Add Time to Task'**
+  String get addTimeToTask;
+
+  /// Button to discard recovered time
+  ///
+  /// In en, this message translates to:
+  /// **'Discard Time'**
+  String get discardTime;
+
+  /// Shows the task name in recovery dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Task: {taskName}'**
+  String timerRecoveryTask(String taskName);
+
+  /// Shows the project name in recovery dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Project: {projectName}'**
+  String timerRecoveryProject(String projectName);
+
+  /// Shows the recovered duration in dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Duration: {duration}'**
+  String timerRecoveryDuration(String duration);
 }
 
 class _AppLocalizationsDelegate
