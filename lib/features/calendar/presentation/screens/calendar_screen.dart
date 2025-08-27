@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/models/time_entry.dart';
 import '../../../../core/services/storage_service.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/time_formatter.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../projects/presentation/providers/projects_provider.dart';
@@ -145,7 +145,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           IconButton(
             onPressed: () => _navigateDate(-1, viewMode),
             icon: const Icon(Symbols.chevron_left),
-            tooltip: 'Previous',
+            tooltip: l10n.previous,
           ),
           const SizedBox(width: AppTheme.space2),
 
@@ -164,7 +164,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           IconButton(
             onPressed: () => _navigateDate(1, viewMode),
             icon: const Icon(Symbols.chevron_right),
-            tooltip: 'Next',
+            tooltip: l10n.next,
           ),
 
           const SizedBox(width: AppTheme.space4),
@@ -213,7 +213,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           IconButton(
             onPressed: () => _showFilterDialog(context),
             icon: const Icon(Symbols.filter_list),
-            tooltip: 'Filter',
+            tooltip: l10n.filter,
           ),
         ],
       ),
@@ -910,6 +910,7 @@ class _TimelineItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final projectsAsync = ref.watch(projectsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return projectsAsync.when(
       data: (projects) {
@@ -1021,9 +1022,7 @@ class _TimelineItem extends ConsumerWidget {
       error: (_, __) => Card(
         child: SizedBox(
           height: 80,
-          child: Center(
-            child: Text(AppLocalizations.of(context).errorLoadingProject),
-          ),
+          child: Center(child: Text(l10n.errorLoadingProject)),
         ),
       ),
     );
@@ -1107,6 +1106,7 @@ class _WeekTimelineItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final projectsAsync = ref.watch(projectsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return projectsAsync.when(
       data: (projects) {
@@ -1175,10 +1175,8 @@ class _WeekTimelineItem extends ConsumerWidget {
         height: 40,
         child: const Center(child: CircularProgressIndicator()),
       ),
-      error: (_, __) => SizedBox(
-        height: 40,
-        child: Center(child: Text(AppLocalizations.of(context).error)),
-      ),
+      error: (_, __) =>
+          SizedBox(height: 40, child: Center(child: Text(l10n.error))),
     );
   }
 }
@@ -1360,13 +1358,14 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
   @override
   Widget build(BuildContext context) {
     final projectsAsync = ref.watch(activeProjectsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return AlertDialog(
       title: Row(
         children: [
           const Icon(Symbols.filter_list, color: AppTheme.primaryBlue),
           const SizedBox(width: AppTheme.space2),
-          Text(AppLocalizations.of(context).filterCalendar),
+          Text(l10n.filterCalendar),
         ],
       ),
       content: SizedBox(
@@ -1377,7 +1376,7 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
           children: [
             // Project Filter
             Text(
-              'Filter by Project',
+              l10n.filterByProject,
               style: Theme.of(context).textTheme.labelLarge,
             ),
             const SizedBox(height: AppTheme.space2),
@@ -1393,13 +1392,13 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
                 ),
                 child: DropdownButton<String?>(
                   value: _selectedProjectId,
-                  hint: Text(AppLocalizations.of(context).allProjects),
+                  hint: Text(l10n.allProjects),
                   isExpanded: true,
                   underline: Container(),
                   items: [
                     DropdownMenuItem<String?>(
                       value: null,
-                      child: Text(AppLocalizations.of(context).allProjects),
+                      child: Text(l10n.allProjects),
                     ),
                     ...projects.map(
                       (project) => DropdownMenuItem<String?>(
@@ -1426,14 +1425,14 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
                 ),
               ),
               loading: () => const LinearProgressIndicator(),
-              error: (_, __) => const Text('Error loading projects'),
+              error: (_, __) => Text(l10n.errorLoadingProjects),
             ),
 
             const SizedBox(height: AppTheme.space6),
 
             // Date Range Filter
             Text(
-              'Custom Date Range',
+              l10n.customDateRange,
               style: Theme.of(context).textTheme.labelLarge,
             ),
             const SizedBox(height: AppTheme.space2),
@@ -1446,7 +1445,7 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
                     label: Text(
                       _selectedDateRange != null
                           ? '${TimeFormatter.formatDate(_selectedDateRange!.start)} - ${TimeFormatter.formatDate(_selectedDateRange!.end)}'
-                          : 'Select Range',
+                          : l10n.selectRange,
                     ),
                   ),
                 ),
@@ -1455,7 +1454,7 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
                   IconButton(
                     onPressed: () => setState(() => _selectedDateRange = null),
                     icon: const Icon(Symbols.clear),
-                    tooltip: 'Clear',
+                    tooltip: l10n.clear,
                   ),
                 ],
               ],
@@ -1465,7 +1464,7 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
 
             // Quick Filters
             Text(
-              'Quick Filters',
+              l10n.quickFilters,
               style: Theme.of(context).textTheme.labelLarge,
             ),
             const SizedBox(height: AppTheme.space2),
@@ -1473,19 +1472,19 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
               spacing: AppTheme.space2,
               children: [
                 _QuickFilterChip(
-                  label: 'Last 7 days',
+                  label: l10n.last7Days,
                   onTap: () => _setQuickDateRange(7),
                 ),
                 _QuickFilterChip(
-                  label: 'Last 30 days',
+                  label: l10n.last30Days,
                   onTap: () => _setQuickDateRange(30),
                 ),
                 _QuickFilterChip(
-                  label: 'Last 3 months',
+                  label: l10n.last3Months,
                   onTap: () => _setQuickDateRange(90),
                 ),
                 _QuickFilterChip(
-                  label: 'This year',
+                  label: l10n.thisYear,
                   onTap: () => _setCurrentYear(),
                 ),
               ],
@@ -1496,16 +1495,10 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(AppLocalizations.of(context).cancel),
+          child: Text(l10n.cancel),
         ),
-        TextButton(
-          onPressed: _clearFilters,
-          child: Text(AppLocalizations.of(context).clearAll),
-        ),
-        ElevatedButton(
-          onPressed: _applyFilters,
-          child: Text(AppLocalizations.of(context).apply),
-        ),
+        TextButton(onPressed: _clearFilters, child: Text(l10n.clearAll)),
+        ElevatedButton(onPressed: _applyFilters, child: Text(l10n.apply)),
       ],
     );
   }
@@ -1589,7 +1582,11 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error applying filters: $e'),
+          content: Text(
+            AppLocalizations.of(
+              context,
+            ).errorGenericWithDetails('Error applying filters: $e'),
+          ),
           backgroundColor: Theme.of(context).colorScheme.error,
           duration: const Duration(seconds: 3),
         ),
@@ -1626,6 +1623,7 @@ class CalendarFilteredListView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedProject = ref.watch(calendarSelectedProjectProvider);
     final dateRange = ref.watch(calendarDateRangeProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -1705,7 +1703,7 @@ class CalendarFilteredListView extends ConsumerWidget {
                         ),
                         const SizedBox(height: AppTheme.space4),
                         Text(
-                          'Error loading data',
+                          l10n.errorLoadingData,
                           style: Theme.of(context).textTheme.titleLarge
                               ?.copyWith(color: AppTheme.errorRed),
                         ),
@@ -1768,6 +1766,7 @@ class CalendarFilteredListView extends ConsumerWidget {
     String? selectedProject,
     DateTimeRange? dateRange,
   ) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1775,7 +1774,7 @@ class CalendarFilteredListView extends ConsumerWidget {
           const Icon(Symbols.search_off, size: 80, color: AppTheme.gray400),
           const SizedBox(height: AppTheme.space6),
           Text(
-            'No tasks found',
+            l10n.noTasksFound,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               color: AppTheme.gray600,
               fontWeight: FontWeight.w600,
@@ -1797,7 +1796,7 @@ class CalendarFilteredListView extends ConsumerWidget {
               Navigator.of(context).pop();
             },
             icon: const Icon(Symbols.filter_list_off),
-            label: Text(AppLocalizations.of(context).clearFilters),
+            label: Text(l10n.clearFilters),
           ),
         ],
       ),
@@ -1998,6 +1997,7 @@ class _CalendarTaskItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final projectsAsync = ref.watch(projectsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return projectsAsync.when(
       data: (projects) {
@@ -2116,9 +2116,7 @@ class _CalendarTaskItem extends ConsumerWidget {
       error: (_, __) => Container(
         height: 56,
         padding: const EdgeInsets.all(AppTheme.space4),
-        child: Center(
-          child: Text(AppLocalizations.of(context).errorLoadingProject),
-        ),
+        child: Center(child: Text(l10n.errorLoadingProject)),
       ),
     );
   }

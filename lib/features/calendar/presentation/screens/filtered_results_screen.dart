@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:path/path.dart' as path;
 
 import '../../../../core/models/time_entry.dart';
 import '../../../../core/services/excel_export_service.dart';
@@ -462,17 +465,24 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
     );
   }
 
+  Future<void> _openFolder(String filePath) async {
+    try {
+      final directory = path.dirname(filePath);
+      if (Platform.isWindows) {
+        await Process.run('explorer', [directory]);
+      } else if (Platform.isMacOS) {
+        await Process.run('open', [directory]);
+      } else if (Platform.isLinux) {
+        await Process.run('xdg-open', [directory]);
+      }
+    } catch (e) {
+      // Ignore errors when opening folder
+    }
+  }
+
   Future<void> _exportToExcel(BuildContext context) async {
     final l10n = AppLocalizations.of(context);
     try {
-      // Show loading indicator
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context).exportingToExcel),
-          duration: Duration(seconds: 1),
-        ),
-      );
-
       // Get projects map
       final projectsAsync = ref.read(projectsProvider);
       final projects = <String, Project>{};
@@ -491,17 +501,14 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
         dateRange: widget.dateRange,
       );
 
-      // Handle result
       if (context.mounted) {
         if (result == 'cancelled') {
-          // User cancelled - no message needed
           return;
         }
 
-        // Show success message with file path
-        final successMessage =
-            result.isNotEmpty && result != 'File saved successfully'
-            ? l10n.excelReportExportedTo(result)
+        final showFolderButton = result.contains('\\') || result.contains('/');
+        final successMessage = showFolderButton
+            ? '${l10n.fileSavedTo} $result'
             : l10n.excelReportExportedSuccessfully;
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -509,11 +516,16 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
             content: Text(successMessage),
             duration: const Duration(seconds: 5),
             backgroundColor: AppTheme.getSuccessColor(context),
+            action: showFolderButton
+                ? SnackBarAction(
+                    label: l10n.openFolder,
+                    onPressed: () => _openFolder(result),
+                  )
+                : null,
           ),
         );
       }
     } catch (e) {
-      // Show error message
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

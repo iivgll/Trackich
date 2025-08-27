@@ -565,9 +565,10 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
                 );
               } catch (e) {
                 navigator.pop();
+
                 scaffoldMessenger.showSnackBar(
                   SnackBar(
-                    content: Text('Error: ${e.toString()}'),
+                    content: Text(l10n.errorGenericWithDetails(e.toString())),
                     backgroundColor: errorColor,
                   ),
                 );

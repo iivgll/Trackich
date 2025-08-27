@@ -45,7 +45,7 @@ class TodaySummaryWidget extends ConsumerWidget {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, stack) => Center(
                 child: Text(
-                  'Error loading today\'s activity', // TODO: Add l10n.errorLoadingTodaysActivity
+                  l10n.errorLoadingTodaysActivity,
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ),

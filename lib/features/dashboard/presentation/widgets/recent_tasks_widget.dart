@@ -128,7 +128,7 @@ class RecentTasksWidget extends ConsumerWidget {
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, _) => Center(
                   child: Text(
-                    'Error loading recent tasks', // TODO: Add l10n.errorLoadingRecentTasks
+                    AppLocalizations.of(context).errorLoadingRecentTasks,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.error,
                     ),

@@ -1647,19 +1647,19 @@ abstract class AppLocalizations {
   /// **'Error loading data'**
   String get errorLoadingData;
 
-  /// Custom date range filter label
+  /// Custom date range section title
   ///
   /// In en, this message translates to:
   /// **'Custom Date Range'**
   String get customDateRange;
 
-  /// Select date range button label
+  /// Select date range button text
   ///
   /// In en, this message translates to:
   /// **'Select Range'**
   String get selectRange;
 
-  /// Quick filters section label
+  /// Quick filters section title
   ///
   /// In en, this message translates to:
   /// **'Quick Filters'**
@@ -1688,6 +1688,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This year'**
   String get thisYear;
+
+  /// Button to open the folder where file was saved
+  ///
+  /// In en, this message translates to:
+  /// **'Open folder'**
+  String get openFolder;
+
+  /// Message prefix for file save location
+  ///
+  /// In en, this message translates to:
+  /// **'📁 File saved to:'**
+  String get fileSavedTo;
+
+  /// Previous button tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get previous;
+
+  /// Next button tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// Filter button tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filter;
+
+  /// Filter by project section title
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by Project'**
+  String get filterByProject;
+
+  /// Clear button tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clear;
 }
 
 class _AppLocalizationsDelegate

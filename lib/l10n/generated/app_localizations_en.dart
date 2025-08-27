@@ -902,4 +902,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get thisYear => 'This year';
+
+  @override
+  String get openFolder => 'Open folder';
+
+  @override
+  String get fileSavedTo => '📁 File saved to:';
+
+  @override
+  String get previous => 'Previous';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String get filterByProject => 'Filter by Project';
+
+  @override
+  String get clear => 'Clear';
 }

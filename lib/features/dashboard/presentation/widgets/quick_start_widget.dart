@@ -145,7 +145,7 @@ class QuickStartWidget extends ConsumerWidget {
                 height: 120,
                 child: Center(
                   child: Text(
-                    'Error loading projects', // TODO: Add l10n.errorLoadingProjects
+                    AppLocalizations.of(context).errorLoadingProjects,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.error,
                     ),

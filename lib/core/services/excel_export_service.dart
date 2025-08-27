@@ -11,7 +11,24 @@ import 'package:trackich/l10n/generated/app_localizations.dart';
 import '../models/time_entry.dart';
 import '../utils/time_formatter.dart';
 
+/// Service for exporting time tracking data to Excel files
+///
+/// Provides functionality to create structured Excel reports
+/// containing time entries, projects, and task information
 class ExcelExportService {
+  /// Main method for exporting time tracking data to Excel file
+  ///
+  /// Creates two sheets:
+  /// 1. "Time Report" - detailed report with daily entries
+  /// 2. "Summary" - summary statistics by projects
+  ///
+  /// [entries] - list of time entries to export
+  /// [projects] - map of projects for name resolution
+  /// [context] - context for accessing localization
+  /// [customFileName] - custom filename (optional)
+  /// [dateRange] - date range for filtering (optional)
+  ///
+  /// Returns the path to the created file
   static Future<String> exportTimeEntries({
     required List<TimeEntry> entries,
     required Map<String, Project> projects,
@@ -21,14 +38,14 @@ class ExcelExportService {
   }) async {
     final l10n = AppLocalizations.of(context);
 
-    // Create Excel workbook
+    // Create new Excel workbook
     var excel = Excel.createExcel();
 
-    // Create main report sheet first
+    // Create main sheets: detailed report and summary
     var reportSheet = excel['Time Report'];
     var summarySheet = excel['Summary'];
 
-    // Remove default sheet after creating our sheets
+    // Remove default sheet that gets created automatically
     if (excel.tables.containsKey('Sheet1')) {
       excel.delete('Sheet1');
     }
@@ -36,9 +53,10 @@ class ExcelExportService {
     // Set up headers for report sheet
     _setupReportHeaders(reportSheet, context);
 
-    // Group entries by date
+    // Group entries by date for better organization
     var entriesByDate = <DateTime, List<TimeEntry>>{};
     for (var entry in entries) {
+      // Use only date part for grouping (ignore time)
       var date = DateTime(
         entry.startTime.year,
         entry.startTime.month,
@@ -47,12 +65,13 @@ class ExcelExportService {
       entriesByDate.putIfAbsent(date, () => []).add(entry);
     }
 
-    // Sort dates
+    // Sort dates in ascending order
     var sortedDates = entriesByDate.keys.toList()..sort();
 
-    int row = 2; // Start from row 2 (after header)
+    // Start filling from row 2 (after headers)
+    int row = 2;
 
-    // Add data rows
+    // Fill data for each date
     for (var date in sortedDates) {
       var dayEntries = entriesByDate[date]!;
 
@@ -65,27 +84,27 @@ class ExcelExportService {
       _styleDateRow(reportSheet, row);
       row++;
 
-      // Add entries for this date
+      // Add all entries for this date
       for (var entry in dayEntries) {
         var project = projects[entry.projectId];
         var duration =
             entry.endTime?.difference(entry.startTime) ?? Duration.zero;
 
-        // Date
+        // Column: Date
         reportSheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row))
             .value = TextCellValue(
           '${date.day}/${date.month}/${date.year}',
         );
 
-        // Project
+        // Column: Project
         reportSheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row))
             .value = TextCellValue(
           project?.name ?? l10n.excelSummaryUnknownProject,
         );
 
-        // Task
+        // Column: Task (name + description if present)
         final taskName = entry.taskName.trim().isNotEmpty
             ? entry.taskName.trim()
             : l10n.excelSummaryUntitledTask;
@@ -98,14 +117,14 @@ class ExcelExportService {
           fullTaskName,
         );
 
-        // Start Time
+        // Column: Start Time
         reportSheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row))
             .value = TextCellValue(
           TimeFormatter.formatTime(entry.startTime),
         );
 
-        // End Time
+        // Column: End Time
         reportSheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row))
             .value = TextCellValue(
@@ -114,21 +133,21 @@ class ExcelExportService {
               : l10n.excelSummaryInProgress,
         );
 
-        // Duration
+        // Column: Duration (formatted)
         reportSheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: row))
             .value = TextCellValue(
           TimeFormatter.formatDuration(duration),
         );
 
-        // Duration in hours (for calculations)
+        // Column: Duration in hours (for calculations)
         reportSheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: row))
             .value = DoubleCellValue(
           duration.inMinutes / 60.0,
         );
 
-        // Status
+        // Column: Status
         reportSheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: row))
             .value = TextCellValue(
@@ -140,39 +159,46 @@ class ExcelExportService {
         row++;
       }
 
-      // Add empty row between dates
+      // Add empty row between dates for separation
       row++;
     }
 
-    // Create summary sheet
+    // Create summary sheet with aggregated data
     _createSummarySheet(summarySheet, entries, projects, context);
 
-    // Apply styling
+    // Apply styling to sheets
     _applyReportStyling(reportSheet);
     _applySummaryStyling(summarySheet);
 
-    // Generate file name
+    // Generate filename
     var fileName = customFileName ?? _generateFileName(dateRange);
 
-    // Save file with FileSaver
+    // Save file and get path to it
     var filePath = await _saveExcelFileWithFileSaver(excel, fileName);
 
     return filePath;
   }
 
+  /// Sets up headers for the detailed report sheet
+  ///
+  /// [sheet] - Excel sheet to set up headers for
+  /// [context] - context for accessing localization
   static void _setupReportHeaders(Sheet sheet, BuildContext context) {
     final l10n = AppLocalizations.of(context);
+
+    // Define column headers matching the data structure
     var headers = [
-      l10n.excelHeaderDate,
-      l10n.excelHeaderProject,
-      l10n.excelHeaderTaskDescription,
-      l10n.excelHeaderStartTime,
-      l10n.excelHeaderEndTime,
-      l10n.excelHeaderDuration,
-      l10n.excelHeaderHours,
-      l10n.excelHeaderStatus,
+      l10n.excelHeaderDate, // Date
+      l10n.excelHeaderProject, // Project
+      l10n.excelHeaderTaskDescription, // Task
+      l10n.excelHeaderStartTime, // Start Time
+      l10n.excelHeaderEndTime, // End Time
+      l10n.excelHeaderDuration, // Duration
+      l10n.excelHeaderHours, // Hours (for calculations)
+      l10n.excelHeaderStatus, // Status
     ];
 
+    // Add headers to second row (index 1)
     for (int i = 0; i < headers.length; i++) {
       sheet
           .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 1))
@@ -182,6 +208,12 @@ class ExcelExportService {
     }
   }
 
+  /// Creates the summary sheet with aggregated statistics by project
+  ///
+  /// [sheet] - Excel sheet to populate with summary data
+  /// [entries] - list of time entries to summarize
+  /// [projects] - map of projects for name resolution
+  /// [context] - context for accessing localization
   static void _createSummarySheet(
     Sheet sheet,
     List<TimeEntry> entries,
@@ -189,7 +221,8 @@ class ExcelExportService {
     BuildContext context,
   ) {
     final l10n = AppLocalizations.of(context);
-    // Set up headers
+
+    // Set up summary headers
     sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: 1)).value =
         TextCellValue(l10n.excelSummaryReport);
     sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: 3)).value =
@@ -201,7 +234,7 @@ class ExcelExportService {
     sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: 3)).value =
         TextCellValue(l10n.excelSummaryAvgHoursPerTask);
 
-    // Group by project
+    // Group entries by project to calculate statistics
     var projectStats = <String, Map<String, dynamic>>{};
 
     for (var entry in entries) {
@@ -222,7 +255,7 @@ class ExcelExportService {
       projectStats[projectId]!['totalHours'] += hours;
     }
 
-    // Add project statistics
+    // Add project statistics rows
     int row = 4;
     double totalHours = 0;
     int totalTasks = 0;
@@ -258,7 +291,7 @@ class ExcelExportService {
       row++;
     }
 
-    // Add totals
+    // Add totals row
     row++;
     sheet
         .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row))
@@ -284,21 +317,36 @@ class ExcelExportService {
     );
   }
 
+  /// Applies styling to date separator rows
+  ///
+  /// [sheet] - Excel sheet containing the date row
+  /// [row] - row index of the date separator
   static void _styleDateRow(Sheet sheet, int row) {
     // Note: Excel package styling is limited, but we can set basic formatting
     // In a real implementation, you might want to use more advanced styling
   }
 
+  /// Applies styling to the report sheet
+  ///
+  /// [sheet] - Excel sheet to apply styling to
   static void _applyReportStyling(Sheet sheet) {
     // Basic styling for headers
     // Apply header styling (limited options in current Excel package)
   }
 
+  /// Applies styling to the summary sheet
+  ///
+  /// [sheet] - Excel sheet to apply styling to
   static void _applySummaryStyling(Sheet sheet) {
     // Apply summary sheet styling
     // Apply title styling
   }
 
+  /// Generates filename for the Excel report
+  ///
+  /// [dateRange] - optional date range for the report (affects filename)
+  ///
+  /// Returns formatted filename with timestamp or date range
   static String _generateFileName(DateTimeRange? dateRange) {
     var now = DateTime.now();
     var dateStr =
@@ -315,6 +363,12 @@ class ExcelExportService {
     return 'Time_Report_$dateStr';
   }
 
+  /// Saves the Excel file using appropriate method for each platform
+  ///
+  /// [excel] - Excel workbook to save
+  /// [fileName] - desired filename without extension
+  ///
+  /// Returns the path to the saved file or 'cancelled' if user cancelled
   static Future<String> _saveExcelFileWithFileSaver(
     Excel excel,
     String fileName,
@@ -324,10 +378,13 @@ class ExcelExportService {
       throw Exception('Failed to generate Excel file');
     }
 
+    if (Platform.isWindows) {
+      // For Windows, simply save to Downloads folder
+      return await _saveToFallbackLocation(bytes, fileName);
+    }
+
     try {
-      // Use FileSaver's saveAs method for better user control on desktop
-      if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
-        // For desktop platforms, use saveAs to let user choose location
+      if (Platform.isMacOS || Platform.isLinux) {
         final result = await FileSaver.instance.saveAs(
           name: fileName,
           bytes: Uint8List.fromList(bytes),
@@ -335,9 +392,13 @@ class ExcelExportService {
           mimeType: MimeType.microsoftExcel,
         );
 
-        return (result?.isEmpty ?? true) ? 'File saved successfully' : result!;
+        if (result == null || result.isEmpty) {
+          final fallbackPath = await _saveToFallbackLocation(bytes, fileName);
+          return fallbackPath;
+        }
+
+        return result;
       } else {
-        // For mobile platforms, use regular saveFile
         final result = await FileSaver.instance.saveFile(
           name: fileName,
           bytes: Uint8List.fromList(bytes),
@@ -345,22 +406,54 @@ class ExcelExportService {
           mimeType: MimeType.microsoftExcel,
         );
 
-        return (result.isEmpty) ? 'File saved successfully' : result;
+        return result.isEmpty ? 'File saved to Downloads' : result;
       }
     } catch (e) {
-      // Handle specific error cases
-      final errorMessage = e.toString().toLowerCase();
-      if (errorMessage.contains('cancelled') ||
-          errorMessage.contains('cancel') ||
-          errorMessage.contains('user canceled') ||
-          errorMessage.contains('pathaccessexception') ||
-          errorMessage.contains('operation not permitted') ||
-          errorMessage.contains('errno = 1')) {
+      if (e.toString().toLowerCase().contains('cancel')) {
         return 'cancelled';
       }
-      throw Exception('Failed to save file: $errorMessage');
+
+      try {
+        final fallbackPath = await _saveToFallbackLocation(bytes, fileName);
+        return fallbackPath;
+      } catch (fallbackError) {
+        throw Exception('Failed to save file: $e');
+      }
     }
   }
 
-  // Removed _getDownloadsDirectory as we now use system file picker
+  /// Saves file to the Downloads folder as a fallback option
+  ///
+  /// [bytes] - file content as bytes
+  /// [fileName] - filename without extension
+  ///
+  /// Returns the full path to the saved file
+  static Future<String> _saveToFallbackLocation(
+    List<int> bytes,
+    String fileName,
+  ) async {
+    final downloadsDir = await _getDownloadsDirectory();
+    final filePath = '${downloadsDir.path}\\$fileName.xlsx';
+
+    await File(filePath).writeAsBytes(bytes);
+    return filePath;
+  }
+
+  /// Gets the Downloads directory for the current platform
+  ///
+  /// Returns Directory object pointing to user's Downloads folder
+  /// Falls back to system temp directory if Downloads is not accessible
+  static Future<Directory> _getDownloadsDirectory() async {
+    final env = Platform.environment;
+    final home = env['USERPROFILE'] ?? env['HOME'];
+
+    if (home != null) {
+      final downloadsPath = Platform.isWindows
+          ? '$home\\Downloads'
+          : '$home/Downloads';
+      return Directory(downloadsPath);
+    }
+
+    return Directory.systemTemp;
+  }
 }

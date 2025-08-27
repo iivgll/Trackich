@@ -887,7 +887,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get errorLoadingData => 'Ошибка загрузки данных';
 
   @override
-  String get customDateRange => 'Пользовательский диапазон дат';
+  String get customDateRange => 'Произвольный диапазон дат';
 
   @override
   String get selectRange => 'Выбрать диапазон';
@@ -906,4 +906,25 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get thisYear => 'Этот год';
+
+  @override
+  String get openFolder => 'Открыть папку';
+
+  @override
+  String get fileSavedTo => '📁 Файл сохранен в:';
+
+  @override
+  String get previous => 'Предыдущий';
+
+  @override
+  String get next => 'Следующий';
+
+  @override
+  String get filter => 'Фильтр';
+
+  @override
+  String get filterByProject => 'Фильтр по проекту';
+
+  @override
+  String get clear => 'Очистить';
 }
