@@ -7,6 +7,7 @@ import 'package:trackich/features/projects/presentation/providers/projects_provi
 import 'package:trackich/features/projects/presentation/widgets/create_project_dialog.dart';
 import 'package:trackich/features/timer/presentation/providers/timer_provider.dart';
 import 'package:tray_manager/tray_manager.dart';
+import 'package:trackich/l10n/generated/app_localizations.dart';
 
 import '../../core/theme/app_theme.dart';
 
@@ -579,9 +580,9 @@ class _QuickStartDialogState extends ConsumerState<_QuickStartDialog> {
             const SizedBox(height: 8),
             TextField(
               controller: _taskController,
-              decoration: const InputDecoration(
-                hintText: 'Enter task description',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context).enterTaskDescription,
+                border: const OutlineInputBorder(),
               ),
               onSubmitted: (_) => _startTimer(),
             ),

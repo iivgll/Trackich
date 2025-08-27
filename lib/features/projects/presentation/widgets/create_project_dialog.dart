@@ -71,14 +71,14 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
               children: [
                 // Project Name
                 Text(
-                  'Project Name',
+                  l10n.projectName,
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
                 const SizedBox(height: AppTheme.space2),
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
-                    hintText: 'Enter project name',
+                    hintText: l10n.enterProjectName,
                     prefixIcon: const Icon(Symbols.folder),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -86,7 +86,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Project name is required';
+                      return l10n.projectNameRequired;
                     }
                     return null;
                   },
@@ -97,14 +97,14 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
 
                 // Project Description
                 Text(
-                  'Description (Optional)',
+                  l10n.description,
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
                 const SizedBox(height: AppTheme.space2),
                 TextFormField(
                   controller: _descriptionController,
                   decoration: InputDecoration(
-                    hintText: 'Brief description of the project',
+                    hintText: l10n.briefProjectDescription,
                     prefixIcon: const Icon(Symbols.description),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -118,7 +118,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
 
                 // Color Selection
                 Text(
-                  'Project Color',
+                  l10n.projectColor,
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
                 const SizedBox(height: AppTheme.space2),
@@ -165,15 +165,12 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
                 const SizedBox(height: AppTheme.space4),
 
                 // Tags (Optional)
-                Text(
-                  'Tags (Optional)',
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
+                Text(l10n.tags, style: Theme.of(context).textTheme.labelLarge),
                 const SizedBox(height: AppTheme.space2),
                 TextFormField(
                   controller: _tagsController,
                   decoration: InputDecoration(
-                    hintText: 'Enter tags separated by commas',
+                    hintText: l10n.enterTagsCommaSeparated,
                     prefixIcon: const Icon(Symbols.label),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -186,7 +183,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
 
                 // Target Hours Per Week
                 Text(
-                  'Target Hours Per Week (Optional)',
+                  l10n.weeklyTargetHours,
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
                 const SizedBox(height: AppTheme.space2),
@@ -194,7 +191,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
                   decoration: InputDecoration(
                     hintText: '0',
                     prefixIcon: const Icon(Symbols.schedule),
-                    suffix: Text(AppLocalizations.of(context).hoursPerWeek),
+                    suffix: Text(l10n.hoursPerWeek),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),

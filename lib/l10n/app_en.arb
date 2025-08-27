@@ -1011,7 +1011,12 @@
 
   "projectNameRequired": "Project name is required",
   "@projectNameRequired": {
-    "description": "Validation message for empty project name"
+    "description": "Project name validation error"
+  },
+
+  "optional": "optional",
+  "@optional": {
+    "description": "Optional label"
   },
 
   "enterProjectDescription": "Enter project description",
@@ -1131,5 +1136,532 @@
         "example": "1h 30m"
       }
     }
+  },
+
+  "searchProjects": "Search projects...",
+  "@searchProjects": {
+    "description": "Search projects hint text"
+  },
+
+  "weeklyTargetHours": "Weekly Target Hours (optional)",
+  "@weeklyTargetHours": {
+    "description": "Weekly target hours input label"
+  },
+
+  "hours": "hours",
+  "@hours": {
+    "description": "Hours unit label"
+  },
+
+  "enterTaskDescription": "Enter task description",
+  "@enterTaskDescription": {
+    "description": "Task description input hint"
+  },
+
+  "briefProjectDescription": "Brief description of the project",
+  "@briefProjectDescription": {
+    "description": "Project description input hint"
+  },
+
+  "excelHeaderDate": "Date",
+  "@excelHeaderDate": {
+    "description": "Excel export date column header"
+  },
+
+  "excelHeaderProject": "Project",
+  "@excelHeaderProject": {
+    "description": "Excel export project column header"
+  },
+
+  "excelHeaderTaskDescription": "Task Description",
+  "@excelHeaderTaskDescription": {
+    "description": "Excel export task description column header"
+  },
+
+  "excelHeaderStartTime": "Start Time",
+  "@excelHeaderStartTime": {
+    "description": "Excel export start time column header"
+  },
+
+  "excelHeaderEndTime": "End Time",
+  "@excelHeaderEndTime": {
+    "description": "Excel export end time column header"
+  },
+
+  "excelHeaderDuration": "Duration",
+  "@excelHeaderDuration": {
+    "description": "Excel export duration column header"
+  },
+
+  "excelHeaderHours": "Hours",
+  "@excelHeaderHours": {
+    "description": "Excel export hours column header"
+  },
+
+  "excelHeaderStatus": "Status",
+  "@excelHeaderStatus": {
+    "description": "Excel export status column header"
+  },
+
+  "excelSummaryReport": "Summary Report",
+  "@excelSummaryReport": {
+    "description": "Excel summary report title"
+  },
+
+  "excelSummaryProject": "Project",
+  "@excelSummaryProject": {
+    "description": "Excel summary project column header"
+  },
+
+  "excelSummaryTotalTasks": "Total Tasks",
+  "@excelSummaryTotalTasks": {
+    "description": "Excel summary total tasks column header"
+  },
+
+  "excelSummaryTotalHours": "Total Hours",
+  "@excelSummaryTotalHours": {
+    "description": "Excel summary total hours column header"
+  },
+
+  "excelSummaryAvgHoursPerTask": "Avg Hours/Task",
+  "@excelSummaryAvgHoursPerTask": {
+    "description": "Excel summary average hours per task column header"
+  },
+
+  "excelSummaryTotal": "TOTAL",
+  "@excelSummaryTotal": {
+    "description": "Excel summary total row label"
+  },
+
+  "excelSummaryUnknownProject": "Unknown Project",
+  "@excelSummaryUnknownProject": {
+    "description": "Excel summary unknown project label"
+  },
+
+  "excelSummaryUntitledTask": "Untitled Task",
+  "@excelSummaryUntitledTask": {
+    "description": "Excel summary untitled task label"
+  },
+
+  "excelSummaryInProgress": "In Progress",
+  "@excelSummaryInProgress": {
+    "description": "Excel summary in progress status"
+  },
+
+  "excelSummaryCompleted": "Completed",
+  "@excelSummaryCompleted": {
+    "description": "Excel summary completed status"
+  },
+
+  "timeUnitsJustNow": "Just now",
+  "@timeUnitsJustNow": {
+    "description": "Just now time formatting"
+  },
+
+  "timeUnitsHourAgo": "{hours} hour ago",
+  "@timeUnitsHourAgo": {
+    "description": "Hour ago time formatting",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+
+  "timeUnitsHoursAgo": "{hours} hours ago",
+  "@timeUnitsHoursAgo": {
+    "description": "Hours ago time formatting",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+
+  "timeUnitsMinuteAgo": "{minutes} minute ago",
+  "@timeUnitsMinuteAgo": {
+    "description": "Minute ago time formatting",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+
+  "timeUnitsMinutesAgo": "{minutes} minutes ago",
+  "@timeUnitsMinutesAgo": {
+    "description": "Minutes ago time formatting",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+
+  "timeUnitsToday": "Today",
+  "@timeUnitsToday": {
+    "description": "Today time formatting"
+  },
+
+  "timeUnitsYesterday": "Yesterday",
+  "@timeUnitsYesterday": {
+    "description": "Yesterday time formatting"
+  },
+
+  "filters": "Filters: {filterInfo}",
+  "@filters": {
+    "description": "Shows applied filters",
+    "placeholders": {
+      "filterInfo": {
+        "type": "String",
+        "example": "Project: Test • 01/01/2024 - 31/01/2024"
+      }
+    }
+  },
+
+  "totalTasks": "Total Tasks",
+  "@totalTasks": {
+    "description": "Total tasks label"
+  },
+
+  "totalTime": "Total Time",
+  "@totalTime": {
+    "description": "Total time label"
+  },
+
+  "avgPerTask": "Avg per Task",
+  "@avgPerTask": {
+    "description": "Average per task label"
+  },
+
+  "uniqueTasks": "{count} unique tasks • {duration}",
+  "@uniqueTasks": {
+    "description": "Shows unique tasks count and duration",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      },
+      "duration": {
+        "type": "String",
+        "example": "2h 30m"
+      }
+    }
+  },
+
+  "sessions": "({count} sessions)",
+  "@sessions": {
+    "description": "Shows session count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "exportToExcel": "Export to Excel",
+  "@exportToExcel": {
+    "description": "Export to Excel tooltip"
+  },
+
+  "excelReportExportedTo": "Excel report exported to:\n{path}",
+  "@excelReportExportedTo": {
+    "description": "Shows export path",
+    "placeholders": {
+      "path": {
+        "type": "String",
+        "example": "/Documents/report.xlsx"
+      }
+    }
+  },
+
+  "excelReportExportedSuccessfully": "Excel report exported successfully!",
+  "@excelReportExportedSuccessfully": {
+    "description": "Export success message"
+  },
+
+  "unknown": "Unknown",
+  "@unknown": {
+    "description": "Unknown label"
+  },
+
+  "projectLabel": "Project: {name}",
+  "@projectLabel": {
+    "description": "Project filter label",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "My Project"
+      }
+    }
+  },
+
+  "dateRangeLabel": "{startDay}/{startMonth}/{startYear} - {endDay}/{endMonth}/{endYear}",
+  "@dateRangeLabel": {
+    "description": "Date range filter label",
+    "placeholders": {
+      "startDay": {
+        "type": "int",
+        "example": "1"
+      },
+      "startMonth": {
+        "type": "int",
+        "example": "1"
+      },
+      "startYear": {
+        "type": "int",
+        "example": "2024"
+      },
+      "endDay": {
+        "type": "int",
+        "example": "31"
+      },
+      "endMonth": {
+        "type": "int",
+        "example": "1"
+      },
+      "endYear": {
+        "type": "int",
+        "example": "2024"
+      }
+    }
+  },
+
+  "untitledTask": "Untitled Task",
+  "@untitledTask": {
+    "description": "Default task name when empty"
+  },
+
+  "inProgress": "In Progress",
+  "@inProgress": {
+    "description": "Task status in progress"
+  },
+
+  "unknownProject": "Unknown Project",
+  "@unknownProject": {
+    "description": "Unknown project label"
+  },
+
+  "workTimeToday": "Work Time Today",
+  "@workTimeToday": {
+    "description": "Work time today label"
+  },
+
+  "projectBreakdown": "Project Breakdown",
+  "@projectBreakdown": {
+    "description": "Project breakdown section title"
+  },
+
+  "tasks": "Tasks",
+  "@tasks": {
+    "description": "Tasks label"
+  },
+
+  "last": "Last",
+  "@last": {
+    "description": "Last activity label"
+  },
+
+  "optional": "(optional)",
+  "@optional": {
+    "description": "Optional field indicator"
+  },
+
+  "timeUnitsDayAgo": "{days} day ago",
+  "@timeUnitsDayAgo": {
+    "description": "Day ago time formatting",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+
+  "timeUnitsDaysAgo": "{days} days ago",
+  "@timeUnitsDaysAgo": {
+    "description": "Days ago time formatting",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+
+  "timeUnitsMinuteAgo": "{minutes} minute ago",
+  "@timeUnitsMinuteAgo": {
+    "description": "Minute ago time formatting",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+
+  "timeUnitsMinutesAgo": "{minutes} minutes ago",
+  "@timeUnitsMinutesAgo": {
+    "description": "Minutes ago time formatting",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+
+  "timeUnitsSecondAgo": "{seconds} second ago",
+  "@timeUnitsSecondAgo": {
+    "description": "Second ago time formatting",
+    "placeholders": {
+      "seconds": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+
+  "timeUnitsSecondsAgo": "{seconds} seconds ago",
+  "@timeUnitsSecondsAgo": {
+    "description": "Seconds ago time formatting",
+    "placeholders": {
+      "seconds": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+
+  "timeUnitsAt": "at",
+  "@timeUnitsAt": {
+    "description": "Time separator in date-time format"
+  },
+
+  "timeUnitsWeekRange": "{startDate} - {endDate}",
+  "@timeUnitsWeekRange": {
+    "description": "Week range format",
+    "placeholders": {
+      "startDate": {
+        "type": "String",
+        "example": "Jan 1"
+      },
+      "endDate": {
+        "type": "String",
+        "example": "Jan 7, 2024"
+      }
+    }
+  },
+
+  "timeUnitsWeekRangeSameMonth": "{startDate} - {endDate}",
+  "@timeUnitsWeekRangeSameMonth": {
+    "description": "Week range format when start and end are in same month",
+    "placeholders": {
+      "startDate": {
+        "type": "String",
+        "example": "Jan 1"
+      },
+      "endDate": {
+        "type": "String",
+        "example": "7, 2024"
+      }
+    }
+  },
+
+  "timeUnitsHours": "h",
+  "@timeUnitsHours": {
+    "description": "Hours abbreviation"
+  },
+
+  "timeUnitsMinutes": "m",
+  "@timeUnitsMinutes": {
+    "description": "Minutes abbreviation"
+  },
+
+  "timeUnitsSeconds": "s",
+  "@timeUnitsSeconds": {
+    "description": "Seconds abbreviation"
+  },
+
+  "timeUnitsPercentage": "{value}%",
+  "@timeUnitsPercentage": {
+    "description": "Percentage format",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "75.5"
+      }
+    }
+  },
+
+  "errorGeneric": "Error",
+  "@errorGeneric": {
+    "description": "Generic error label"
+  },
+
+  "errorGenericWithDetails": "Error: {details}",
+  "@errorGenericWithDetails": {
+    "description": "Generic error message with details",
+    "placeholders": {
+      "details": {
+        "type": "String",
+        "example": "Connection failed"
+      }
+    }
+  },
+
+  "errorLoadingRecentTasks": "Error loading recent tasks",
+  "@errorLoadingRecentTasks": {
+    "description": "Error message when recent tasks fail to load"
+  },
+
+  "errorLoadingTodaysActivity": "Error loading today's activity",
+  "@errorLoadingTodaysActivity": {
+    "description": "Error message when today's activity fails to load"
+  },
+
+  "errorLoadingData": "Error loading data",
+  "@errorLoadingData": {
+    "description": "Error message when data fails to load"
+  },
+
+  "customDateRange": "Custom Date Range",
+  "@customDateRange": {
+    "description": "Custom date range filter label"
+  },
+
+  "selectRange": "Select Range",
+  "@selectRange": {
+    "description": "Select date range button label"
+  },
+
+  "quickFilters": "Quick Filters",
+  "@quickFilters": {
+    "description": "Quick filters section label"
+  },
+
+  "last7Days": "Last 7 days",
+  "@last7Days": {
+    "description": "Last 7 days filter option"
+  },
+
+  "last30Days": "Last 30 days",
+  "@last30Days": {
+    "description": "Last 30 days filter option"
+  },
+
+  "last3Months": "Last 3 months",
+  "@last3Months": {
+    "description": "Last 3 months filter option"
+  },
+
+  "thisYear": "This year",
+  "@thisYear": {
+    "description": "This year filter option"
   }
 }

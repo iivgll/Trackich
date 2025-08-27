@@ -452,7 +452,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get totalTime => 'Общее время';
 
   @override
-  String get sessions => 'Сессии';
+  String sessions(int count) {
+    return '($count сессий)';
+  }
 
   @override
   String get lastActivity => 'Последняя активность';
@@ -596,6 +598,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get projectNameRequired => 'Название проекта обязательно';
 
   @override
+  String get optional => '(необязательно)';
+
+  @override
   String get enterProjectDescription => 'Введите описание проекта';
 
   @override
@@ -651,4 +656,254 @@ class AppLocalizationsRu extends AppLocalizations {
   String timerRecoveryDuration(String duration) {
     return 'Продолжительность: $duration';
   }
+
+  @override
+  String get searchProjects => 'Поиск проектов...';
+
+  @override
+  String get weeklyTargetHours => 'Недельная цель часов (необязательно)';
+
+  @override
+  String get hours => 'часов';
+
+  @override
+  String get enterTaskDescription => 'Введите описание задачи';
+
+  @override
+  String get briefProjectDescription => 'Краткое описание проекта';
+
+  @override
+  String get excelHeaderDate => 'Дата';
+
+  @override
+  String get excelHeaderProject => 'Проект';
+
+  @override
+  String get excelHeaderTaskDescription => 'Описание задачи';
+
+  @override
+  String get excelHeaderStartTime => 'Время начала';
+
+  @override
+  String get excelHeaderEndTime => 'Время окончания';
+
+  @override
+  String get excelHeaderDuration => 'Продолжительность';
+
+  @override
+  String get excelHeaderHours => 'Часы';
+
+  @override
+  String get excelHeaderStatus => 'Статус';
+
+  @override
+  String get excelSummaryReport => 'Сводный отчет';
+
+  @override
+  String get excelSummaryProject => 'Проект';
+
+  @override
+  String get excelSummaryTotalTasks => 'Всего задач';
+
+  @override
+  String get excelSummaryTotalHours => 'Всего часов';
+
+  @override
+  String get excelSummaryAvgHoursPerTask => 'Среднее часов/задача';
+
+  @override
+  String get excelSummaryTotal => 'ИТОГО';
+
+  @override
+  String get excelSummaryUnknownProject => 'Неизвестный проект';
+
+  @override
+  String get excelSummaryUntitledTask => 'Без названия';
+
+  @override
+  String get excelSummaryInProgress => 'В процессе';
+
+  @override
+  String get excelSummaryCompleted => 'Завершено';
+
+  @override
+  String get timeUnitsJustNow => 'Только что';
+
+  @override
+  String timeUnitsHourAgo(int hours) {
+    return '$hours час назад';
+  }
+
+  @override
+  String timeUnitsHoursAgo(int hours) {
+    return '$hours часов назад';
+  }
+
+  @override
+  String timeUnitsMinuteAgo(int minutes) {
+    return '$minutes минута назад';
+  }
+
+  @override
+  String timeUnitsMinutesAgo(int minutes) {
+    return '$minutes минут назад';
+  }
+
+  @override
+  String get timeUnitsToday => 'Сегодня';
+
+  @override
+  String get timeUnitsYesterday => 'Вчера';
+
+  @override
+  String filters(String filterInfo) {
+    return 'Фильтры: $filterInfo';
+  }
+
+  @override
+  String get totalTasks => 'Всего задач';
+
+  @override
+  String get avgPerTask => 'Среднее по задаче';
+
+  @override
+  String uniqueTasks(int count, String duration) {
+    return '$count уникальных задач • $duration';
+  }
+
+  @override
+  String get exportToExcel => 'Экспорт в Excel';
+
+  @override
+  String excelReportExportedTo(String path) {
+    return 'Отчет Excel экспортирован в:\n$path';
+  }
+
+  @override
+  String get excelReportExportedSuccessfully =>
+      'Отчет Excel успешно экспортирован!';
+
+  @override
+  String get unknown => 'Неизвестно';
+
+  @override
+  String projectLabel(String name) {
+    return 'Проект: $name';
+  }
+
+  @override
+  String dateRangeLabel(
+    int startDay,
+    int startMonth,
+    int startYear,
+    int endDay,
+    int endMonth,
+    int endYear,
+  ) {
+    return '$startDay/$startMonth/$startYear - $endDay/$endMonth/$endYear';
+  }
+
+  @override
+  String get untitledTask => 'Без названия';
+
+  @override
+  String get inProgress => 'В процессе';
+
+  @override
+  String get unknownProject => 'Неизвестный проект';
+
+  @override
+  String get workTimeToday => 'Время работы сегодня';
+
+  @override
+  String get tasks => 'Задачи';
+
+  @override
+  String get last => 'Последняя';
+
+  @override
+  String timeUnitsDayAgo(int days) {
+    return '$days день назад';
+  }
+
+  @override
+  String timeUnitsDaysAgo(int days) {
+    return '$days дней назад';
+  }
+
+  @override
+  String timeUnitsSecondAgo(int seconds) {
+    return '$seconds секунда назад';
+  }
+
+  @override
+  String timeUnitsSecondsAgo(int seconds) {
+    return '$seconds секунд назад';
+  }
+
+  @override
+  String get timeUnitsAt => 'в';
+
+  @override
+  String timeUnitsWeekRange(String startDate, String endDate) {
+    return '$startDate - $endDate';
+  }
+
+  @override
+  String timeUnitsWeekRangeSameMonth(String startDate, String endDate) {
+    return '$startDate - $endDate';
+  }
+
+  @override
+  String get timeUnitsHours => 'ч';
+
+  @override
+  String get timeUnitsMinutes => 'м';
+
+  @override
+  String get timeUnitsSeconds => 'с';
+
+  @override
+  String timeUnitsPercentage(String value) {
+    return '$value%';
+  }
+
+  @override
+  String get errorGeneric => 'Ошибка';
+
+  @override
+  String errorGenericWithDetails(String details) {
+    return 'Ошибка: $details';
+  }
+
+  @override
+  String get errorLoadingRecentTasks => 'Ошибка загрузки последних задач';
+
+  @override
+  String get errorLoadingTodaysActivity =>
+      'Ошибка загрузки активности за сегодня';
+
+  @override
+  String get errorLoadingData => 'Ошибка загрузки данных';
+
+  @override
+  String get customDateRange => 'Пользовательский диапазон дат';
+
+  @override
+  String get selectRange => 'Выбрать диапазон';
+
+  @override
+  String get quickFilters => 'Быстрые фильтры';
+
+  @override
+  String get last7Days => 'Последние 7 дней';
+
+  @override
+  String get last30Days => 'Последние 30 дней';
+
+  @override
+  String get last3Months => 'Последние 3 месяца';
+
+  @override
+  String get thisYear => 'Этот год';
 }

@@ -4,12 +4,12 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trackich/features/timer/presentation/providers/timer_provider.dart';
 
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/utils/time_formatter.dart';
 import '../../../../core/models/time_entry.dart';
 import '../../../../core/services/storage_service.dart';
-import '../../../projects/presentation/providers/projects_provider.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/time_formatter.dart';
 import '../../../../l10n/generated/app_localizations.dart';
+import '../../../projects/presentation/providers/projects_provider.dart';
 
 part 'enhanced_recent_tasks_widget.g.dart';
 
@@ -412,6 +412,7 @@ class _TaskGroupItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -504,7 +505,7 @@ class _TaskGroupItem extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Last: ${TimeFormatter.formatTime(taskGroupWithProject.taskGroup.lastActivity)}',
+                        '${l10n.last}: ${TimeFormatter.formatTime(taskGroupWithProject.taskGroup.lastActivity)}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color:
                               Theme.of(context).brightness == Brightness.light
@@ -556,6 +557,7 @@ class _TaskGroupDetailsDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     return AlertDialog(
       backgroundColor: Theme.of(context).brightness == Brightness.light
           ? AppTheme.calmWhite
@@ -603,7 +605,7 @@ class _TaskGroupDetailsDialog extends ConsumerWidget {
           ),
           const SizedBox(height: AppTheme.space3),
           _DetailRow(
-            label: AppLocalizations.of(context).sessions,
+            label: l10n.sessions(taskGroupWithProject.taskGroup.sessionCount),
             value:
                 '${taskGroupWithProject.taskGroup.sessionCount} work sessions',
             icon: Symbols.repeat,

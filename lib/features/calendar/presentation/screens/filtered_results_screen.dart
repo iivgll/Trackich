@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/models/time_entry.dart';
 import '../../../../core/services/excel_export_service.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/time_formatter.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../projects/domain/models/project.dart';
@@ -30,6 +30,7 @@ class FilteredResultsScreen extends ConsumerStatefulWidget {
 class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final projectsAsync = ref.watch(projectsProvider);
 
     // Group entries by date
@@ -57,7 +58,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
           IconButton(
             onPressed: () => _exportToExcel(context),
             icon: const Icon(Symbols.file_download),
-            tooltip: 'Export to Excel',
+            tooltip: l10n.exportToExcel,
           ),
         ],
       ),
@@ -86,6 +87,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
   }
 
   Widget _buildSummaryHeader() {
+    final l10n = AppLocalizations.of(context);
     final totalEntries = widget.filteredEntries.length;
     final totalDuration = widget.filteredEntries.fold<Duration>(
       Duration.zero,
@@ -103,20 +105,27 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
             (p) => p.id == widget.projectId,
             orElse: () => Project(
               id: widget.projectId!,
-              name: 'Unknown',
+              name: l10n.unknown,
               color: const Color(0xFF007AFF),
               description: '',
               createdAt: DateTime.now(),
             ),
           );
-          parts.add('Project: ${project.name}');
+          parts.add(l10n.projectLabel(project.name));
         }
       }
       if (widget.dateRange != null) {
         final start = widget.dateRange!.start;
         final end = widget.dateRange!.end;
         parts.add(
-          '${start.day}/${start.month}/${start.year} - ${end.day}/${end.month}/${end.year}',
+          l10n.dateRangeLabel(
+            start.day,
+            start.month,
+            start.year,
+            end.day,
+            end.month,
+            end.year,
+          ),
         );
       }
       filterInfo = parts.join(' • ');
@@ -136,7 +145,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
         children: [
           if (filterInfo.isNotEmpty) ...[
             Text(
-              'Filters: $filterInfo',
+              l10n.filters(filterInfo),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: AppTheme.getPrimaryColor(context),
                 fontWeight: FontWeight.w500,
@@ -149,7 +158,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
               Expanded(
                 child: _SummaryCard(
                   icon: Symbols.task_alt,
-                  label: 'Total Tasks',
+                  label: l10n.totalTasks,
                   value: totalEntries.toString(),
                 ),
               ),
@@ -157,7 +166,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
               Expanded(
                 child: _SummaryCard(
                   icon: Symbols.schedule,
-                  label: 'Total Time',
+                  label: l10n.totalTime,
                   value: TimeFormatter.formatDuration(totalDuration),
                 ),
               ),
@@ -165,7 +174,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
               Expanded(
                 child: _SummaryCard(
                   icon: Symbols.speed,
-                  label: 'Avg per Task',
+                  label: l10n.avgPerTask,
                   value: totalEntries > 0
                       ? TimeFormatter.formatDuration(
                           Duration(
@@ -184,6 +193,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
   }
 
   Widget _buildEmptyState() {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -195,14 +205,14 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
           ),
           const SizedBox(height: AppTheme.space4),
           Text(
-            'No results found',
+            l10n.noTasksFound,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               color: Theme.of(context).hintColor,
             ),
           ),
           const SizedBox(height: AppTheme.space2),
           Text(
-            'Try adjusting your filters or date range',
+            l10n.tryAdjustingSearch,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).hintColor,
             ),
@@ -217,12 +227,13 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
     List<TimeEntry> entries,
     AsyncValue<List<Project>> projectsAsync,
   ) {
+    final l10n = AppLocalizations.of(context);
     // Group entries by project + task combination
     final groupedEntries = <String, List<TimeEntry>>{};
     for (final entry in entries) {
       final taskName = entry.taskName.trim().isNotEmpty
           ? entry.taskName.trim()
-          : 'Untitled Task';
+          : l10n.untitledTask;
       final key = '${entry.projectId}_$taskName';
       groupedEntries.putIfAbsent(key, () => []).add(entry);
     }
@@ -277,7 +288,10 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
                     borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                   ),
                   child: Text(
-                    '${groupedEntries.length} unique tasks • ${TimeFormatter.formatDuration(dayDuration)}',
+                    l10n.uniqueTasks(
+                      groupedEntries.length,
+                      TimeFormatter.formatDuration(dayDuration),
+                    ),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: AppTheme.getSuccessColor(context),
                       fontWeight: FontWeight.w500,
@@ -300,6 +314,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
     List<TimeEntry> entries,
     AsyncValue<List<Project>> projectsAsync,
   ) {
+    final l10n = AppLocalizations.of(context);
     final firstEntry = entries.first;
     Project? project;
     if (projectsAsync.hasValue) {
@@ -331,10 +346,10 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
       timeInfo =
           '${TimeFormatter.formatTime(startTimes.first)} - ${TimeFormatter.formatTime(endTimes.last)}';
       if (sessionCount > 1) {
-        timeInfo += ' ($sessionCount sessions)';
+        timeInfo += l10n.sessions(sessionCount);
       }
     } else {
-      timeInfo = 'In Progress';
+      timeInfo = l10n.inProgress;
     }
 
     return Container(
@@ -367,7 +382,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
               children: [
                 // Project name
                 Text(
-                  project?.name ?? 'Unknown Project',
+                  project?.name ?? l10n.unknownProject,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Theme.of(context).hintColor,
                     fontWeight: FontWeight.w500,
@@ -378,7 +393,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
                 Text(
                   firstEntry.taskName.trim().isNotEmpty
                       ? firstEntry.taskName.trim()
-                      : 'Untitled Task',
+                      : l10n.untitledTask,
                   style: Theme.of(
                     context,
                   ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
@@ -448,6 +463,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
   }
 
   Future<void> _exportToExcel(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
     try {
       // Show loading indicator
       ScaffoldMessenger.of(context).showSnackBar(
@@ -471,6 +487,7 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
       final result = await ExcelExportService.exportTimeEntries(
         entries: widget.filteredEntries,
         projects: projects,
+        context: context,
         dateRange: widget.dateRange,
       );
 
@@ -484,8 +501,8 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
         // Show success message with file path
         final successMessage =
             result.isNotEmpty && result != 'File saved successfully'
-            ? 'Excel report exported to:\n$result'
-            : 'Excel report exported successfully!';
+            ? l10n.excelReportExportedTo(result)
+            : l10n.excelReportExportedSuccessfully;
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

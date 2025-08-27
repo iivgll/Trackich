@@ -1,23 +1,23 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
-import 'features/settings/presentation/providers/settings_provider.dart';
-import 'presentation/screens/main_screen.dart';
-import 'presentation/screens/onboarding_screen.dart';
-import 'l10n/generated/app_localizations.dart';
-import 'features/system_tray/system_tray_service.dart';
+import 'core/theme/app_theme.dart';
 import 'features/notifications/notification_service.dart';
 import 'features/notifications/providers/notification_permission_provider.dart';
-import 'features/timer/presentation/providers/timer_recovery_provider.dart';
+import 'features/settings/presentation/providers/settings_provider.dart';
+import 'features/system_tray/system_tray_service.dart';
 import 'features/timer/presentation/providers/timer_provider.dart';
+import 'features/timer/presentation/providers/timer_recovery_provider.dart';
 import 'features/timer/presentation/widgets/timer_recovery_dialog.dart';
+import 'l10n/generated/app_localizations.dart';
+import 'presentation/screens/main_screen.dart';
+import 'presentation/screens/onboarding_screen.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -225,6 +225,9 @@ class AppRouter extends ConsumerWidget {
   }
 }
 
+// Global navigator key for accessing context from anywhere
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class TrackichApp extends ConsumerStatefulWidget {
   const TrackichApp({super.key});
 
@@ -275,6 +278,7 @@ class _TrackichAppState extends ConsumerState<TrackichApp>
 
     return MaterialApp(
       title: AppConstants.appName,
+      navigatorKey: navigatorKey,
 
       // Theme Configuration
       theme: AppTheme.lightTheme,

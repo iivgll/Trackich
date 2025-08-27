@@ -1,10 +1,12 @@
-import 'dart:typed_data';
 import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:excel/excel.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:file_saver/file_saver.dart';
 import 'package:trackich/features/projects/domain/models/project.dart';
+import 'package:trackich/l10n/generated/app_localizations.dart';
 
 import '../models/time_entry.dart';
 import '../utils/time_formatter.dart';
@@ -13,9 +15,12 @@ class ExcelExportService {
   static Future<String> exportTimeEntries({
     required List<TimeEntry> entries,
     required Map<String, Project> projects,
+    required BuildContext context,
     String? customFileName,
     DateTimeRange? dateRange,
   }) async {
+    final l10n = AppLocalizations.of(context);
+
     // Create Excel workbook
     var excel = Excel.createExcel();
 
@@ -29,7 +34,7 @@ class ExcelExportService {
     }
 
     // Set up headers for report sheet
-    _setupReportHeaders(reportSheet);
+    _setupReportHeaders(reportSheet, context);
 
     // Group entries by date
     var entriesByDate = <DateTime, List<TimeEntry>>{};
@@ -77,13 +82,13 @@ class ExcelExportService {
         reportSheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row))
             .value = TextCellValue(
-          project?.name ?? 'Unknown Project',
+          project?.name ?? l10n.excelSummaryUnknownProject,
         );
 
         // Task
         final taskName = entry.taskName.trim().isNotEmpty
             ? entry.taskName.trim()
-            : 'Untitled Task';
+            : l10n.excelSummaryUntitledTask;
         final fullTaskName = entry.description.trim().isNotEmpty
             ? '$taskName (${entry.description.trim()})'
             : taskName;
@@ -106,7 +111,7 @@ class ExcelExportService {
             .value = TextCellValue(
           entry.endTime != null
               ? TimeFormatter.formatTime(entry.endTime!)
-              : 'In Progress',
+              : l10n.excelSummaryInProgress,
         );
 
         // Duration
@@ -127,7 +132,9 @@ class ExcelExportService {
         reportSheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: row))
             .value = TextCellValue(
-          entry.isCompleted ? 'Completed' : 'In Progress',
+          entry.isCompleted
+              ? l10n.excelSummaryCompleted
+              : l10n.excelSummaryInProgress,
         );
 
         row++;
@@ -138,7 +145,7 @@ class ExcelExportService {
     }
 
     // Create summary sheet
-    _createSummarySheet(summarySheet, entries, projects);
+    _createSummarySheet(summarySheet, entries, projects, context);
 
     // Apply styling
     _applyReportStyling(reportSheet);
@@ -153,16 +160,17 @@ class ExcelExportService {
     return filePath;
   }
 
-  static void _setupReportHeaders(Sheet sheet) {
+  static void _setupReportHeaders(Sheet sheet, BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     var headers = [
-      'Date',
-      'Project',
-      'Task Description',
-      'Start Time',
-      'End Time',
-      'Duration',
-      'Hours',
-      'Status',
+      l10n.excelHeaderDate,
+      l10n.excelHeaderProject,
+      l10n.excelHeaderTaskDescription,
+      l10n.excelHeaderStartTime,
+      l10n.excelHeaderEndTime,
+      l10n.excelHeaderDuration,
+      l10n.excelHeaderHours,
+      l10n.excelHeaderStatus,
     ];
 
     for (int i = 0; i < headers.length; i++) {
@@ -178,18 +186,20 @@ class ExcelExportService {
     Sheet sheet,
     List<TimeEntry> entries,
     Map<String, Project> projects,
+    BuildContext context,
   ) {
+    final l10n = AppLocalizations.of(context);
     // Set up headers
     sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: 1)).value =
-        TextCellValue('Summary Report');
+        TextCellValue(l10n.excelSummaryReport);
     sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: 3)).value =
-        TextCellValue('Project');
+        TextCellValue(l10n.excelSummaryProject);
     sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: 3)).value =
-        TextCellValue('Total Tasks');
+        TextCellValue(l10n.excelSummaryTotalTasks);
     sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: 3)).value =
-        TextCellValue('Total Hours');
+        TextCellValue(l10n.excelSummaryTotalHours);
     sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: 3)).value =
-        TextCellValue('Avg Hours/Task');
+        TextCellValue(l10n.excelSummaryAvgHoursPerTask);
 
     // Group by project
     var projectStats = <String, Map<String, dynamic>>{};
@@ -202,7 +212,7 @@ class ExcelExportService {
 
       if (!projectStats.containsKey(projectId)) {
         projectStats[projectId] = {
-          'name': projects[projectId]?.name ?? 'Unknown Project',
+          'name': projects[projectId]?.name ?? l10n.excelSummaryUnknownProject,
           'tasks': 0,
           'totalHours': 0.0,
         };
@@ -253,7 +263,7 @@ class ExcelExportService {
     sheet
         .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row))
         .value = TextCellValue(
-      'TOTAL',
+      l10n.excelSummaryTotal,
     );
     sheet
         .cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row))

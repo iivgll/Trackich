@@ -758,7 +758,7 @@ abstract class AppLocalizations {
   /// **'Tasks Completed'**
   String get tasksCompleted;
 
-  /// Project breakdown chart title
+  /// Project breakdown section title
   ///
   /// In en, this message translates to:
   /// **'Project Breakdown'**
@@ -914,11 +914,11 @@ abstract class AppLocalizations {
   /// **'Total Time'**
   String get totalTime;
 
-  /// Sessions column header
+  /// Shows session count
   ///
   /// In en, this message translates to:
-  /// **'Sessions'**
-  String get sessions;
+  /// **'({count} sessions)'**
+  String sessions(int count);
 
   /// Last activity column header
   ///
@@ -1160,11 +1160,17 @@ abstract class AppLocalizations {
   /// **'Enter project name'**
   String get enterProjectName;
 
-  /// Validation message for empty project name
+  /// Project name validation error
   ///
   /// In en, this message translates to:
   /// **'Project name is required'**
   String get projectNameRequired;
+
+  /// Optional field indicator
+  ///
+  /// In en, this message translates to:
+  /// **'(optional)'**
+  String get optional;
 
   /// Project description input hint
   ///
@@ -1261,6 +1267,427 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Duration: {duration}'**
   String timerRecoveryDuration(String duration);
+
+  /// Search projects hint text
+  ///
+  /// In en, this message translates to:
+  /// **'Search projects...'**
+  String get searchProjects;
+
+  /// Weekly target hours input label
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Target Hours (optional)'**
+  String get weeklyTargetHours;
+
+  /// Hours unit label
+  ///
+  /// In en, this message translates to:
+  /// **'hours'**
+  String get hours;
+
+  /// Task description input hint
+  ///
+  /// In en, this message translates to:
+  /// **'Enter task description'**
+  String get enterTaskDescription;
+
+  /// Project description input hint
+  ///
+  /// In en, this message translates to:
+  /// **'Brief description of the project'**
+  String get briefProjectDescription;
+
+  /// Excel export date column header
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get excelHeaderDate;
+
+  /// Excel export project column header
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get excelHeaderProject;
+
+  /// Excel export task description column header
+  ///
+  /// In en, this message translates to:
+  /// **'Task Description'**
+  String get excelHeaderTaskDescription;
+
+  /// Excel export start time column header
+  ///
+  /// In en, this message translates to:
+  /// **'Start Time'**
+  String get excelHeaderStartTime;
+
+  /// Excel export end time column header
+  ///
+  /// In en, this message translates to:
+  /// **'End Time'**
+  String get excelHeaderEndTime;
+
+  /// Excel export duration column header
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get excelHeaderDuration;
+
+  /// Excel export hours column header
+  ///
+  /// In en, this message translates to:
+  /// **'Hours'**
+  String get excelHeaderHours;
+
+  /// Excel export status column header
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get excelHeaderStatus;
+
+  /// Excel summary report title
+  ///
+  /// In en, this message translates to:
+  /// **'Summary Report'**
+  String get excelSummaryReport;
+
+  /// Excel summary project column header
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get excelSummaryProject;
+
+  /// Excel summary total tasks column header
+  ///
+  /// In en, this message translates to:
+  /// **'Total Tasks'**
+  String get excelSummaryTotalTasks;
+
+  /// Excel summary total hours column header
+  ///
+  /// In en, this message translates to:
+  /// **'Total Hours'**
+  String get excelSummaryTotalHours;
+
+  /// Excel summary average hours per task column header
+  ///
+  /// In en, this message translates to:
+  /// **'Avg Hours/Task'**
+  String get excelSummaryAvgHoursPerTask;
+
+  /// Excel summary total row label
+  ///
+  /// In en, this message translates to:
+  /// **'TOTAL'**
+  String get excelSummaryTotal;
+
+  /// Excel summary unknown project label
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Project'**
+  String get excelSummaryUnknownProject;
+
+  /// Excel summary untitled task label
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled Task'**
+  String get excelSummaryUntitledTask;
+
+  /// Excel summary in progress status
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get excelSummaryInProgress;
+
+  /// Excel summary completed status
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get excelSummaryCompleted;
+
+  /// Just now time formatting
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get timeUnitsJustNow;
+
+  /// Hour ago time formatting
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} hour ago'**
+  String timeUnitsHourAgo(int hours);
+
+  /// Hours ago time formatting
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} hours ago'**
+  String timeUnitsHoursAgo(int hours);
+
+  /// Minute ago time formatting
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minute ago'**
+  String timeUnitsMinuteAgo(int minutes);
+
+  /// Minutes ago time formatting
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes ago'**
+  String timeUnitsMinutesAgo(int minutes);
+
+  /// Today time formatting
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get timeUnitsToday;
+
+  /// Yesterday time formatting
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get timeUnitsYesterday;
+
+  /// Shows applied filters
+  ///
+  /// In en, this message translates to:
+  /// **'Filters: {filterInfo}'**
+  String filters(String filterInfo);
+
+  /// Total tasks label
+  ///
+  /// In en, this message translates to:
+  /// **'Total Tasks'**
+  String get totalTasks;
+
+  /// Average per task label
+  ///
+  /// In en, this message translates to:
+  /// **'Avg per Task'**
+  String get avgPerTask;
+
+  /// Shows unique tasks count and duration
+  ///
+  /// In en, this message translates to:
+  /// **'{count} unique tasks • {duration}'**
+  String uniqueTasks(int count, String duration);
+
+  /// Export to Excel tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Export to Excel'**
+  String get exportToExcel;
+
+  /// Shows export path
+  ///
+  /// In en, this message translates to:
+  /// **'Excel report exported to:\n{path}'**
+  String excelReportExportedTo(String path);
+
+  /// Export success message
+  ///
+  /// In en, this message translates to:
+  /// **'Excel report exported successfully!'**
+  String get excelReportExportedSuccessfully;
+
+  /// Unknown label
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown;
+
+  /// Project filter label
+  ///
+  /// In en, this message translates to:
+  /// **'Project: {name}'**
+  String projectLabel(String name);
+
+  /// Date range filter label
+  ///
+  /// In en, this message translates to:
+  /// **'{startDay}/{startMonth}/{startYear} - {endDay}/{endMonth}/{endYear}'**
+  String dateRangeLabel(
+    int startDay,
+    int startMonth,
+    int startYear,
+    int endDay,
+    int endMonth,
+    int endYear,
+  );
+
+  /// Default task name when empty
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled Task'**
+  String get untitledTask;
+
+  /// Task status in progress
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get inProgress;
+
+  /// Unknown project label
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Project'**
+  String get unknownProject;
+
+  /// Work time today label
+  ///
+  /// In en, this message translates to:
+  /// **'Work Time Today'**
+  String get workTimeToday;
+
+  /// Tasks label
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks'**
+  String get tasks;
+
+  /// Last activity label
+  ///
+  /// In en, this message translates to:
+  /// **'Last'**
+  String get last;
+
+  /// Day ago time formatting
+  ///
+  /// In en, this message translates to:
+  /// **'{days} day ago'**
+  String timeUnitsDayAgo(int days);
+
+  /// Days ago time formatting
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days ago'**
+  String timeUnitsDaysAgo(int days);
+
+  /// Second ago time formatting
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds} second ago'**
+  String timeUnitsSecondAgo(int seconds);
+
+  /// Seconds ago time formatting
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds} seconds ago'**
+  String timeUnitsSecondsAgo(int seconds);
+
+  /// Time separator in date-time format
+  ///
+  /// In en, this message translates to:
+  /// **'at'**
+  String get timeUnitsAt;
+
+  /// Week range format
+  ///
+  /// In en, this message translates to:
+  /// **'{startDate} - {endDate}'**
+  String timeUnitsWeekRange(String startDate, String endDate);
+
+  /// Week range format when start and end are in same month
+  ///
+  /// In en, this message translates to:
+  /// **'{startDate} - {endDate}'**
+  String timeUnitsWeekRangeSameMonth(String startDate, String endDate);
+
+  /// Hours abbreviation
+  ///
+  /// In en, this message translates to:
+  /// **'h'**
+  String get timeUnitsHours;
+
+  /// Minutes abbreviation
+  ///
+  /// In en, this message translates to:
+  /// **'m'**
+  String get timeUnitsMinutes;
+
+  /// Seconds abbreviation
+  ///
+  /// In en, this message translates to:
+  /// **'s'**
+  String get timeUnitsSeconds;
+
+  /// Percentage format
+  ///
+  /// In en, this message translates to:
+  /// **'{value}%'**
+  String timeUnitsPercentage(String value);
+
+  /// Generic error label
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get errorGeneric;
+
+  /// Generic error message with details
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {details}'**
+  String errorGenericWithDetails(String details);
+
+  /// Error message when recent tasks fail to load
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading recent tasks'**
+  String get errorLoadingRecentTasks;
+
+  /// Error message when today's activity fails to load
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading today\'s activity'**
+  String get errorLoadingTodaysActivity;
+
+  /// Error message when data fails to load
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading data'**
+  String get errorLoadingData;
+
+  /// Custom date range filter label
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Date Range'**
+  String get customDateRange;
+
+  /// Select date range button label
+  ///
+  /// In en, this message translates to:
+  /// **'Select Range'**
+  String get selectRange;
+
+  /// Quick filters section label
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Filters'**
+  String get quickFilters;
+
+  /// Last 7 days filter option
+  ///
+  /// In en, this message translates to:
+  /// **'Last 7 days'**
+  String get last7Days;
+
+  /// Last 30 days filter option
+  ///
+  /// In en, this message translates to:
+  /// **'Last 30 days'**
+  String get last30Days;
+
+  /// Last 3 months filter option
+  ///
+  /// In en, this message translates to:
+  /// **'Last 3 months'**
+  String get last3Months;
+
+  /// This year filter option
+  ///
+  /// In en, this message translates to:
+  /// **'This year'**
+  String get thisYear;
 }
 
 class _AppLocalizationsDelegate

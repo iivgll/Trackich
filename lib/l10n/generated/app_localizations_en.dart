@@ -449,7 +449,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get totalTime => 'Total Time';
 
   @override
-  String get sessions => 'Sessions';
+  String sessions(int count) {
+    return '($count sessions)';
+  }
 
   @override
   String get lastActivity => 'Last Activity';
@@ -593,6 +595,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get projectNameRequired => 'Project name is required';
 
   @override
+  String get optional => '(optional)';
+
+  @override
   String get enterProjectDescription => 'Enter project description';
 
   @override
@@ -648,4 +653,253 @@ class AppLocalizationsEn extends AppLocalizations {
   String timerRecoveryDuration(String duration) {
     return 'Duration: $duration';
   }
+
+  @override
+  String get searchProjects => 'Search projects...';
+
+  @override
+  String get weeklyTargetHours => 'Weekly Target Hours (optional)';
+
+  @override
+  String get hours => 'hours';
+
+  @override
+  String get enterTaskDescription => 'Enter task description';
+
+  @override
+  String get briefProjectDescription => 'Brief description of the project';
+
+  @override
+  String get excelHeaderDate => 'Date';
+
+  @override
+  String get excelHeaderProject => 'Project';
+
+  @override
+  String get excelHeaderTaskDescription => 'Task Description';
+
+  @override
+  String get excelHeaderStartTime => 'Start Time';
+
+  @override
+  String get excelHeaderEndTime => 'End Time';
+
+  @override
+  String get excelHeaderDuration => 'Duration';
+
+  @override
+  String get excelHeaderHours => 'Hours';
+
+  @override
+  String get excelHeaderStatus => 'Status';
+
+  @override
+  String get excelSummaryReport => 'Summary Report';
+
+  @override
+  String get excelSummaryProject => 'Project';
+
+  @override
+  String get excelSummaryTotalTasks => 'Total Tasks';
+
+  @override
+  String get excelSummaryTotalHours => 'Total Hours';
+
+  @override
+  String get excelSummaryAvgHoursPerTask => 'Avg Hours/Task';
+
+  @override
+  String get excelSummaryTotal => 'TOTAL';
+
+  @override
+  String get excelSummaryUnknownProject => 'Unknown Project';
+
+  @override
+  String get excelSummaryUntitledTask => 'Untitled Task';
+
+  @override
+  String get excelSummaryInProgress => 'In Progress';
+
+  @override
+  String get excelSummaryCompleted => 'Completed';
+
+  @override
+  String get timeUnitsJustNow => 'Just now';
+
+  @override
+  String timeUnitsHourAgo(int hours) {
+    return '$hours hour ago';
+  }
+
+  @override
+  String timeUnitsHoursAgo(int hours) {
+    return '$hours hours ago';
+  }
+
+  @override
+  String timeUnitsMinuteAgo(int minutes) {
+    return '$minutes minute ago';
+  }
+
+  @override
+  String timeUnitsMinutesAgo(int minutes) {
+    return '$minutes minutes ago';
+  }
+
+  @override
+  String get timeUnitsToday => 'Today';
+
+  @override
+  String get timeUnitsYesterday => 'Yesterday';
+
+  @override
+  String filters(String filterInfo) {
+    return 'Filters: $filterInfo';
+  }
+
+  @override
+  String get totalTasks => 'Total Tasks';
+
+  @override
+  String get avgPerTask => 'Avg per Task';
+
+  @override
+  String uniqueTasks(int count, String duration) {
+    return '$count unique tasks • $duration';
+  }
+
+  @override
+  String get exportToExcel => 'Export to Excel';
+
+  @override
+  String excelReportExportedTo(String path) {
+    return 'Excel report exported to:\n$path';
+  }
+
+  @override
+  String get excelReportExportedSuccessfully =>
+      'Excel report exported successfully!';
+
+  @override
+  String get unknown => 'Unknown';
+
+  @override
+  String projectLabel(String name) {
+    return 'Project: $name';
+  }
+
+  @override
+  String dateRangeLabel(
+    int startDay,
+    int startMonth,
+    int startYear,
+    int endDay,
+    int endMonth,
+    int endYear,
+  ) {
+    return '$startDay/$startMonth/$startYear - $endDay/$endMonth/$endYear';
+  }
+
+  @override
+  String get untitledTask => 'Untitled Task';
+
+  @override
+  String get inProgress => 'In Progress';
+
+  @override
+  String get unknownProject => 'Unknown Project';
+
+  @override
+  String get workTimeToday => 'Work Time Today';
+
+  @override
+  String get tasks => 'Tasks';
+
+  @override
+  String get last => 'Last';
+
+  @override
+  String timeUnitsDayAgo(int days) {
+    return '$days day ago';
+  }
+
+  @override
+  String timeUnitsDaysAgo(int days) {
+    return '$days days ago';
+  }
+
+  @override
+  String timeUnitsSecondAgo(int seconds) {
+    return '$seconds second ago';
+  }
+
+  @override
+  String timeUnitsSecondsAgo(int seconds) {
+    return '$seconds seconds ago';
+  }
+
+  @override
+  String get timeUnitsAt => 'at';
+
+  @override
+  String timeUnitsWeekRange(String startDate, String endDate) {
+    return '$startDate - $endDate';
+  }
+
+  @override
+  String timeUnitsWeekRangeSameMonth(String startDate, String endDate) {
+    return '$startDate - $endDate';
+  }
+
+  @override
+  String get timeUnitsHours => 'h';
+
+  @override
+  String get timeUnitsMinutes => 'm';
+
+  @override
+  String get timeUnitsSeconds => 's';
+
+  @override
+  String timeUnitsPercentage(String value) {
+    return '$value%';
+  }
+
+  @override
+  String get errorGeneric => 'Error';
+
+  @override
+  String errorGenericWithDetails(String details) {
+    return 'Error: $details';
+  }
+
+  @override
+  String get errorLoadingRecentTasks => 'Error loading recent tasks';
+
+  @override
+  String get errorLoadingTodaysActivity => 'Error loading today\'s activity';
+
+  @override
+  String get errorLoadingData => 'Error loading data';
+
+  @override
+  String get customDateRange => 'Custom Date Range';
+
+  @override
+  String get selectRange => 'Select Range';
+
+  @override
+  String get quickFilters => 'Quick Filters';
+
+  @override
+  String get last7Days => 'Last 7 days';
+
+  @override
+  String get last30Days => 'Last 30 days';
+
+  @override
+  String get last3Months => 'Last 3 months';
+
+  @override
+  String get thisYear => 'This year';
 }

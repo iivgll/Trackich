@@ -5,9 +5,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/time_formatter.dart';
 import '../../../../l10n/generated/app_localizations.dart';
+import '../../../timer/presentation/providers/timer_provider.dart';
 import '../../domain/models/project.dart';
 import '../providers/projects_provider.dart';
-import '../../../timer/presentation/providers/timer_provider.dart';
 
 // UI state providers
 final searchQueryProvider = StateProvider<String>((ref) => '');
@@ -105,7 +105,7 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen> {
             child: TextFormField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search projects...',
+                hintText: l10n.searchProjects,
                 prefixIcon: const Icon(Symbols.search, size: 20),
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
@@ -1037,7 +1037,7 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
                 TextFormField(
                   controller: _descriptionController,
                   decoration: InputDecoration(
-                    labelText: '${l10n.description} (optional)',
+                    labelText: '${l10n.description} ${l10n.optional}',
                     hintText: l10n.enterProjectDescription,
                   ),
                   maxLines: 3,
@@ -1096,7 +1096,7 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
                 TextFormField(
                   controller: _tagsController,
                   decoration: InputDecoration(
-                    labelText: '${l10n.tags} (optional)',
+                    labelText: '${l10n.tags} ${l10n.optional}',
                     hintText: l10n.enterTagsCommaSeparated,
                   ),
                 ),
@@ -1105,10 +1105,10 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
                 // Target hours
                 TextFormField(
                   controller: _targetHoursController,
-                  decoration: const InputDecoration(
-                    labelText: 'Weekly Target Hours (optional)',
+                  decoration: InputDecoration(
+                    labelText: l10n.weeklyTargetHours,
                     hintText: '0',
-                    suffixText: 'hours',
+                    suffixText: l10n.hours,
                   ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
@@ -1256,7 +1256,7 @@ class _ProjectDetailsDialog extends StatelessWidget {
               _DetailRow(
                 icon: Symbols.target,
                 label: l10n.weeklyTarget,
-                value: '${project.targetHoursPerWeek}h',
+                value: TimeFormatter.formatHours(project.targetHoursPerWeek),
               ),
 
             if (project.tags.isNotEmpty) ...[

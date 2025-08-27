@@ -6,9 +6,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trackich/features/timer/presentation/providers/timer_provider.dart';
 
 import '../../../../core/models/time_entry.dart';
+import '../../../../core/services/storage_service.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/time_formatter.dart';
-import '../../../../core/services/storage_service.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../projects/domain/models/project.dart';
 import '../../../projects/presentation/providers/projects_provider.dart';

@@ -60,7 +60,7 @@ class TodaySummaryWidget extends ConsumerWidget {
     BuildContext context,
     Map<String, dynamic> summary,
   ) {
-    AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context);
     final workHours = summary['workHours'] as double;
     final completedTasks = summary['completedTasks'] as int;
     final hoursByProject =
@@ -81,7 +81,7 @@ class TodaySummaryWidget extends ConsumerWidget {
               ),
               const SizedBox(height: AppTheme.space1),
               Text(
-                'Work Time Today', // TODO: Add l10n.workTimeToday
+                l10n.workTimeToday,
                 style: Theme.of(
                   context,
                 ).textTheme.bodyMedium?.copyWith(color: AppTheme.gray600),
@@ -94,7 +94,7 @@ class TodaySummaryWidget extends ConsumerWidget {
         // Project Breakdown
         if (hoursByProject.isNotEmpty) ...[
           Text(
-            'Project Breakdown', // TODO: Add l10n.projectBreakdown
+            l10n.projectBreakdown,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: AppTheme.space4),
@@ -160,7 +160,7 @@ class TodaySummaryWidget extends ConsumerWidget {
             Expanded(
               child: _StatItem(
                 icon: Symbols.task_alt,
-                label: 'Tasks', // TODO: Add l10n.tasks
+                label: l10n.tasks,
                 value: completedTasks.toString(),
                 color: AppTheme.successGreen,
               ),
