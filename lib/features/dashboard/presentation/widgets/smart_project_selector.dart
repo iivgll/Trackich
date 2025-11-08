@@ -29,12 +29,8 @@ class SmartProjectSelector extends ConsumerStatefulWidget {
 }
 
 class _SmartProjectSelectorState extends ConsumerState<SmartProjectSelector> {
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
-
   @override
   void dispose() {
-    _searchController.dispose();
     super.dispose();
   }
 
@@ -116,218 +112,6 @@ class _SmartProjectSelectorState extends ConsumerState<SmartProjectSelector> {
         selectedProjectId: widget.selectedProjectId,
         onProjectSelected: widget.onProjectSelected,
         onCreateNew: widget.onCreateNew,
-      ),
-    );
-  }
-
-  Widget _buildProjectsList(ScrollController scrollController) {
-    final l10n = AppLocalizations.of(context);
-
-    // Filter projects by search query
-    final filteredProjects = _searchQuery.isEmpty
-        ? widget.projects
-        : widget.projects
-            .where((p) => p.name.toLowerCase().contains(_searchQuery))
-            .toList();
-
-    // Get recent project IDs synchronously (empty list if not loaded yet)
-    final recentProjectIds = ref.watch(recentProjectIdsProvider).valueOrNull ?? [];
-
-    // Separate recent and other projects
-    final recentProjects = filteredProjects
-        .where((p) => recentProjectIds.contains(p.id))
-        .toList()
-      ..sort((a, b) {
-        final aIndex = recentProjectIds.indexOf(a.id);
-        final bIndex = recentProjectIds.indexOf(b.id);
-        return aIndex.compareTo(bIndex);
-      });
-
-    final otherProjects = filteredProjects
-        .where((p) => !recentProjectIds.contains(p.id))
-        .toList()
-      ..sort((a, b) => a.name.compareTo(b.name));
-
-        return ListView(
-          controller: scrollController,
-          padding: const EdgeInsets.symmetric(horizontal: AppTheme.space6),
-          children: [
-            // Create new project button
-            ListTile(
-              leading: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryBlue.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                ),
-                child: const Icon(
-                  Symbols.add,
-                  color: AppTheme.primaryBlue,
-                ),
-              ),
-              title: Text(
-                l10n.createProject,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.primaryBlue,
-                ),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                widget.onCreateNew();
-              },
-            ),
-
-            const Divider(height: AppTheme.space6),
-
-            // Recent projects section
-            if (recentProjects.isNotEmpty) ...[
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.space4,
-                  vertical: AppTheme.space2,
-                ),
-                child: Text(
-                  'Recent Projects',
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: AppTheme.gray600,
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-              ),
-              ...recentProjects.map((project) => _buildProjectTile(project, true)),
-              const SizedBox(height: AppTheme.space4),
-            ],
-
-            // All projects section
-            if (otherProjects.isNotEmpty) ...[
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.space4,
-                  vertical: AppTheme.space2,
-                ),
-                child: Text(
-                  recentProjects.isEmpty ? 'All Projects' : 'Other Projects',
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: AppTheme.gray600,
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-              ),
-              ...otherProjects.map((project) => _buildProjectTile(project, false)),
-            ],
-
-            // Empty state
-            if (filteredProjects.isEmpty) ...[
-              const SizedBox(height: AppTheme.space8),
-              Center(
-                child: Column(
-                  children: [
-                    Icon(
-                      Symbols.search_off,
-                      size: 64,
-                      color: Theme.of(context).hintColor,
-                    ),
-                    const SizedBox(height: AppTheme.space4),
-                    Text(
-                      'No projects found',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Theme.of(context).hintColor,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-
-            const SizedBox(height: AppTheme.space8),
-          ],
-        );
-  }
-
-  Widget _buildProjectTile(Project project, bool isRecent) {
-    final isSelected = widget.selectedProjectId == project.id;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppTheme.space2),
-      decoration: BoxDecoration(
-        color: isSelected
-            ? AppTheme.primaryBlue.withValues(alpha: 0.1)
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: isSelected
-            ? Border.all(color: AppTheme.primaryBlue, width: 2)
-            : null,
-      ),
-      child: ListTile(
-        leading: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: project.color,
-            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          ),
-          child: isSelected
-              ? const Icon(
-                  Symbols.check,
-                  color: Colors.white,
-                  size: 20,
-                )
-              : null,
-        ),
-        title: Row(
-          children: [
-            Expanded(
-              child: Text(
-                project.name,
-                style: TextStyle(
-                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-                  color: isSelected ? AppTheme.primaryBlue : null,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            if (isRecent)
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.space2,
-                  vertical: 2,
-                ),
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryBlue.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                ),
-                child: const Text(
-                  'RECENT',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: AppTheme.primaryBlue,
-                  ),
-                ),
-              ),
-          ],
-        ),
-        subtitle: project.description.isNotEmpty
-            ? Text(
-                project.description,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              )
-            : null,
-        onTap: () async {
-          widget.onProjectSelected(project.id);
-
-          // Update recent projects
-          final storage = ref.read(storageServiceProvider);
-          await storage.addRecentProject(project.id);
-          ref.invalidate(recentProjectIdsProvider);
-
-          if (context.mounted) {
-            Navigator.of(context).pop();
-          }
-        },
       ),
     );
   }
@@ -705,6 +489,7 @@ class _ProjectPickerModalState extends ConsumerState<_ProjectPickerModal> {
           },
         ),
         onTap: () async {
+          final navigator = Navigator.of(context);
           widget.onProjectSelected(project.id);
 
           // Update recent projects
@@ -712,9 +497,7 @@ class _ProjectPickerModalState extends ConsumerState<_ProjectPickerModal> {
           await storage.addRecentProject(project.id);
           ref.invalidate(recentProjectIdsProvider);
 
-          if (context.mounted) {
-            Navigator.of(context).pop();
-          }
+          navigator.pop();
         },
       ),
     );

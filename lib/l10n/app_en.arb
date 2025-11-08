@@ -1726,5 +1726,75 @@
   "timeEntryDeleted": "Time entry deleted successfully",
   "@timeEntryDeleted": {
     "description": "Success message after deleting time entry"
+  },
+
+  "errorLoadingTodaysActivity": "Error loading today's activity",
+  "@errorLoadingTodaysActivity": {
+    "description": "Error message when today's activity fails to load"
+  },
+
+  "workTimeToday": "Work Time Today",
+  "@workTimeToday": {
+    "description": "Label for today's total work time"
+  },
+
+  "projectBreakdown": "Project Breakdown",
+  "@projectBreakdown": {
+    "description": "Title for project breakdown section"
+  },
+
+  "tasks": "Tasks",
+  "@tasks": {
+    "description": "Label for tasks count"
+  },
+
+  "errorLoadingRecentTasks": "Error loading recent tasks",
+  "@errorLoadingRecentTasks": {
+    "description": "Error message when recent tasks fail to load"
+  },
+
+  "noRecentTasks": "No recent tasks",
+  "@noRecentTasks": {
+    "description": "Message when there are no recent tasks"
+  },
+
+  "startTimerToSeeTasks": "Start a timer to see your tasks here",
+  "@startTimerToSeeTasks": {
+    "description": "Empty state message for recent tasks"
+  },
+
+  "duration": "Duration",
+  "@duration": {
+    "description": "Label for duration field"
+  },
+
+  "completed": "Completed",
+  "@completed": {
+    "description": "Label for completed time field"
+  },
+
+  "description": "Description",
+  "@description": {
+    "description": "Label for description field"
+  },
+
+  "quickStart": "Quick Start",
+  "@quickStart": {
+    "description": "Title for quick start section"
+  },
+
+  "noRecentProjects": "No recent projects",
+  "@noRecentProjects": {
+    "description": "Message when there are no recent projects"
+  },
+
+  "errorLoadingProjects": "Error loading projects",
+  "@errorLoadingProjects": {
+    "description": "Error message when projects fail to load"
+  },
+
+  "neverUsed": "Never used",
+  "@neverUsed": {
+    "description": "Message when project has never been used"
   }
 }

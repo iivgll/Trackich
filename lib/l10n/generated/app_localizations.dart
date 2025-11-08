@@ -758,7 +758,7 @@ abstract class AppLocalizations {
   /// **'Tasks Completed'**
   String get tasksCompleted;
 
-  /// Project breakdown section title
+  /// Title for project breakdown section
   ///
   /// In en, this message translates to:
   /// **'Project Breakdown'**
@@ -1190,7 +1190,7 @@ abstract class AppLocalizations {
   /// **'Please enter a valid number'**
   String get pleaseEnterValidNumber;
 
-  /// Description label
+  /// Label for description field
   ///
   /// In en, this message translates to:
   /// **'Description'**
@@ -1533,13 +1533,13 @@ abstract class AppLocalizations {
   /// **'Unknown Project'**
   String get unknownProject;
 
-  /// Work time today label
+  /// Label for today's total work time
   ///
   /// In en, this message translates to:
   /// **'Work Time Today'**
   String get workTimeToday;
 
-  /// Tasks label
+  /// Label for tasks count
   ///
   /// In en, this message translates to:
   /// **'Tasks'**
@@ -1778,6 +1778,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Time entry deleted successfully'**
   String get timeEntryDeleted;
+
+  /// Message when there are no recent tasks
+  ///
+  /// In en, this message translates to:
+  /// **'No recent tasks'**
+  String get noRecentTasks;
+
+  /// Empty state message for recent tasks
+  ///
+  /// In en, this message translates to:
+  /// **'Start a timer to see your tasks here'**
+  String get startTimerToSeeTasks;
+
+  /// Label for duration field
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get duration;
+
+  /// Label for completed time field
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completed;
+
+  /// Title for quick start section
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Start'**
+  String get quickStart;
+
+  /// Message when there are no recent projects
+  ///
+  /// In en, this message translates to:
+  /// **'No recent projects'**
+  String get noRecentProjects;
+
+  /// Message when project has never been used
+  ///
+  /// In en, this message translates to:
+  /// **'Never used'**
+  String get neverUsed;
 }
 
 class _AppLocalizationsDelegate

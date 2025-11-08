@@ -949,4 +949,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get timeEntryDeleted => 'Time entry deleted successfully';
+
+  @override
+  String get noRecentTasks => 'No recent tasks';
+
+  @override
+  String get startTimerToSeeTasks => 'Start a timer to see your tasks here';
+
+  @override
+  String get duration => 'Duration';
+
+  @override
+  String get completed => 'Completed';
+
+  @override
+  String get quickStart => 'Quick Start';
+
+  @override
+  String get noRecentProjects => 'No recent projects';
+
+  @override
+  String get neverUsed => 'Never used';
 }

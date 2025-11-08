@@ -813,7 +813,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get unknownProject => 'Неизвестный проект';
 
   @override
-  String get workTimeToday => 'Время работы сегодня';
+  String get workTimeToday => 'Рабочее время сегодня';
 
   @override
   String get tasks => 'Задачи';
@@ -877,7 +877,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get errorLoadingRecentTasks => 'Ошибка загрузки последних задач';
+  String get errorLoadingRecentTasks => 'Ошибка загрузки недавних задач';
 
   @override
   String get errorLoadingTodaysActivity =>
@@ -953,4 +953,26 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get timeEntryDeleted => 'Запись времени успешно удалена';
+
+  @override
+  String get noRecentTasks => 'Нет недавних задач';
+
+  @override
+  String get startTimerToSeeTasks =>
+      'Запустите таймер, чтобы увидеть ваши задачи здесь';
+
+  @override
+  String get duration => 'Продолжительность';
+
+  @override
+  String get completed => 'Завершено';
+
+  @override
+  String get quickStart => 'Быстрый старт';
+
+  @override
+  String get noRecentProjects => 'Нет недавних проектов';
+
+  @override
+  String get neverUsed => 'Никогда не использовался';
 }

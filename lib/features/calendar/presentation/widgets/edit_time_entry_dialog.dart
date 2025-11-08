@@ -349,8 +349,9 @@ class _EditTimeEntryDialogState extends ConsumerState<EditTimeEntryDialog> {
 
     if (selectedDate == null || !mounted) return;
 
-    // Select time
+    // Select time - use the same context since we're in a dialog
     final selectedTime = await showTimePicker(
+      // ignore: use_build_context_synchronously
       context: context,
       initialTime: TimeOfDay.fromDateTime(currentDateTime),
     );

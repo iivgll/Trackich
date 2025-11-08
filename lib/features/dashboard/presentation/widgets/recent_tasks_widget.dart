@@ -56,7 +56,7 @@ class RecentTasksWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final recentTasksAsync = ref.watch(recentTimeEntriesProvider);
-    AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -79,7 +79,7 @@ class RecentTasksWidget extends ConsumerWidget {
                 const Icon(Symbols.history, size: 20, color: AppTheme.calmBlue),
                 const SizedBox(width: AppTheme.space2),
                 Text(
-                  AppLocalizations.of(context).recentActivity,
+                  l10n.recentActivity,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const Spacer(),
@@ -89,15 +89,15 @@ class RecentTasksWidget extends ConsumerWidget {
                   items: [
                     DropdownMenuItem(
                       value: 'today',
-                      child: Text(AppLocalizations.of(context).today),
+                      child: Text(l10n.today),
                     ),
                     DropdownMenuItem(
                       value: 'week',
-                      child: Text(AppLocalizations.of(context).thisWeek),
+                      child: Text(l10n.thisWeek),
                     ),
                     DropdownMenuItem(
                       value: 'all',
-                      child: Text(AppLocalizations.of(context).allTime),
+                      child: Text(l10n.allTime),
                     ),
                   ],
                   onChanged: (value) {},
@@ -128,7 +128,7 @@ class RecentTasksWidget extends ConsumerWidget {
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, _) => Center(
                   child: Text(
-                    AppLocalizations.of(context).errorLoadingRecentTasks,
+                    l10n.errorLoadingRecentTasks,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.error,
                     ),
@@ -143,6 +143,7 @@ class RecentTasksWidget extends ConsumerWidget {
   }
 
   Widget _buildEmptyState(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -150,14 +151,14 @@ class RecentTasksWidget extends ConsumerWidget {
           Icon(Symbols.task, size: 48, color: AppTheme.gray400),
           const SizedBox(height: AppTheme.space3),
           Text(
-            'No recent tasks', // TODO: Add l10n.noRecentTasks
+            l10n.noRecentTasks,
             style: Theme.of(
               context,
             ).textTheme.titleMedium?.copyWith(color: AppTheme.gray500),
           ),
           const SizedBox(height: AppTheme.space1),
           Text(
-            'Start a timer to see your tasks here', // TODO: Add l10n.startTimerToSeeTasks
+            l10n.startTimerToSeeTasks,
             style: Theme.of(
               context,
             ).textTheme.bodyMedium?.copyWith(color: AppTheme.gray400),
@@ -277,6 +278,7 @@ class _TaskDetailsDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     return AlertDialog(
       title: Row(
         children: [
@@ -302,13 +304,13 @@ class _TaskDetailsDialog extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _DetailRow(
-            label: AppLocalizations.of(context).projects,
+            label: l10n.projects,
             value: entryWithProject.project?.name ?? 'Unknown Project',
             icon: Symbols.folder,
           ),
           const SizedBox(height: AppTheme.space3),
           _DetailRow(
-            label: 'Duration', // TODO: Add l10n.duration
+            label: l10n.duration,
             value: TimeFormatter.formatDurationWords(
               entryWithProject.timeEntry.duration,
             ),
@@ -316,7 +318,7 @@ class _TaskDetailsDialog extends ConsumerWidget {
           ),
           const SizedBox(height: AppTheme.space3),
           _DetailRow(
-            label: 'Completed', // TODO: Add l10n.completed
+            label: l10n.completed,
             value: TimeFormatter.formatDateTime(
               entryWithProject.timeEntry.effectiveEndTime,
             ),
@@ -325,7 +327,7 @@ class _TaskDetailsDialog extends ConsumerWidget {
           if (entryWithProject.timeEntry.description.isNotEmpty) ...[
             const SizedBox(height: AppTheme.space3),
             _DetailRow(
-              label: 'Description', // TODO: Add l10n.description
+              label: l10n.description,
               value: entryWithProject.timeEntry.description,
               icon: Symbols.description,
             ),
@@ -335,14 +337,14 @@ class _TaskDetailsDialog extends ConsumerWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(AppLocalizations.of(context).close),
+          child: Text(l10n.close),
         ),
         FilledButton(
           onPressed: () async {
             Navigator.of(context).pop();
             await _startSimilarTask(ref, entryWithProject);
           },
-          child: Text(AppLocalizations.of(context).startSimilarTask),
+          child: Text(l10n.startSimilarTask),
         ),
       ],
     );

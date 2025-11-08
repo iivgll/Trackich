@@ -542,7 +542,7 @@ class _QuickStartDialogState extends ConsumerState<_QuickStartDialog> {
                 }
 
                 return DropdownButtonFormField<String>(
-                  value: _selectedProjectId,
+                  initialValue: _selectedProjectId,
                   hint: const Text('Select a project'),
                   items: projects
                       .map(

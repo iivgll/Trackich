@@ -330,5 +330,20 @@
   "delete": "Удалить",
   "deleteTimeEntry": "Удалить запись времени",
   "deleteTimeEntryConfirm": "Вы уверены, что хотите удалить эту запись времени? Это действие нельзя отменить.",
-  "timeEntryDeleted": "Запись времени успешно удалена"
+  "timeEntryDeleted": "Запись времени успешно удалена",
+
+  "errorLoadingTodaysActivity": "Ошибка загрузки активности за сегодня",
+  "workTimeToday": "Рабочее время сегодня",
+  "projectBreakdown": "Разбивка по проектам",
+  "tasks": "Задачи",
+  "errorLoadingRecentTasks": "Ошибка загрузки недавних задач",
+  "noRecentTasks": "Нет недавних задач",
+  "startTimerToSeeTasks": "Запустите таймер, чтобы увидеть ваши задачи здесь",
+  "duration": "Продолжительность",
+  "completed": "Завершено",
+  "description": "Описание",
+  "quickStart": "Быстрый старт",
+  "noRecentProjects": "Нет недавних проектов",
+  "errorLoadingProjects": "Ошибка загрузки проектов",
+  "neverUsed": "Никогда не использовался"
 }

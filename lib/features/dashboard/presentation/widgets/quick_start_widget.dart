@@ -32,7 +32,7 @@ class QuickStartWidget extends ConsumerWidget {
                 const Icon(Symbols.bolt, size: 20, color: AppTheme.primaryBlue),
                 const SizedBox(width: AppTheme.space2),
                 Text(
-                  'Quick Start', // TODO: Add l10n.quickStart
+                  l10n.quickStart,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const Spacer(),
@@ -69,7 +69,7 @@ class QuickStartWidget extends ConsumerWidget {
                             ),
                             const SizedBox(height: AppTheme.space2),
                             Text(
-                              'No recent projects', // TODO: Add l10n.noRecentProjects
+                              l10n.noRecentProjects,
                               style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(color: AppTheme.gray500),
                             ),
@@ -145,7 +145,7 @@ class QuickStartWidget extends ConsumerWidget {
                 height: 120,
                 child: Center(
                   child: Text(
-                    AppLocalizations.of(context).errorLoadingProjects,
+                    l10n.errorLoadingProjects,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.error,
                     ),
@@ -255,7 +255,7 @@ class _ProjectCard extends StatelessWidget {
                     Text(
                       project.lastActiveAt != null
                           ? TimeFormatter.formatTimeAgo(project.lastActiveAt!)
-                          : 'Never used', // TODO: Add l10n.neverUsed
+                          : AppLocalizations.of(context).neverUsed,
                       style: Theme.of(
                         context,
                       ).textTheme.bodySmall?.copyWith(color: AppTheme.gray500),
