@@ -3,95 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../../core/models/time_entry.dart';
-import '../../../../core/services/storage_service.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/time_formatter.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../projects/presentation/providers/projects_provider.dart';
+import '../widgets/edit_time_entry_dialog.dart';
+import '../providers/calendar_providers.dart';
 import 'filtered_results_screen.dart';
-
-// Calendar view providers
-final selectedDateProvider = StateProvider<DateTime>((ref) {
-  final now = DateTime.now();
-  return DateTime(now.year, now.month, now.day);
-});
-
-final calendarViewModeProvider = StateProvider<CalendarViewMode>(
-  (ref) => CalendarViewMode.month,
-);
-
-// Calendar filtering providers
-final calendarSelectedProjectProvider = StateProvider<String?>((ref) => null);
-final calendarDateRangeProvider = StateProvider<DateTimeRange?>((ref) => null);
-final calendarYearProvider = StateProvider<int>((ref) => DateTime.now().year);
-
-// Unfiltered time entries provider - shows ALL completed tasks regardless of filter settings
-final unfilteredTimeEntriesProvider = FutureProvider<List<TimeEntry>>((
-  ref,
-) async {
-  final storage = ref.read(storageServiceProvider);
-  final allEntries = await storage.getTimeEntries();
-
-  // Only filter by completion status - no project or date filtering for main calendar
-  return allEntries.where((entry) => entry.isCompleted).toList();
-});
-
-// Filtered time entries provider - used only for filtered results screen
-final filteredTimeEntriesProvider = FutureProvider<List<TimeEntry>>((
-  ref,
-) async {
-  final storage = ref.read(storageServiceProvider);
-  final allEntries = await storage.getTimeEntries();
-  final selectedProject = ref.watch(calendarSelectedProjectProvider);
-  final dateRange = ref.watch(calendarDateRangeProvider);
-
-  // Filter by completion status
-  var filteredEntries = allEntries.where((entry) => entry.isCompleted).toList();
-
-  // Filter by project if selected
-  if (selectedProject != null) {
-    filteredEntries = filteredEntries
-        .where((entry) => entry.projectId == selectedProject)
-        .toList();
-  }
-
-  // Filter by date range if selected
-  if (dateRange != null) {
-    filteredEntries = filteredEntries.where((entry) {
-      final entryTime = entry.startTime;
-      // Use actual time for more precise filtering
-      return entryTime.isAfter(dateRange.start) &&
-          entryTime.isBefore(dateRange.end);
-    }).toList();
-  }
-
-  return filteredEntries;
-});
-
-// Grouped calendar data by date - now uses filtered data
-final calendarDataByDateProvider =
-    FutureProvider<Map<DateTime, List<TimeEntry>>>((ref) async {
-      final filteredEntries = await ref.watch(
-        filteredTimeEntriesProvider.future,
-      );
-
-      final entriesByDate = <DateTime, List<TimeEntry>>{};
-      for (final entry in filteredEntries) {
-        final entryDate = DateTime(
-          entry.startTime.year,
-          entry.startTime.month,
-          entry.startTime.day,
-        );
-        if (entriesByDate[entryDate] == null) {
-          entriesByDate[entryDate] = [];
-        }
-        entriesByDate[entryDate]!.add(entry);
-      }
-
-      return entriesByDate;
-    });
-
-enum CalendarViewMode { day, week, month, year }
 
 class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});
@@ -920,95 +838,109 @@ class _TimelineItem extends ConsumerWidget {
         );
 
         return Card(
-          child: Padding(
-            padding: const EdgeInsets.all(AppTheme.space4),
-            child: Row(
-              children: [
-                // Time indicator
-                Container(
-                  width: 4,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: entry.isBreak ? AppTheme.breakBlue : project.color,
-                    borderRadius: BorderRadius.circular(2),
+          child: InkWell(
+            onTap: () => _showEditDialog(context, ref),
+            borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+            child: Padding(
+              padding: const EdgeInsets.all(AppTheme.space4),
+              child: Row(
+                children: [
+                  // Time indicator
+                  Container(
+                    width: 4,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: entry.isBreak ? AppTheme.breakBlue : project.color,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
-                ),
-                const SizedBox(width: AppTheme.space4),
+                  const SizedBox(width: AppTheme.space4),
 
-                // Entry details
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            entry.isBreak ? Symbols.coffee : Symbols.work,
-                            size: 16,
-                            color: entry.isBreak
-                                ? AppTheme.breakBlue
-                                : project.color,
-                          ),
-                          const SizedBox(width: AppTheme.space2),
-                          Expanded(
-                            child: Text(
-                              entry.taskName,
-                              style: Theme.of(context).textTheme.titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.w600),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                  // Entry details
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              entry.isBreak ? Symbols.coffee : Symbols.work,
+                              size: 16,
+                              color: entry.isBreak
+                                  ? AppTheme.breakBlue
+                                  : project.color,
                             ),
+                            const SizedBox(width: AppTheme.space2),
+                            Expanded(
+                              child: Text(
+                                entry.taskName,
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.w600),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: AppTheme.space1),
+                        Text(
+                          project.name,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: project.color,
+                            fontWeight: FontWeight.w500,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: AppTheme.space1),
-                      Text(
-                        project.name,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: project.color,
-                          fontWeight: FontWeight.w500,
+                        ),
+                        const SizedBox(height: AppTheme.space2),
+                        Row(
+                          children: [
+                            Icon(
+                              Symbols.schedule,
+                              size: 14,
+                              color: AppTheme.gray500,
+                            ),
+                            const SizedBox(width: AppTheme.space1),
+                            Text(
+                              '${TimeFormatter.formatTime(entry.startTime)} - ${TimeFormatter.formatTime(entry.effectiveEndTime)}',
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(color: AppTheme.gray600),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Duration
+                  Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.space3,
+                          vertical: AppTheme.space2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: (entry.isBreak ? AppTheme.breakBlue : project.color)
+                              .withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                        ),
+                        child: Text(
+                          TimeFormatter.formatDurationWords(entry.duration),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: entry.isBreak ? AppTheme.breakBlue : project.color,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                       const SizedBox(height: AppTheme.space2),
-                      Row(
-                        children: [
-                          Icon(
-                            Symbols.schedule,
-                            size: 14,
-                            color: AppTheme.gray500,
-                          ),
-                          const SizedBox(width: AppTheme.space1),
-                          Text(
-                            '${TimeFormatter.formatTime(entry.startTime)} - ${TimeFormatter.formatTime(entry.effectiveEndTime)}',
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(color: AppTheme.gray600),
-                          ),
-                        ],
+                      Icon(
+                        Symbols.edit,
+                        size: 16,
+                        color: AppTheme.gray500,
                       ),
                     ],
                   ),
-                ),
-
-                // Duration
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.space3,
-                    vertical: AppTheme.space2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: (entry.isBreak ? AppTheme.breakBlue : project.color)
-                        .withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                  ),
-                  child: Text(
-                    TimeFormatter.formatDurationWords(entry.duration),
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: entry.isBreak ? AppTheme.breakBlue : project.color,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -1024,6 +956,19 @@ class _TimelineItem extends ConsumerWidget {
           height: 80,
           child: Center(child: Text(l10n.errorLoadingProject)),
         ),
+      ),
+    );
+  }
+
+  void _showEditDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => EditTimeEntryDialog(
+        entry: entry,
+        onUpdated: () {
+          // Refresh calendar data after update
+          ref.invalidate(calendarDataByDateProvider);
+        },
       ),
     );
   }
@@ -2006,105 +1951,120 @@ class _CalendarTaskItem extends ConsumerWidget {
           orElse: () => projects.first, // fallback
         );
 
-        return Padding(
-          padding: const EdgeInsets.all(AppTheme.space4),
-          child: Row(
-            children: [
-              // Task type indicator
-              Container(
-                width: 4,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: entry.isBreak ? AppTheme.breakBlue : project.color,
-                  borderRadius: BorderRadius.circular(2),
+        return InkWell(
+          onTap: () => _showEditDialog(context, ref),
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.space4),
+            child: Row(
+              children: [
+                // Task type indicator
+                Container(
+                  width: 4,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: entry.isBreak ? AppTheme.breakBlue : project.color,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
-              ),
-              const SizedBox(width: AppTheme.space4),
+                const SizedBox(width: AppTheme.space4),
 
-              // Task details
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                // Task details
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            entry.isBreak ? Symbols.coffee : Symbols.work,
+                            size: 16,
+                            color: entry.isBreak
+                                ? AppTheme.breakBlue
+                                : project.color,
+                          ),
+                          const SizedBox(width: AppTheme.space2),
+                          Expanded(
+                            child: Text(
+                              entry.taskName,
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(fontWeight: FontWeight.w600),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppTheme.space1),
+                      Row(
+                        children: [
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: project.color,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: AppTheme.space2),
+                          Text(
+                            project.name,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: project.color,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                          ),
+                          const Spacer(),
+                          Icon(
+                            Symbols.schedule,
+                            size: 14,
+                            color: AppTheme.gray500,
+                          ),
+                          const SizedBox(width: AppTheme.space1),
+                          Text(
+                            '${TimeFormatter.formatTime(entry.startTime)} - ${TimeFormatter.formatTime(entry.effectiveEndTime)}',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: AppTheme.gray600),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(width: AppTheme.space2),
+
+                // Duration badge
+                Column(
                   children: [
-                    Row(
-                      children: [
-                        Icon(
-                          entry.isBreak ? Symbols.coffee : Symbols.work,
-                          size: 16,
-                          color: entry.isBreak
-                              ? AppTheme.breakBlue
-                              : project.color,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.space3,
+                        vertical: AppTheme.space2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: (entry.isBreak ? AppTheme.breakBlue : project.color)
+                            .withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                      ),
+                      child: Text(
+                        TimeFormatter.formatDurationWords(entry.duration),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: entry.isBreak ? AppTheme.breakBlue : project.color,
+                          fontWeight: FontWeight.w600,
                         ),
-                        const SizedBox(width: AppTheme.space2),
-                        Expanded(
-                          child: Text(
-                            entry.taskName,
-                            style: Theme.of(context).textTheme.bodyLarge
-                                ?.copyWith(fontWeight: FontWeight.w600),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                    const SizedBox(height: AppTheme.space1),
-                    Row(
-                      children: [
-                        Container(
-                          width: 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: project.color,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: AppTheme.space2),
-                        Text(
-                          project.name,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                color: project.color,
-                                fontWeight: FontWeight.w500,
-                              ),
-                        ),
-                        const Spacer(),
-                        Icon(
-                          Symbols.schedule,
-                          size: 14,
-                          color: AppTheme.gray500,
-                        ),
-                        const SizedBox(width: AppTheme.space1),
-                        Text(
-                          '${TimeFormatter.formatTime(entry.startTime)} - ${TimeFormatter.formatTime(entry.effectiveEndTime)}',
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: AppTheme.gray600),
-                        ),
-                      ],
+                    const SizedBox(height: 2),
+                    Icon(
+                      Symbols.edit,
+                      size: 14,
+                      color: AppTheme.gray500,
                     ),
                   ],
                 ),
-              ),
-
-              // Duration badge
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.space3,
-                  vertical: AppTheme.space2,
-                ),
-                decoration: BoxDecoration(
-                  color: (entry.isBreak ? AppTheme.breakBlue : project.color)
-                      .withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                ),
-                child: Text(
-                  TimeFormatter.formatDurationWords(entry.duration),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: entry.isBreak ? AppTheme.breakBlue : project.color,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -2117,6 +2077,20 @@ class _CalendarTaskItem extends ConsumerWidget {
         height: 56,
         padding: const EdgeInsets.all(AppTheme.space4),
         child: Center(child: Text(l10n.errorLoadingProject)),
+      ),
+    );
+  }
+
+  void _showEditDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => EditTimeEntryDialog(
+        entry: entry,
+        onUpdated: () {
+          // Refresh calendar data after update
+          ref.invalidate(calendarDataByDateProvider);
+          ref.invalidate(unfilteredTimeEntriesProvider);
+        },
       ),
     );
   }

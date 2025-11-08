@@ -392,7 +392,7 @@ abstract class AppLocalizations {
   /// **'Retry'**
   String get retry;
 
-  /// Close button text
+  /// Close button label
   ///
   /// In en, this message translates to:
   /// **'Close'**
@@ -692,7 +692,7 @@ abstract class AppLocalizations {
   /// **'Project \"{name}\" deleted'**
   String projectDeleted(String name);
 
-  /// Delete button text
+  /// Delete button label
   ///
   /// In en, this message translates to:
   /// **'Delete'**
@@ -1647,19 +1647,19 @@ abstract class AppLocalizations {
   /// **'Error loading data'**
   String get errorLoadingData;
 
-  /// Custom date range section title
+  /// Custom date range filter label
   ///
   /// In en, this message translates to:
   /// **'Custom Date Range'**
   String get customDateRange;
 
-  /// Select date range button text
+  /// Select date range button label
   ///
   /// In en, this message translates to:
   /// **'Select Range'**
   String get selectRange;
 
-  /// Quick filters section title
+  /// Quick filters section label
   ///
   /// In en, this message translates to:
   /// **'Quick Filters'**
@@ -1730,6 +1730,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear'**
   String get clear;
+
+  /// Title for edit time entry dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Time Entry'**
+  String get editTimeEntry;
+
+  /// Label for start time field
+  ///
+  /// In en, this message translates to:
+  /// **'Start Time'**
+  String get startTime;
+
+  /// Label for end time field
+  ///
+  /// In en, this message translates to:
+  /// **'End Time'**
+  String get endTime;
+
+  /// Error message for invalid duration
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid duration. End time must be after start time.'**
+  String get invalidDuration;
+
+  /// Success message after updating time entry
+  ///
+  /// In en, this message translates to:
+  /// **'Time entry updated successfully'**
+  String get timeEntryUpdated;
+
+  /// Title for delete time entry confirmation
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Time Entry'**
+  String get deleteTimeEntry;
+
+  /// Confirmation message for deleting time entry
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this time entry? This action cannot be undone.'**
+  String get deleteTimeEntryConfirm;
+
+  /// Success message after deleting time entry
+  ///
+  /// In en, this message translates to:
+  /// **'Time entry deleted successfully'**
+  String get timeEntryDeleted;
 }
 
 class _AppLocalizationsDelegate

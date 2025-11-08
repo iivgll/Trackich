@@ -174,6 +174,20 @@ Future<List<Project>> archivedProjects(Ref ref) async {
   return projects.where((project) => !project.isActive).toList();
 }
 
+/// Provider for recent project IDs
+@riverpod
+Future<List<String>> recentProjectIds(Ref ref) async {
+  final storage = ref.read(storageServiceProvider);
+  return storage.getRecentProjectIds();
+}
+
+/// Provider for favorite project IDs
+@riverpod
+Future<List<String>> favoriteProjectIds(Ref ref) async {
+  final storage = ref.read(storageServiceProvider);
+  return storage.getFavoriteProjectIds();
+}
+
 /// Provider for recent projects
 @riverpod
 Future<List<Project>> recentProjects(Ref ref) async {

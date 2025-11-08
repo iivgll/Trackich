@@ -8,6 +8,7 @@ import '../../../notifications/notification_service.dart';
 import '../../../projects/presentation/providers/projects_provider.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 import '../../../system_tray/system_tray_service.dart';
+import '../../../calendar/presentation/providers/calendar_providers.dart';
 import 'package:uuid/uuid.dart';
 
 part 'timer_provider.g.dart';
@@ -293,6 +294,11 @@ class Timer extends _$Timer {
 
     // Refresh projects to update total time
     ref.invalidate(projectsProvider);
+
+    // Refresh calendar data to show completed task immediately
+    ref.invalidate(calendarDataByDateProvider);
+    ref.invalidate(unfilteredTimeEntriesProvider);
+    ref.invalidate(filteredTimeEntriesProvider);
 
     return entry;
   }

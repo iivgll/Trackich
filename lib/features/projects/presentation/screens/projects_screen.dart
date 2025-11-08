@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:flex_color_picker/flex_color_picker.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/time_formatter.dart';
@@ -1054,40 +1055,73 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
                       style: Theme.of(context).textTheme.labelLarge,
                     ),
                     const SizedBox(height: AppTheme.space3),
-                    Wrap(
-                      spacing: AppTheme.space3,
-                      children: AppTheme.getProjectColors(context).map((color) {
-                        final isSelected =
-                            _selectedColor != null && _selectedColor == color;
-                        return GestureDetector(
-                          onTap: () => setState(() => _selectedColor = color),
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: color,
-                              shape: BoxShape.circle,
-                              border: isSelected
-                                  ? Border.all(
-                                      color: Theme.of(
-                                        context,
-                                      ).scaffoldBackgroundColor,
-                                      width: 3,
-                                    )
-                                  : null,
-                              boxShadow: isSelected
-                                  ? [
-                                      BoxShadow(
-                                        color: color.withValues(alpha: 0.5),
-                                        blurRadius: 8,
-                                        spreadRadius: 2,
-                                      ),
-                                    ]
-                                  : null,
-                            ),
+                    GestureDetector(
+                      onTap: _showColorPicker,
+                      child: Container(
+                        padding: const EdgeInsets.all(AppTheme.space4),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).dividerColor,
                           ),
-                        );
-                      }).toList(),
+                          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: _selectedColor ?? AppTheme.primaryBlue,
+                                borderRadius: BorderRadius.circular(
+                                  AppTheme.radiusMd,
+                                ),
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 2,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.2),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: AppTheme.space3),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Tap to choose color',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _selectedColor != null
+                                        ? '#${_selectedColor!.toARGB32().toRadixString(16).substring(2).toUpperCase()}'
+                                        : 'Select a color',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall?.copyWith(
+                                          color: AppTheme.gray600,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Icon(
+                              Symbols.palette,
+                              color: AppTheme.primaryBlue,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -1144,6 +1178,83 @@ class _ProjectFormDialogState extends State<_ProjectFormDialog> {
         ),
       ],
     );
+  }
+
+  Future<void> _showColorPicker() async {
+    final Color colorBeforeDialog = _selectedColor ?? AppTheme.primaryBlue;
+
+    final bool? result = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Project Color'),
+          content: SingleChildScrollView(
+            child: ColorPicker(
+              color: colorBeforeDialog,
+              onColorChanged: (Color color) {
+                setState(() => _selectedColor = color);
+              },
+              width: 44,
+              height: 44,
+              borderRadius: 8,
+              spacing: 5,
+              runSpacing: 5,
+              wheelDiameter: 200,
+              heading: Text(
+                'Select color',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              subheading: Text(
+                'Select color shade',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              wheelSubheading: Text(
+                'Selected color and its shades',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              showMaterialName: true,
+              showColorName: true,
+              showColorCode: true,
+              copyPasteBehavior: const ColorPickerCopyPasteBehavior(
+                longPressMenu: true,
+              ),
+              materialNameTextStyle: Theme.of(context).textTheme.bodySmall,
+              colorNameTextStyle: Theme.of(context).textTheme.bodySmall,
+              colorCodeTextStyle: Theme.of(context).textTheme.bodyMedium,
+              colorCodePrefixStyle: Theme.of(context).textTheme.bodySmall,
+              selectedPickerTypeColor: Theme.of(context).colorScheme.primary,
+              pickersEnabled: const <ColorPickerType, bool>{
+                ColorPickerType.both: false,
+                ColorPickerType.primary: true,
+                ColorPickerType.accent: true,
+                ColorPickerType.bw: false,
+                ColorPickerType.custom: false,
+                ColorPickerType.wheel: true,
+              },
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                setState(() => _selectedColor = colorBeforeDialog);
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == null || !result) {
+      setState(() => _selectedColor = colorBeforeDialog);
+    }
   }
 
   void _saveProject() async {

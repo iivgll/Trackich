@@ -46,6 +46,47 @@ final archivedProjectsProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ArchivedProjectsRef = AutoDisposeFutureProviderRef<List<Project>>;
+String _$recentProjectIdsHash() => r'6351833670e317f52caf381991c4e8a7618e9af4';
+
+/// Provider for recent project IDs
+///
+/// Copied from [recentProjectIds].
+@ProviderFor(recentProjectIds)
+final recentProjectIdsProvider =
+    AutoDisposeFutureProvider<List<String>>.internal(
+      recentProjectIds,
+      name: r'recentProjectIdsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$recentProjectIdsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef RecentProjectIdsRef = AutoDisposeFutureProviderRef<List<String>>;
+String _$favoriteProjectIdsHash() =>
+    r'e6dec1bcb51e02d15fc2d16f47ce5bc28fd237eb';
+
+/// Provider for favorite project IDs
+///
+/// Copied from [favoriteProjectIds].
+@ProviderFor(favoriteProjectIds)
+final favoriteProjectIdsProvider =
+    AutoDisposeFutureProvider<List<String>>.internal(
+      favoriteProjectIds,
+      name: r'favoriteProjectIdsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$favoriteProjectIdsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef FavoriteProjectIdsRef = AutoDisposeFutureProviderRef<List<String>>;
 String _$recentProjectsHash() => r'5dc79c259eba30f38531759aec733fcbe1315456';
 
 /// Provider for recent projects

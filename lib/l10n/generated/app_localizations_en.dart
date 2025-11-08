@@ -923,4 +923,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clear => 'Clear';
+
+  @override
+  String get editTimeEntry => 'Edit Time Entry';
+
+  @override
+  String get startTime => 'Start Time';
+
+  @override
+  String get endTime => 'End Time';
+
+  @override
+  String get invalidDuration =>
+      'Invalid duration. End time must be after start time.';
+
+  @override
+  String get timeEntryUpdated => 'Time entry updated successfully';
+
+  @override
+  String get deleteTimeEntry => 'Delete Time Entry';
+
+  @override
+  String get deleteTimeEntryConfirm =>
+      'Are you sure you want to delete this time entry? This action cannot be undone.';
+
+  @override
+  String get timeEntryDeleted => 'Time entry deleted successfully';
 }

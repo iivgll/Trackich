@@ -362,6 +362,37 @@ class StorageService {
     return prefs.setStringList('recent_projects', recentProjects);
   }
 
+  // Favorite Projects Management
+  Future<List<String>> getFavoriteProjectIds() async {
+    await init();
+    return prefs.getStringList('favorite_projects') ?? [];
+  }
+
+  Future<bool> addFavoriteProject(String projectId) async {
+    await init();
+    var favoriteProjects = await getFavoriteProjectIds();
+
+    // Don't add if already exists
+    if (favoriteProjects.contains(projectId)) {
+      return true;
+    }
+
+    // Add to list
+    favoriteProjects.add(projectId);
+
+    return prefs.setStringList('favorite_projects', favoriteProjects);
+  }
+
+  Future<bool> removeFavoriteProject(String projectId) async {
+    await init();
+    var favoriteProjects = await getFavoriteProjectIds();
+
+    // Remove from list
+    favoriteProjects.remove(projectId);
+
+    return prefs.setStringList('favorite_projects', favoriteProjects);
+  }
+
   Future<List<String>> getRecentTaskNames() async {
     await init();
     return prefs.getStringList('recent_tasks') ?? [];

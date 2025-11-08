@@ -218,13 +218,14 @@
   "timerRecoveryTask": "Задача: {taskName}",
   "timerRecoveryProject": "Проект: {projectName}",
   "timerRecoveryDuration": "Продолжительность: {duration}",
+  "timerRecoveryDuration": "Продолжительность: {duration}",
 
   "searchProjects": "Поиск проектов...",
   "weeklyTargetHours": "Недельная цель часов (необязательно)",
   "hours": "часов",
   "enterTaskDescription": "Введите описание задачи",
   "briefProjectDescription": "Краткое описание проекта",
-  
+
   "excelHeaderDate": "Дата",
   "excelHeaderProject": "Проект",
   "excelHeaderTaskDescription": "Описание задачи",
@@ -233,7 +234,7 @@
   "excelHeaderDuration": "Продолжительность",
   "excelHeaderHours": "Часы",
   "excelHeaderStatus": "Статус",
-  
+
   "excelSummaryReport": "Сводный отчет",
   "excelSummaryProject": "Проект",
   "excelSummaryTotalTasks": "Всего задач",
@@ -244,7 +245,7 @@
   "excelSummaryUntitledTask": "Без названия",
   "excelSummaryInProgress": "В процессе",
   "excelSummaryCompleted": "Завершено",
-  
+
   "timeUnitsJustNow": "Только что",
   "timeUnitsHourAgo": "{hours} час назад",
   "timeUnitsHoursAgo": "{hours} часов назад",
@@ -278,8 +279,6 @@
 
   "timeUnitsDayAgo": "{days} день назад",
   "timeUnitsDaysAgo": "{days} дней назад",
-  "timeUnitsMinuteAgo": "{minutes} минута назад",
-  "timeUnitsMinutesAgo": "{minutes} минут назад",
   "timeUnitsSecondAgo": "{seconds} секунда назад",
   "timeUnitsSecondsAgo": "{seconds} секунд назад",
   "timeUnitsAt": "в",
@@ -310,12 +309,26 @@
   "next": "Следующий",
   "filter": "Фильтр",
   "filterByProject": "Фильтр по проекту",
-  "customDateRange": "Произвольный диапазон дат",
-  "selectRange": "Выбрать диапазон",
   "clear": "Очистить",
-  "quickFilters": "Быстрые фильтры",
-  "last7Days": "Последние 7 дней",
-  "last30Days": "Последние 30 дней",
-  "last3Months": "Последние 3 месяца",
-  "thisYear": "Этот год"
+
+  "noRecentTasks": "Нет последних задач",
+  "startTimerToSeeTasks": "Запустите таймер, чтобы увидеть свои задачи здесь",
+  "duration": "Продолжительность",
+  "completed": "Завершено",
+  "description": "Описание",
+  "quickStart": "Быстрый старт",
+  "noRecentProjects": "Нет последних проектов",
+  "errorLoadingProjects": "Ошибка загрузки проектов",
+  "neverUsed": "Никогда не использовался",
+
+  "editTimeEntry": "Редактировать время",
+  "startTime": "Время начала",
+  "endTime": "Время окончания",
+  "invalidDuration": "Неверная продолжительность. Время окончания должно быть после времени начала.",
+  "timeEntryUpdated": "Запись времени успешно обновлена",
+  "close": "Закрыть",
+  "delete": "Удалить",
+  "deleteTimeEntry": "Удалить запись времени",
+  "deleteTimeEntryConfirm": "Вы уверены, что хотите удалить эту запись времени? Это действие нельзя отменить.",
+  "timeEntryDeleted": "Запись времени успешно удалена"
 }

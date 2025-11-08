@@ -887,7 +887,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get errorLoadingData => 'Ошибка загрузки данных';
 
   @override
-  String get customDateRange => 'Произвольный диапазон дат';
+  String get customDateRange => 'Пользовательский диапазон дат';
 
   @override
   String get selectRange => 'Выбрать диапазон';
@@ -927,4 +927,30 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get clear => 'Очистить';
+
+  @override
+  String get editTimeEntry => 'Редактировать время';
+
+  @override
+  String get startTime => 'Время начала';
+
+  @override
+  String get endTime => 'Время окончания';
+
+  @override
+  String get invalidDuration =>
+      'Неверная продолжительность. Время окончания должно быть после времени начала.';
+
+  @override
+  String get timeEntryUpdated => 'Запись времени успешно обновлена';
+
+  @override
+  String get deleteTimeEntry => 'Удалить запись времени';
+
+  @override
+  String get deleteTimeEntryConfirm =>
+      'Вы уверены, что хотите удалить эту запись времени? Это действие нельзя отменить.';
+
+  @override
+  String get timeEntryDeleted => 'Запись времени успешно удалена';
 }

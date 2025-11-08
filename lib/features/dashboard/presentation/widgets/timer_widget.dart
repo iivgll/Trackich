@@ -9,6 +9,7 @@ import '../../../../l10n/generated/app_localizations.dart';
 import '../../../projects/domain/models/project.dart';
 import '../../../projects/presentation/providers/projects_provider.dart';
 import '../../../projects/presentation/widgets/create_project_dialog.dart';
+import 'smart_project_selector.dart';
 
 class TimerWidget extends ConsumerStatefulWidget {
   const TimerWidget({super.key});
@@ -259,102 +260,21 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
               });
             }
 
-            return Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.space4),
-              decoration: BoxDecoration(
-                border: Border.all(color: Theme.of(context).dividerColor),
-                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              ),
-              child: DropdownButton<String>(
-                value: validSelectedProjectId,
-                hint: Text(
-                  l10n.selectProject,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).hintColor,
-                  ),
-                ),
-                isExpanded: true,
-                underline: Container(),
-                items: [
-                  // Add break option when timer is in break mode
-                  if (validSelectedProjectId == 'break')
-                    DropdownMenuItem<String>(
-                      value: 'break',
-                      child: Row(
-                        children: [
-                          Icon(
-                            Symbols.coffee,
-                            size: 16,
-                            color: AppTheme.getSecondaryColor(context),
-                          ),
-                          const SizedBox(width: AppTheme.space3),
-                          Expanded(
-                            child: Text(
-                              l10n.breakTime,
-                              style: TextStyle(
-                                color: AppTheme.getSecondaryColor(context),
-                                fontWeight: FontWeight.w500,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ...projects.map(
-                    (project) => DropdownMenuItem<String>(
-                      value: project.id,
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 12,
-                            height: 12,
-                            decoration: BoxDecoration(
-                              color: project.color,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          const SizedBox(width: AppTheme.space3),
-                          Expanded(
-                            child: Text(
-                              project.name,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: 'create_new',
-                    child: Row(
-                      children: [
-                        Icon(
-                          Symbols.add,
-                          size: 16,
-                          color: AppTheme.getPrimaryColor(context),
-                        ),
-                        SizedBox(width: AppTheme.space3),
-                        Text(
-                          l10n.createNewProject,
-                          style: TextStyle(
-                            color: AppTheme.getPrimaryColor(context),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-                onChanged: (value) {
-                  if (value == 'create_new') {
-                    _showCreateProjectDialog();
-                  } else if (value == 'break') {
-                    // Break is read-only when timer is active, prevent changes
-                    // This case shouldn't normally occur as break is only shown when already selected
-                    return;
-                  } else {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Quick select recent projects
+                _buildQuickSelectProjects(projects, validSelectedProjectId),
+
+                const SizedBox(height: AppTheme.space3),
+
+                // Main project selector
+                SmartProjectSelector(
+                  selectedProjectId: validSelectedProjectId == 'break'
+                      ? null
+                      : validSelectedProjectId,
+                  projects: projects,
+                  onProjectSelected: (value) {
                     setState(() {
                       _selectedProjectId = value;
                     });
@@ -362,9 +282,10 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                     if (value != null) {
                       ref.read(timerProvider.notifier).updateProject(value);
                     }
-                  }
-                },
-              ),
+                  },
+                  onCreateNew: _showCreateProjectDialog,
+                ),
+              ],
             );
           },
           loading: () => const LinearProgressIndicator(),
@@ -374,6 +295,121 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildQuickSelectProjects(List<Project> allProjects, String? currentSelectedId) {
+    // Get recent project IDs
+    final recentProjectIdsAsync = ref.watch(recentProjectIdsProvider);
+
+    return recentProjectIdsAsync.when(
+      data: (recentIds) {
+        // Get up to 3 most recent projects that exist in allProjects
+        final recentProjects = recentIds
+            .take(3)
+            .map((id) {
+              try {
+                return allProjects.firstWhere((p) => p.id == id);
+              } catch (e) {
+                return null;
+              }
+            })
+            .whereType<Project>()
+            .toList();
+
+        // Don't show if no recent projects
+        if (recentProjects.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppTheme.space2),
+              child: Text(
+                'Quick Select',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: AppTheme.gray600,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
+                    ),
+              ),
+            ),
+            SizedBox(
+              height: 44,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: recentProjects.length,
+                separatorBuilder: (context, index) => const SizedBox(width: AppTheme.space2),
+                itemBuilder: (context, index) {
+                  final project = recentProjects[index];
+                  final isSelected = currentSelectedId == project.id;
+
+                  return Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          _selectedProjectId = project.id;
+                        });
+                        ref.read(timerProvider.notifier).updateProject(project.id);
+                      },
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.space4,
+                          vertical: AppTheme.space2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? project.color.withValues(alpha: 0.15)
+                              : Theme.of(context).cardColor,
+                          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                          border: Border.all(
+                            color: isSelected
+                                ? project.color
+                                : Theme.of(context).dividerColor,
+                            width: isSelected ? 2 : 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                color: project.color,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: AppTheme.space2),
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 120),
+                              child: Text(
+                                project.name,
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                                      color: isSelected ? project.color : null,
+                                    ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
     );
   }
 
