@@ -1288,14 +1288,14 @@ class _CalendarFilterDialog extends ConsumerStatefulWidget {
 }
 
 class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
-  String? _selectedProjectId;
+  Set<String> _selectedProjectIds = {};
   DateTimeRange? _selectedDateRange;
   int _selectedYear = DateTime.now().year;
 
   @override
   void initState() {
     super.initState();
-    _selectedProjectId = ref.read(calendarSelectedProjectProvider);
+    _selectedProjectIds = Set.from(ref.read(calendarSelectedProjectsProvider));
     _selectedDateRange = ref.read(calendarDateRangeProvider);
     _selectedYear = ref.read(calendarYearProvider);
   }
@@ -1314,42 +1314,97 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
         ],
       ),
       content: SizedBox(
-        width: 400,
+        width: 450,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Project Filter
-            Text(
-              l10n.filterByProject,
-              style: Theme.of(context).textTheme.labelLarge,
+            Row(
+              children: [
+                Text(
+                  l10n.filterByProject,
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+                const Spacer(),
+                if (_selectedProjectIds.isNotEmpty)
+                  TextButton.icon(
+                    onPressed: () => setState(() => _selectedProjectIds = {}),
+                    icon: const Icon(Symbols.clear_all, size: 16),
+                    label: Text(l10n.allProjects),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppTheme.primaryBlue,
+                      padding: const EdgeInsets.symmetric(horizontal: AppTheme.space2),
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(height: AppTheme.space2),
             projectsAsync.when(
               data: (projects) => Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.space4,
-                ),
+                constraints: const BoxConstraints(maxHeight: 200),
                 decoration: BoxDecoration(
                   border: Border.all(color: Theme.of(context).dividerColor),
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 ),
-                child: DropdownButton<String?>(
-                  value: _selectedProjectId,
-                  hint: Text(l10n.allProjects),
-                  isExpanded: true,
-                  underline: Container(),
-                  items: [
-                    DropdownMenuItem<String?>(
-                      value: null,
-                      child: Text(l10n.allProjects),
-                    ),
-                    ...projects.map(
-                      (project) => DropdownMenuItem<String?>(
-                        value: project.id,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: projects.length,
+                  itemBuilder: (context, index) {
+                    final project = projects[index];
+                    final isSelected = _selectedProjectIds.contains(project.id);
+
+                    return InkWell(
+                      onTap: () {
+                        setState(() {
+                          if (isSelected) {
+                            _selectedProjectIds.remove(project.id);
+                          } else {
+                            _selectedProjectIds.add(project.id);
+                          }
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppTheme.space4,
+                          vertical: AppTheme.space3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? project.color.withValues(alpha: 0.1)
+                              : null,
+                          border: index < projects.length - 1
+                              ? Border(
+                                  bottom: BorderSide(
+                                    color: Theme.of(context).dividerColor.withValues(alpha: 0.5),
+                                  ),
+                                )
+                              : null,
+                        ),
                         child: Row(
                           children: [
+                            // Checkbox
+                            Container(
+                              width: 20,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                color: isSelected ? project.color : Colors.transparent,
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(
+                                  color: isSelected ? project.color : AppTheme.gray400,
+                                  width: 2,
+                                ),
+                              ),
+                              child: isSelected
+                                  ? const Icon(
+                                      Symbols.check,
+                                      size: 14,
+                                      color: Colors.white,
+                                    )
+                                  : null,
+                            ),
+                            const SizedBox(width: AppTheme.space3),
+                            // Project color dot
                             Container(
                               width: 12,
                               height: 12,
@@ -1359,19 +1414,39 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
                               ),
                             ),
                             const SizedBox(width: AppTheme.space3),
-                            Text(project.name),
+                            // Project name
+                            Expanded(
+                              child: Text(
+                                project.name,
+                                style: TextStyle(
+                                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                  color: isSelected ? project.color : null,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                    ),
-                  ],
-                  onChanged: (value) =>
-                      setState(() => _selectedProjectId = value),
+                    );
+                  },
                 ),
               ),
               loading: () => const LinearProgressIndicator(),
               error: (_, __) => Text(l10n.errorLoadingProjects),
             ),
+
+            // Selected projects count indicator
+            if (_selectedProjectIds.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: AppTheme.space2),
+                child: Text(
+                  '${_selectedProjectIds.length} project${_selectedProjectIds.length > 1 ? 's' : ''} selected',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppTheme.primaryBlue,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
 
             const SizedBox(height: AppTheme.space6),
 
@@ -1488,7 +1563,7 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
   }
 
   void _clearFilters() {
-    ref.read(calendarSelectedProjectProvider.notifier).state = null;
+    ref.read(calendarSelectedProjectsProvider.notifier).state = {};
     ref.read(calendarDateRangeProvider.notifier).state = null;
     ref.read(calendarYearProvider.notifier).state = DateTime.now().year;
     Navigator.of(context).pop();
@@ -1496,8 +1571,7 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
 
   void _applyFilters() async {
     // Update the providers for the calendar view
-    ref.read(calendarSelectedProjectProvider.notifier).state =
-        _selectedProjectId;
+    ref.read(calendarSelectedProjectsProvider.notifier).state = _selectedProjectIds;
     ref.read(calendarDateRangeProvider.notifier).state = _selectedDateRange;
     ref.read(calendarYearProvider.notifier).state = _selectedYear;
 
@@ -1516,7 +1590,7 @@ class _CalendarFilterDialogState extends ConsumerState<_CalendarFilterDialog> {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => FilteredResultsScreen(
-            projectId: _selectedProjectId,
+            projectIds: _selectedProjectIds,
             dateRange: _selectedDateRange,
             filteredEntries: filteredEntries,
           ),
@@ -1566,7 +1640,7 @@ class CalendarFilteredListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedProject = ref.watch(calendarSelectedProjectProvider);
+    final selectedProjects = ref.watch(calendarSelectedProjectsProvider);
     final dateRange = ref.watch(calendarDateRangeProvider);
     final l10n = AppLocalizations.of(context);
 
@@ -1603,7 +1677,7 @@ class CalendarFilteredListView extends ConsumerWidget {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 ),
                 const Spacer(),
-                if (selectedProject != null || dateRange != null) ...[
+                if (selectedProjects.isNotEmpty || dateRange != null) ...[
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.space3,
@@ -1663,7 +1737,7 @@ class CalendarFilteredListView extends ConsumerWidget {
                   return _buildEmptyFilteredState(
                     context,
                     ref,
-                    selectedProject,
+                    selectedProjects,
                     dateRange,
                   );
                 }
@@ -1708,7 +1782,7 @@ class CalendarFilteredListView extends ConsumerWidget {
   Widget _buildEmptyFilteredState(
     BuildContext context,
     WidgetRef ref,
-    String? selectedProject,
+    Set<String> selectedProjects,
     DateTimeRange? dateRange,
   ) {
     final l10n = AppLocalizations.of(context);
@@ -1727,7 +1801,7 @@ class CalendarFilteredListView extends ConsumerWidget {
           ),
           const SizedBox(height: AppTheme.space3),
           Text(
-            _getEmptyStateMessage(selectedProject, dateRange),
+            _getEmptyStateMessage(selectedProjects, dateRange),
             style: Theme.of(
               context,
             ).textTheme.bodyLarge?.copyWith(color: AppTheme.gray500),
@@ -1736,7 +1810,7 @@ class CalendarFilteredListView extends ConsumerWidget {
           const SizedBox(height: AppTheme.space6),
           ElevatedButton.icon(
             onPressed: () {
-              ref.read(calendarSelectedProjectProvider.notifier).state = null;
+              ref.read(calendarSelectedProjectsProvider.notifier).state = {};
               ref.read(calendarDateRangeProvider.notifier).state = null;
               Navigator.of(context).pop();
             },
@@ -1749,13 +1823,13 @@ class CalendarFilteredListView extends ConsumerWidget {
   }
 
   String _getEmptyStateMessage(
-    String? selectedProject,
+    Set<String> selectedProjects,
     DateTimeRange? dateRange,
   ) {
-    if (selectedProject != null && dateRange != null) {
-      return 'No completed tasks found for the selected project and date range.\nTry adjusting your filters.';
-    } else if (selectedProject != null) {
-      return 'No completed tasks found for the selected project.\nTry selecting a different project.';
+    if (selectedProjects.isNotEmpty && dateRange != null) {
+      return 'No completed tasks found for the selected projects and date range.\nTry adjusting your filters.';
+    } else if (selectedProjects.isNotEmpty) {
+      return 'No completed tasks found for the selected projects.\nTry selecting different projects.';
     } else if (dateRange != null) {
       return 'No completed tasks found in the selected date range.\nTry expanding your date range.';
     } else {

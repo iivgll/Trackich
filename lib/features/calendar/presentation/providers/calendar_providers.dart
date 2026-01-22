@@ -17,7 +17,8 @@ final calendarViewModeProvider = StateProvider<CalendarViewMode>(
 );
 
 // Calendar filtering providers
-final calendarSelectedProjectProvider = StateProvider<String?>((ref) => null);
+// Set of selected project IDs - empty means "all projects"
+final calendarSelectedProjectsProvider = StateProvider<Set<String>>((ref) => {});
 final calendarDateRangeProvider = StateProvider<DateTimeRange?>((ref) => null);
 final calendarYearProvider = StateProvider<int>((ref) => DateTime.now().year);
 
@@ -38,16 +39,16 @@ final filteredTimeEntriesProvider = FutureProvider<List<TimeEntry>>((
 ) async {
   final storage = ref.read(storageServiceProvider);
   final allEntries = await storage.getTimeEntries();
-  final selectedProject = ref.watch(calendarSelectedProjectProvider);
+  final selectedProjects = ref.watch(calendarSelectedProjectsProvider);
   final dateRange = ref.watch(calendarDateRangeProvider);
 
   // Filter by completion status
   var filteredEntries = allEntries.where((entry) => entry.isCompleted).toList();
 
-  // Filter by project if selected
-  if (selectedProject != null) {
+  // Filter by projects if any selected (empty set means "all projects")
+  if (selectedProjects.isNotEmpty) {
     filteredEntries = filteredEntries
-        .where((entry) => entry.projectId == selectedProject)
+        .where((entry) => selectedProjects.contains(entry.projectId))
         .toList();
   }
 

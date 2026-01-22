@@ -47,13 +47,13 @@ final recentTaskNamesProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef RecentTaskNamesRef = AutoDisposeFutureProviderRef<List<String>>;
-String _$timerHash() => r'd7f83b35d828a534c2ca61fac712c589078a4790';
+String _$timerHash() => r'928b25ed2c2d56799a7ac9a4d7c38257568ece4d';
 
 /// Provider for the current timer
 ///
 /// Copied from [Timer].
 @ProviderFor(Timer)
-final timerProvider = AutoDisposeNotifierProvider<Timer, CurrentTimer>.internal(
+final timerProvider = NotifierProvider<Timer, CurrentTimer>.internal(
   Timer.new,
   name: r'timerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -63,6 +63,6 @@ final timerProvider = AutoDisposeNotifierProvider<Timer, CurrentTimer>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef _$Timer = AutoDisposeNotifier<CurrentTimer>;
+typedef _$Timer = Notifier<CurrentTimer>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

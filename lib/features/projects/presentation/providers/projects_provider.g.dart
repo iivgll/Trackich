@@ -276,6 +276,142 @@ class _ProjectProviderElement extends AutoDisposeFutureProviderElement<Project?>
   String get projectId => (origin as ProjectProvider).projectId;
 }
 
+String _$topTasksByProjectHash() => r'94d403596102e2d08c021936d32efebc3f4fdf4e';
+
+/// Provider for top frequent tasks by project (sorted by session count)
+///
+/// Copied from [topTasksByProject].
+@ProviderFor(topTasksByProject)
+const topTasksByProjectProvider = TopTasksByProjectFamily();
+
+/// Provider for top frequent tasks by project (sorted by session count)
+///
+/// Copied from [topTasksByProject].
+class TopTasksByProjectFamily
+    extends Family<AsyncValue<List<TaskGroupSummary>>> {
+  /// Provider for top frequent tasks by project (sorted by session count)
+  ///
+  /// Copied from [topTasksByProject].
+  const TopTasksByProjectFamily();
+
+  /// Provider for top frequent tasks by project (sorted by session count)
+  ///
+  /// Copied from [topTasksByProject].
+  TopTasksByProjectProvider call(String projectId) {
+    return TopTasksByProjectProvider(projectId);
+  }
+
+  @override
+  TopTasksByProjectProvider getProviderOverride(
+    covariant TopTasksByProjectProvider provider,
+  ) {
+    return call(provider.projectId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'topTasksByProjectProvider';
+}
+
+/// Provider for top frequent tasks by project (sorted by session count)
+///
+/// Copied from [topTasksByProject].
+class TopTasksByProjectProvider
+    extends AutoDisposeFutureProvider<List<TaskGroupSummary>> {
+  /// Provider for top frequent tasks by project (sorted by session count)
+  ///
+  /// Copied from [topTasksByProject].
+  TopTasksByProjectProvider(String projectId)
+    : this._internal(
+        (ref) => topTasksByProject(ref as TopTasksByProjectRef, projectId),
+        from: topTasksByProjectProvider,
+        name: r'topTasksByProjectProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$topTasksByProjectHash,
+        dependencies: TopTasksByProjectFamily._dependencies,
+        allTransitiveDependencies:
+            TopTasksByProjectFamily._allTransitiveDependencies,
+        projectId: projectId,
+      );
+
+  TopTasksByProjectProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.projectId,
+  }) : super.internal();
+
+  final String projectId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<TaskGroupSummary>> Function(TopTasksByProjectRef provider)
+    create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: TopTasksByProjectProvider._internal(
+        (ref) => create(ref as TopTasksByProjectRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        projectId: projectId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<TaskGroupSummary>> createElement() {
+    return _TopTasksByProjectProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is TopTasksByProjectProvider && other.projectId == projectId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, projectId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin TopTasksByProjectRef
+    on AutoDisposeFutureProviderRef<List<TaskGroupSummary>> {
+  /// The parameter `projectId` of this provider.
+  String get projectId;
+}
+
+class _TopTasksByProjectProviderElement
+    extends AutoDisposeFutureProviderElement<List<TaskGroupSummary>>
+    with TopTasksByProjectRef {
+  _TopTasksByProjectProviderElement(super.provider);
+
+  @override
+  String get projectId => (origin as TopTasksByProjectProvider).projectId;
+}
+
 String _$searchProjectsHash() => r'907fd8a741db0aa2cf8b91e54a03f0fe0f933251';
 
 /// Provider for searching projects

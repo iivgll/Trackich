@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
+import '../../../../core/services/storage_service.dart' show TaskGroupSummary;
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/time_formatter.dart';
 import '../../../timer/presentation/providers/timer_provider.dart';
@@ -41,7 +42,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final timer = ref.watch(timerProvider);
-    final recentProjects = ref.watch(recentProjectsProvider);
+    final allActiveProjects = ref.watch(activeProjectsProvider);
 
     // Listen for timer state changes and sync UI fields
     ref.listen<CurrentTimer>(timerProvider, (previous, next) {
@@ -206,7 +207,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
             const SizedBox(height: AppTheme.space6),
 
             // Project Selector
-            Center(child: _buildProjectSelector(l10n, recentProjects)),
+            Center(child: _buildProjectSelector(l10n, allActiveProjects)),
 
             const SizedBox(height: AppTheme.space4),
 
@@ -285,6 +286,11 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                   },
                   onCreateNew: _showCreateProjectDialog,
                 ),
+
+                // Top frequent tasks for selected project
+                if (validSelectedProjectId != null &&
+                    validSelectedProjectId != 'break')
+                  _buildTopTasksSuggestions(validSelectedProjectId),
               ],
             );
           },
@@ -410,6 +416,128 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
       },
       loading: () => const SizedBox.shrink(),
       error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+
+  Widget _buildTopTasksSuggestions(String projectId) {
+    final topTasksAsync = ref.watch(topTasksByProjectProvider(projectId));
+
+    return topTasksAsync.when(
+      data: (tasks) {
+        if (tasks.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        return Padding(
+          padding: const EdgeInsets.only(top: AppTheme.space3),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppTheme.space2),
+                child: Row(
+                  children: [
+                    Icon(
+                      Symbols.trending_up,
+                      size: 14,
+                      color: AppTheme.gray500,
+                    ),
+                    const SizedBox(width: AppTheme.space1),
+                    Text(
+                      'Top Tasks',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: AppTheme.gray600,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.5,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+              Wrap(
+                spacing: AppTheme.space2,
+                runSpacing: AppTheme.space2,
+                children: tasks.map((task) => _buildTaskChip(task)).toList(),
+              ),
+            ],
+          ),
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+
+  Widget _buildTaskChip(TaskGroupSummary task) {
+    final isCurrentTask = _taskController.text.trim().toLowerCase() ==
+        task.taskName.trim().toLowerCase();
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _taskController.text = task.taskName;
+          });
+          ref.read(timerProvider.notifier).updateTaskName(task.taskName);
+        },
+        borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.space3,
+            vertical: AppTheme.space2,
+          ),
+          decoration: BoxDecoration(
+            color: isCurrentTask
+                ? AppTheme.primaryBlue.withValues(alpha: 0.15)
+                : Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+            border: Border.all(
+              color: isCurrentTask
+                  ? AppTheme.primaryBlue
+                  : Theme.of(context).dividerColor,
+              width: isCurrentTask ? 1.5 : 1,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 150),
+                child: Text(
+                  task.taskName,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight:
+                            isCurrentTask ? FontWeight.w700 : FontWeight.w500,
+                        color: isCurrentTask ? AppTheme.primaryBlue : null,
+                      ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ),
+              const SizedBox(width: AppTheme.space1),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 4,
+                  vertical: 1,
+                ),
+                decoration: BoxDecoration(
+                  color: AppTheme.gray200,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  '${task.sessionCount}',
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.gray600,
+                      ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

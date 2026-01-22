@@ -73,7 +73,7 @@ class CurrentTimer {
 }
 
 /// Provider for the current timer
-@riverpod
+@Riverpod(keepAlive: true)
 class Timer extends _$Timer {
   dart.Timer? _ticker;
   int _lastBreakNotificationMinutes =

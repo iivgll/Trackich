@@ -19,6 +19,15 @@ final currentPageProvider = StateProvider<int>((ref) => 0);
 class MainScreen extends ConsumerWidget {
   const MainScreen({super.key});
 
+  // Keep screens alive to preserve their state
+  static const List<Widget> _screens = [
+    DashboardScreen(),
+    ProjectsScreen(),
+    CalendarScreen(),
+    AnalyticsScreen(),
+    SettingsScreen(),
+  ];
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentPage = ref.watch(currentPageProvider);
@@ -38,28 +47,16 @@ class MainScreen extends ConsumerWidget {
             onPageChanged: (page) =>
                 ref.read(currentPageProvider.notifier).state = page,
           ),
-          // Main Content Area
-          Expanded(child: _getPageContent(currentPage)),
+          // Main Content Area - IndexedStack keeps all screens alive
+          Expanded(
+            child: IndexedStack(
+              index: currentPage,
+              children: _screens,
+            ),
+          ),
         ],
       ),
     );
-  }
-
-  Widget _getPageContent(int page) {
-    switch (page) {
-      case 0:
-        return const DashboardScreen();
-      case 1:
-        return const ProjectsScreen();
-      case 2:
-        return const CalendarScreen();
-      case 3:
-        return const AnalyticsScreen();
-      case 4:
-        return const SettingsScreen();
-      default:
-        return const DashboardScreen();
-    }
   }
 }
 

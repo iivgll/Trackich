@@ -313,6 +313,22 @@ class ProjectStats extends _$ProjectStats {
   }
 }
 
+/// Provider for top frequent tasks by project (sorted by session count)
+@riverpod
+Future<List<TaskGroupSummary>> topTasksByProject(Ref ref, String projectId) async {
+  final storage = ref.read(storageServiceProvider);
+  final taskGroups = await storage.getTaskGroupSummaries();
+
+  // Filter by project and sort by session count (descending)
+  final projectTasks = taskGroups.values
+      .where((task) => task.projectId == projectId)
+      .toList()
+    ..sort((a, b) => b.sessionCount.compareTo(a.sessionCount));
+
+  // Return top 5 most frequent tasks
+  return projectTasks.take(5).toList();
+}
+
 /// Provider for searching projects
 @riverpod
 Future<List<Project>> searchProjects(Ref ref, String query) async {

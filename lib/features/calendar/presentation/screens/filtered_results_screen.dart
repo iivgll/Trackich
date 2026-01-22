@@ -14,13 +14,13 @@ import '../../../projects/domain/models/project.dart';
 import '../../../projects/presentation/providers/projects_provider.dart';
 
 class FilteredResultsScreen extends ConsumerStatefulWidget {
-  final String? projectId;
+  final Set<String> projectIds;
   final DateTimeRange? dateRange;
   final List<TimeEntry> filteredEntries;
 
   const FilteredResultsScreen({
     super.key,
-    this.projectId,
+    this.projectIds = const {},
     this.dateRange,
     required this.filteredEntries,
   });
@@ -99,22 +99,29 @@ class _FilteredResultsScreenState extends ConsumerState<FilteredResultsScreen> {
     );
 
     String filterInfo = '';
-    if (widget.projectId != null || widget.dateRange != null) {
+    if (widget.projectIds.isNotEmpty || widget.dateRange != null) {
       final parts = <String>[];
-      if (widget.projectId != null) {
+      if (widget.projectIds.isNotEmpty) {
         final projectsAsync = ref.read(projectsProvider);
         if (projectsAsync.hasValue) {
-          final project = projectsAsync.value!.firstWhere(
-            (p) => p.id == widget.projectId,
-            orElse: () => Project(
-              id: widget.projectId!,
-              name: l10n.unknown,
-              color: const Color(0xFF007AFF),
-              description: '',
-              createdAt: DateTime.now(),
-            ),
-          );
-          parts.add(l10n.projectLabel(project.name));
+          final projectNames = widget.projectIds.map((id) {
+            final project = projectsAsync.value!.firstWhere(
+              (p) => p.id == id,
+              orElse: () => Project(
+                id: id,
+                name: l10n.unknown,
+                color: const Color(0xFF007AFF),
+                description: '',
+                createdAt: DateTime.now(),
+              ),
+            );
+            return project.name;
+          }).toList();
+          if (projectNames.length == 1) {
+            parts.add(l10n.projectLabel(projectNames.first));
+          } else {
+            parts.add('${projectNames.length} projects');
+          }
         }
       }
       if (widget.dateRange != null) {
